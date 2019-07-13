@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.sql.DataSource;
 
-@Configuration
+//@Configuration
 public class DruidCfg {
 
     @Value("db.mysql.url")
@@ -24,6 +24,7 @@ public class DruidCfg {
         ds.setUsername(username);
         ds.setPassword(password);
         ds.setUrl(url);
+
         // 配置初始化大小、最小、最大
         ds.setInitialSize(1);
         ds.setMinIdle(10);

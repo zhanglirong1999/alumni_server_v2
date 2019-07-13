@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<!-- 配置生成器 -->
+<generatorConfiguration>
+    <!--导入属性配置 -->
+    <properties resource="application.properties"></properties>
+    <!--classPathEntry:数据库的JDBC驱动,换成你自己的驱动位置 可选 -->
+    <classPathEntry
+            location="/Users/wangqing/.m2/repository/mysql/mysql-connector-java/8.0.16/mysql-connector-java-8.0.16.jar"/>
+
+    <!-- 一个数据库一个context -->
+    <context id="DB2Tables" targetRuntime="MyBatis3Simple">
+        <property name="javaFileEncoding" value="UTF-8"/>
+        <property name="beginningDelimiter" value="`"/>
+        <property name="endingDelimiter" value="`"/>
+        <!-- 格式化java代码 -->
+        <property name="javaFormatter" value="org.mybatis.generator.api.dom.DefaultJavaFormatter"/>
+        <!-- 格式化XML代码 -->
+        <property name="xmlFormatter" value="org.mybatis.generator.api.dom.DefaultXmlFormatter"/>
+
+
+        <plugin type="org.mybatis.generator.plugins.SerializablePlugin"/>
+        <plugin type="org.mybatis.generator.plugins.ToStringPlugin"/>
+        <!-- TKmybatis配置 -->
+        <plugin type="tk.mybatis.mapper.generator.MapperPlugin">
+            <!-- 此处的 MyMapper注意一定不能被扫描到-->
+            <property name="mappers" value="tk.mybatis.mapper.common.Mapper"/>
+        </plugin>
+
+        <!-- 注释 -->
+        <commentGenerator>
+            <property name="suppressAllComments" value="false"/><!-- 是否取消注释 -->
+            <property name="suppressDate" value="true"/> <!-- 是否生成注释代时间戳-->
+        </commentGenerator>
+
+        <!-- jdbc连接 -->
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+                        connectionURL="${db.mysql.url}"
+                        userId="${db.mysql.username}"
+                        password="${db.mysql.password}">
+        </jdbcConnection>
+        <!--指定生成的类型为java类型，避免数据库中number等类型字段 -->
+        <javaTypeResolver>
+            <property name="forceBigDecimals" value="false"/>
+        </javaTypeResolver>
+        <!--自动生成的实体的存放包路径 -->
+        <javaModelGenerator targetPackage="cn.edu.seu.alumni_server.dao.entity"
+                            targetProject="src/main/java">
+            <property name="enableSubPackages" value="true"/>
+            <property name="trimStrings" value="true"/>
+        </javaModelGenerator>
+
+        <!--自动生成的*Mapper.xml文件存放路径 -->
+        <sqlMapGenerator targetProject="src/main/resources" targetPackage="mapper">
+            <property name="enableSubPackages" value="true"/>
+        </sqlMapGenerator>
+
+        <!--自动生成的*Mapper.java存放路径 -->
+        <javaClientGenerator type="XMLMAPPER" targetProject="src/main/java"
+                             targetPackage="cn.edu.seu.alumni_server.dao.mapper">
+            <property name="enableSubPackages" value="true"/>
+        </javaClientGenerator>
+
+        <table schema="alumnidb_dev" tableName="user">
+        </table>
+        <table schema="alumnidb_dev" tableName="user_info">
+        </table>
+        <table schema="alumnidb_dev" tableName="user_friend">
+        </table>
+        <table schema="alumnidb_dev" tableName="user_work">
+        </table>
+        <table schema="alumnidb_dev" tableName="user_education">
+        </table>
+        <!--<table schema="world" tableName="city">-->
+        <!--</table>-->
+    </context>
+</generatorConfiguration>
