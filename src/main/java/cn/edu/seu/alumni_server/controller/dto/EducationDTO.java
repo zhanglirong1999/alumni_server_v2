@@ -4,8 +4,8 @@ import lombok.Data;
 
 @Data
 public class EducationDTO {
-    String openid;
     String id;
+    String openid;
     String school;
     String background;
     String department;

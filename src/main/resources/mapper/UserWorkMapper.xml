@@ -5,11 +5,14 @@
     <!--
       WARNING - @mbg.generated
     -->
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="openid" jdbcType="VARCHAR" property="openid" />
     <result column="company" jdbcType="VARCHAR" property="company" />
     <result column="job" jdbcType="VARCHAR" property="job" />
-    <result column="openid" jdbcType="VARCHAR" property="openid" />
-    <result column="num" jdbcType="VARCHAR" property="num" />
     <result column="start_year" jdbcType="VARCHAR" property="startYear" />
     <result column="end_year" jdbcType="VARCHAR" property="endYear" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    <result column="is_deleted" jdbcType="TINYINT" property="isDeleted" />
   </resultMap>
 </mapper>

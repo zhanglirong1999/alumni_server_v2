@@ -1,17 +1,18 @@
 package cn.edu.seu.alumni_server.dao.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 import javax.persistence.*;
 
 @Table(name = "user_work")
 public class UserWork implements Serializable {
-    private String company;
-
-    private String job;
+    private Integer id;
 
     private String openid;
 
-    private String num;
+    private String company;
+
+    private String job;
 
     @Column(name = "start_year")
     private String startYear;
@@ -19,7 +20,44 @@ public class UserWork implements Serializable {
     @Column(name = "end_year")
     private String endYear;
 
+    @Column(name = "created_time")
+    private Date createdTime;
+
+    @Column(name = "updated_time")
+    private Date updatedTime;
+
+    @Column(name = "is_deleted")
+    private Byte isDeleted;
+
     private static final long serialVersionUID = 1L;
+
+    /**
+     * @return id
+     */
+    public Integer getId() {
+        return id;
+    }
+
+    /**
+     * @param id
+     */
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    /**
+     * @return openid
+     */
+    public String getOpenid() {
+        return openid;
+    }
+
+    /**
+     * @param openid
+     */
+    public void setOpenid(String openid) {
+        this.openid = openid == null ? null : openid.trim();
+    }
 
     /**
      * @return company
@@ -50,34 +88,6 @@ public class UserWork implements Serializable {
     }
 
     /**
-     * @return openid
-     */
-    public String getOpenid() {
-        return openid;
-    }
-
-    /**
-     * @param openid
-     */
-    public void setOpenid(String openid) {
-        this.openid = openid == null ? null : openid.trim();
-    }
-
-    /**
-     * @return num
-     */
-    public String getNum() {
-        return num;
-    }
-
-    /**
-     * @param num
-     */
-    public void setNum(String num) {
-        this.num = num == null ? null : num.trim();
-    }
-
-    /**
      * @return start_year
      */
     public String getStartYear() {
@@ -105,18 +115,63 @@ public class UserWork implements Serializable {
         this.endYear = endYear == null ? null : endYear.trim();
     }
 
+    /**
+     * @return created_time
+     */
+    public Date getCreatedTime() {
+        return createdTime;
+    }
+
+    /**
+     * @param createdTime
+     */
+    public void setCreatedTime(Date createdTime) {
+        this.createdTime = createdTime;
+    }
+
+    /**
+     * @return updated_time
+     */
+    public Date getUpdatedTime() {
+        return updatedTime;
+    }
+
+    /**
+     * @param updatedTime
+     */
+    public void setUpdatedTime(Date updatedTime) {
+        this.updatedTime = updatedTime;
+    }
+
+    /**
+     * @return is_deleted
+     */
+    public Byte getIsDeleted() {
+        return isDeleted;
+    }
+
+    /**
+     * @param isDeleted
+     */
+    public void setIsDeleted(Byte isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getSimpleName());
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
+        sb.append(", id=").append(id);
+        sb.append(", openid=").append(openid);
         sb.append(", company=").append(company);
         sb.append(", job=").append(job);
-        sb.append(", openid=").append(openid);
-        sb.append(", num=").append(num);
         sb.append(", startYear=").append(startYear);
         sb.append(", endYear=").append(endYear);
+        sb.append(", createdTime=").append(createdTime);
+        sb.append(", updatedTime=").append(updatedTime);
+        sb.append(", isDeleted=").append(isDeleted);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

@@ -1,42 +1,49 @@
 package cn.edu.seu.alumni_server.dao.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 import javax.persistence.*;
 
 @Table(name = "user_education")
 public class UserEducation implements Serializable {
-    private String num;
+    private Integer id;
 
     private String openid;
 
-    private String school;
+    @Column(name = "end_year")
+    private String endYear;
+
+    @Column(name = "start_year")
+    private String startYear;
 
     private String background;
 
     private String department;
 
-    private String profession;
+    private String school;
 
-    @Column(name = "start_year")
-    private String startYear;
+    @Column(name = "created_time")
+    private Date createdTime;
 
-    @Column(name = "end_year")
-    private String endYear;
+    @Column(name = "updated_time")
+    private Date updatedTime;
+
+    private Byte isdeleted;
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * @return num
+     * @return id
      */
-    public String getNum() {
-        return num;
+    public Integer getId() {
+        return id;
     }
 
     /**
-     * @param num
+     * @param id
      */
-    public void setNum(String num) {
-        this.num = num == null ? null : num.trim();
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     /**
@@ -54,17 +61,31 @@ public class UserEducation implements Serializable {
     }
 
     /**
-     * @return school
+     * @return end_year
      */
-    public String getSchool() {
-        return school;
+    public String getEndYear() {
+        return endYear;
     }
 
     /**
-     * @param school
+     * @param endYear
      */
-    public void setSchool(String school) {
-        this.school = school == null ? null : school.trim();
+    public void setEndYear(String endYear) {
+        this.endYear = endYear == null ? null : endYear.trim();
+    }
+
+    /**
+     * @return start_year
+     */
+    public String getStartYear() {
+        return startYear;
+    }
+
+    /**
+     * @param startYear
+     */
+    public void setStartYear(String startYear) {
+        this.startYear = startYear == null ? null : startYear.trim();
     }
 
     /**
@@ -96,45 +117,59 @@ public class UserEducation implements Serializable {
     }
 
     /**
-     * @return profession
+     * @return school
      */
-    public String getProfession() {
-        return profession;
+    public String getSchool() {
+        return school;
     }
 
     /**
-     * @param profession
+     * @param school
      */
-    public void setProfession(String profession) {
-        this.profession = profession == null ? null : profession.trim();
+    public void setSchool(String school) {
+        this.school = school == null ? null : school.trim();
     }
 
     /**
-     * @return start_year
+     * @return created_time
      */
-    public String getStartYear() {
-        return startYear;
+    public Date getCreatedTime() {
+        return createdTime;
     }
 
     /**
-     * @param startYear
+     * @param createdTime
      */
-    public void setStartYear(String startYear) {
-        this.startYear = startYear == null ? null : startYear.trim();
+    public void setCreatedTime(Date createdTime) {
+        this.createdTime = createdTime;
     }
 
     /**
-     * @return end_year
+     * @return updated_time
      */
-    public String getEndYear() {
-        return endYear;
+    public Date getUpdatedTime() {
+        return updatedTime;
     }
 
     /**
-     * @param endYear
+     * @param updatedTime
      */
-    public void setEndYear(String endYear) {
-        this.endYear = endYear == null ? null : endYear.trim();
+    public void setUpdatedTime(Date updatedTime) {
+        this.updatedTime = updatedTime;
+    }
+
+    /**
+     * @return isdeleted
+     */
+    public Byte getIsdeleted() {
+        return isdeleted;
+    }
+
+    /**
+     * @param isdeleted
+     */
+    public void setIsdeleted(Byte isdeleted) {
+        this.isdeleted = isdeleted;
     }
 
     @Override
@@ -143,14 +178,16 @@ public class UserEducation implements Serializable {
         sb.append(getClass().getSimpleName());
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
-        sb.append(", num=").append(num);
+        sb.append(", id=").append(id);
         sb.append(", openid=").append(openid);
-        sb.append(", school=").append(school);
+        sb.append(", endYear=").append(endYear);
+        sb.append(", startYear=").append(startYear);
         sb.append(", background=").append(background);
         sb.append(", department=").append(department);
-        sb.append(", profession=").append(profession);
-        sb.append(", startYear=").append(startYear);
-        sb.append(", endYear=").append(endYear);
+        sb.append(", school=").append(school);
+        sb.append(", createdTime=").append(createdTime);
+        sb.append(", updatedTime=").append(updatedTime);
+        sb.append(", isdeleted=").append(isdeleted);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

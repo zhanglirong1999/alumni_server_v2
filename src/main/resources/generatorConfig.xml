@@ -8,8 +8,10 @@
     <!--导入属性配置 -->
     <properties resource="application.properties"></properties>
     <!--classPathEntry:数据库的JDBC驱动,换成你自己的驱动位置 可选 -->
+<!--    <classPathEntry-->
+<!--            location="~/.m2/repository/mysql/mysql-connector-java/8.0.16/mysql-connector-java-8.0.16.jar"/>-->
     <classPathEntry
-            location="/Users/wangqing/.m2/repository/mysql/mysql-connector-java/8.0.16/mysql-connector-java-8.0.16.jar"/>
+            location="C:\Users\kkwqw\.m2\repository\mysql\mysql-connector-java\8.0.16\mysql-connector-java-8.0.16.jar"/>
 
     <!-- 一个数据库一个context -->
     <context id="DB2Tables" targetRuntime="MyBatis3Simple">

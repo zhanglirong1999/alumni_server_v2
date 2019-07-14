@@ -5,14 +5,15 @@
     <!--
       WARNING - @mbg.generated
     -->
-    <result column="real_name" jdbcType="VARCHAR" property="realName" />
-    <result column="gender" jdbcType="VARCHAR" property="gender" />
-    <result column="descr" jdbcType="VARCHAR" property="descr" />
-    <result column="vocation" jdbcType="VARCHAR" property="vocation" />
-    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="id" jdbcType="INTEGER" property="id" />
     <result column="openid" jdbcType="VARCHAR" property="openid" />
+    <result column="real_name" jdbcType="VARCHAR" property="realName" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="gender" jdbcType="VARCHAR" property="gender" />
     <result column="head_url" jdbcType="VARCHAR" property="headUrl" />
-    <result column="id" jdbcType="VARCHAR" property="id" />
     <result column="birth" jdbcType="VARCHAR" property="birth" />
+    <result column="descr" jdbcType="VARCHAR" property="descr" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
   </resultMap>
 </mapper>
