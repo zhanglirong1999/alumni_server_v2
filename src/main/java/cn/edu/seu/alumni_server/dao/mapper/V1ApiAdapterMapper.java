@@ -25,4 +25,6 @@ public interface V1ApiAdapterMapper {
     boolean deletework(String openid, String id);
 
     boolean deleteEducation(String openid, String id);
+
+    UserInfoDTO getCardInfo(String friendOpenId);
 }

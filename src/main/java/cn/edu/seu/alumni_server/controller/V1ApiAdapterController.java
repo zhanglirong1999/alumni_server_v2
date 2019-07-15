@@ -1,13 +1,11 @@
 package cn.edu.seu.alumni_server.controller;
 
+import cn.edu.seu.alumni_server.common.CONST;
 import cn.edu.seu.alumni_server.controller.dto.EducationDTO;
 import cn.edu.seu.alumni_server.controller.dto.UserInfoDTO;
 import cn.edu.seu.alumni_server.controller.dto.WorkDTO;
 import cn.edu.seu.alumni_server.controller.dto.common.WebResponse;
-import cn.edu.seu.alumni_server.dao.entity.User;
-import cn.edu.seu.alumni_server.dao.entity.UserEducation;
-import cn.edu.seu.alumni_server.dao.entity.UserInfo;
-import cn.edu.seu.alumni_server.dao.entity.UserWork;
+import cn.edu.seu.alumni_server.dao.entity.*;
 import cn.edu.seu.alumni_server.dao.mapper.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +32,8 @@ public class V1ApiAdapterController {
     UserInfoMapper userInfoMapper;
     @Autowired
     UserWorkMapper userWorkMapper;
+    @Autowired
+    UserFriendMapper userFriendMapper;
     @Autowired
     UserEducationMapper userEducationMapper;
 
@@ -68,9 +68,6 @@ public class V1ApiAdapterController {
     }
 
 
-
-
-
     // 我的
     @RequestMapping("/query/getall/{openid}")
     public HashMap getall(
@@ -95,6 +92,7 @@ public class V1ApiAdapterController {
         res.put("Friend", v1ApiAdapterMapper.getFriends(openid));
         return res;
     }
+
     @RequestMapping("/query/getwork/{openid}")
     public List<WorkDTO> getwork(
             @PathVariable String openid) {
@@ -190,22 +188,74 @@ public class V1ApiAdapterController {
         return new WebResponse();
     }
 
-/*名片相关*/
+    /*好友相关*/
     @RequestMapping("/friend/invite/{openid}/{friendid}")
-    public WebResponse friendInvite(){
+    public WebResponse friendInvite(
+            @PathVariable String openid,
+            @PathVariable String friendid) {
+        UserFriend userFriend = new UserFriend();
+        userFriend.setOpenid(openid);
+        userFriend.setFriendId(friendid);
+        userFriend.setState(CONST.FriendStatus_2);
+        userFriendMapper.updateByExampleSelective(userFriend,
+                new Example(UserFriend.class)
+                        .selectProperties("openid", "friend_id"));
         return new WebResponse();
     }
-    @RequestMapping("/friend/accept/{openid}/{cardid}")
-    public WebResponse friendAccept(){
+
+    @RequestMapping("/friend/accept/{openid}/{friendid}")
+    public WebResponse friendAccept(
+            @PathVariable String openid,
+            @PathVariable String friendid) {
+        UserFriend userFriend = new UserFriend();
+        userFriend.setOpenid(openid);
+        userFriend.setFriendId(friendid);
+        userFriend.setState(CONST.FriendStatus_2);
+        userFriendMapper.updateByExampleSelective(userFriend,
+                new Example(UserFriend.class)
+                        .selectProperties("openid", "friend_id"));
+
         return new WebResponse();
     }
-    @RequestMapping("/friend/refuse/{openid}/{cardid}")
-    public WebResponse friendRefuse(){
+
+    @RequestMapping("/friend/refuse/{openid}/{friendid}")
+    public WebResponse friendRefuse(
+            @PathVariable String openid,
+            @PathVariable String friendid) {
+        UserFriend userFriend = new UserFriend();
+        userFriend.setOpenid(openid);
+        userFriend.setFriendId(friendid);
+        userFriend.setState(CONST.FriendStatus_2);
+        userFriendMapper.updateByExampleSelective(userFriend,
+                new Example(UserFriend.class)
+                        .selectProperties("openid", "friend_id"));
+
         return new WebResponse();
     }
 
     @RequestMapping("/Card/readcard/{openid}/{cardid}")
-    public WebResponse friendReadcard(){
-        return new WebResponse();
+    public UserInfo friendReadcard(
+            @PathVariable String openid,
+            @PathVariable String cardid) {
+
+        UserFriend userFriend = new UserFriend();
+        userFriend.setOpenid(openid);
+        userFriend.setFriendId(cardid);
+
+        List<UserFriend> res = userFriendMapper.select(userFriend);
+        String state = CONST.FriendStatus_0;
+        if (res.size() > 0) {
+            state = res.get(0).getState();
+        }
+
+        if (state.equals(CONST.FriendStatus_2) ||
+                state.equals(CONST.FriendStatus_1)
+        ) {
+            UserInfo userInfo = new UserInfo();
+            return userInfoMapper.select(userInfo).get(0);
+//            v1ApiAdapterMapper.getCardInfo(cardid);
+        }
+        return new UserInfo();
     }
+
 }

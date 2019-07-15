@@ -85,11 +85,18 @@
         where openid = #{openid}
           and id = #{id};
     </update>
+
     <update id="deleteEducation">
         update user_education
         set is_deleted = 1
         where openid = #{openid}
           and id = #{id};
     </update>
+
+    <!--<select id="getCardInfo" resultType="cn.edu.seu.alumni_server.controller.dto.UserInfoDTO">-->
+        <!--select openid, head_url, gender, descr, city, real_name-->
+        <!--from user_info-->
+        <!--where openid = #{friendOpenId}-->
+    <!--</select>-->
 
 </mapper>
