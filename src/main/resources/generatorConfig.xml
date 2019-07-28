@@ -8,10 +8,10 @@
     <!--导入属性配置 -->
     <properties resource="application.properties"></properties>
     <!--classPathEntry:数据库的JDBC驱动,换成你自己的驱动位置 可选 -->
-<!--    <classPathEntry-->
-<!--            location="~/.m2/repository/mysql/mysql-connector-java/8.0.16/mysql-connector-java-8.0.16.jar"/>-->
     <classPathEntry
-            location="C:\Users\kkwqw\.m2\repository\mysql\mysql-connector-java\8.0.16\mysql-connector-java-8.0.16.jar"/>
+            location="/Users/wangqing/.m2/repository/mysql/mysql-connector-java/8.0.16/mysql-connector-java-8.0.16.jar"/>
+<!--    <classPathEntry-->
+<!--            location="C:\Users\kkwqw\.m2\repository\mysql\mysql-connector-java\8.0.16\mysql-connector-java-8.0.16.jar"/>-->
 
     <!-- 一个数据库一个context -->
     <context id="DB2Tables" targetRuntime="MyBatis3Simple">
@@ -66,16 +66,17 @@
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
-        <table schema="alumnidb_dev" tableName="user">
+        <table schema="alumnidb_dev" tableName="account">
         </table>
-        <table schema="alumnidb_dev" tableName="user_info">
+        <table schema="alumnidb_dev" tableName="education">
         </table>
-        <table schema="alumnidb_dev" tableName="user_friend">
+        <table schema="alumnidb_dev" tableName="job">
         </table>
-        <table schema="alumnidb_dev" tableName="user_work">
+        <table schema="alumnidb_dev" tableName="friend">
         </table>
-        <table schema="alumnidb_dev" tableName="user_education">
+        <table schema="alumnidb_dev" tableName="test">
         </table>
+
         <!--<table schema="world" tableName="city">-->
         <!--</table>-->
     </context>

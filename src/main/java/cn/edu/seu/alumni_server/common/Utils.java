@@ -8,7 +8,7 @@ public class Utils {
         idGenerator = new SnowflakeIdGenerator(0, 0);
     }
 
-    public static long getNextId() {
+    public static long generateId() {
         return idGenerator.nextId();
     }
 }

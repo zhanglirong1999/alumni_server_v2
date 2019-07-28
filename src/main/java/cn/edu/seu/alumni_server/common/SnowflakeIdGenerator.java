@@ -16,6 +16,13 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class SnowflakeIdGenerator {
+
+    private static SnowflakeIdGenerator instance = new SnowflakeIdGenerator(0, 0);
+
+    public static SnowflakeIdGenerator getInstance() {
+        return instance;
+    }
+
     // ==============================Fields===========================================
     /**
      * 开始时间截 (2015-01-01)
@@ -178,7 +185,7 @@ public class SnowflakeIdGenerator {
         SnowflakeIdGenerator idWorker = new SnowflakeIdGenerator(0, 0);
         for (int i = 0; i < 1000; i++) {
             long id = idWorker.nextId();
-            System.out.println(Long.toBinaryString(id));
+//            System.out.println(Long.toBinaryString(id));
             System.out.println(id);
         }
         System.out.println(Integer.MAX_VALUE);

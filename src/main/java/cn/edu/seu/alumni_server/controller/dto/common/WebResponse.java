@@ -1,7 +1,9 @@
 package cn.edu.seu.alumni_server.controller.dto.common;
 
 import cn.edu.seu.alumni_server.common.CONST;
+import lombok.Data;
 
+@Data
 public class WebResponse<T> {
     int code;
     String message;
