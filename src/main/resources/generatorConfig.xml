@@ -74,8 +74,8 @@
         </table>
         <table schema="alumnidb_dev" tableName="friend">
         </table>
-        <table schema="alumnidb_dev" tableName="test">
-        </table>
+<!--        <table schema="alumnidb_dev" tableName="test">-->
+<!--        </table>-->
 
         <!--<table schema="world" tableName="city">-->
         <!--</table>-->

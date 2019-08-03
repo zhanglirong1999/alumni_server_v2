@@ -17,7 +17,7 @@ public class Friend implements Serializable {
     friend(1, "好友"),
     rejected(3, "被拒绝");
      */
-    private Boolean status;
+    private Integer status;
 
     @Column(name = "c_time")
     private Date cTime;
@@ -69,7 +69,7 @@ public class Friend implements Serializable {
     friend(1, "好友"),
     rejected(3, "被拒绝");
      */
-    public Boolean getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
@@ -84,7 +84,7 @@ public class Friend implements Serializable {
     friend(1, "好友"),
     rejected(3, "被拒绝");
      */
-    public void setStatus(Boolean status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 

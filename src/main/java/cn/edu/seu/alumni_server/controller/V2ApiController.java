@@ -1,7 +1,9 @@
 package cn.edu.seu.alumni_server.controller;
 
+import cn.edu.seu.alumni_server.common.CONST;
 import cn.edu.seu.alumni_server.common.SnowflakeIdGenerator;
 import cn.edu.seu.alumni_server.common.Utils;
+import cn.edu.seu.alumni_server.common.enums.FriendStatus;
 import cn.edu.seu.alumni_server.controller.dto.AccountAllDTO;
 import cn.edu.seu.alumni_server.controller.dto.SearchResultDTO;
 import cn.edu.seu.alumni_server.controller.dto.common.WebResponse;
@@ -12,6 +14,7 @@ import cn.edu.seu.alumni_server.dao.entity.Job;
 import cn.edu.seu.alumni_server.dao.mapper.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import tk.mybatis.mapper.entity.Example;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -156,4 +159,36 @@ public class V2ApiController {
         res.setSchool(v2ApiMapper.searchBySchool(content));
         return new WebResponse().success(res);
     }
+
+    @RequestMapping("/friend/{A}/{B}/{action}")
+    public WebResponse friendAction(
+            @PathVariable Long A,
+            @PathVariable Long B,
+            @PathVariable int C
+    ) {
+        if (C == CONST.FRIEND_ACTION_Y) {
+            Friend f = new Friend();
+            f.setStatus(FriendStatus.friend.getStatus());
+
+            Example e1 = new Example(Friend.class);
+            e1.createCriteria()
+                    .andEqualTo("account_id", A)
+                    .andEqualTo("friend_account_id", B);
+            friendMapper.updateByExampleSelective(f, e1);
+        }
+
+        if (C == CONST.FRIEND_ACTION_N) {
+            Friend f = new Friend();
+            f.setStatus(FriendStatus.rejected.getStatus());
+
+            Example e1 = new Example(Friend.class);
+            e1.createCriteria()
+                    .andEqualTo("account_id", A)
+                    .andEqualTo("friend_account_id", B);
+            friendMapper.updateByExampleSelective(f, e1);
+        }
+
+        return new WebResponse();
+    }
+
 }

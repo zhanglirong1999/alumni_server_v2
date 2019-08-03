@@ -9,7 +9,6 @@ public class Education implements Serializable {
     private Long accountId;
 
     @Column(name = "education_id")
-    @Id
     private Long educationId;
 
     private String education;

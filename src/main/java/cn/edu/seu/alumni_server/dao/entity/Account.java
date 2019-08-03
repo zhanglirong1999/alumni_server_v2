@@ -6,7 +6,6 @@ import javax.persistence.*;
 
 public class Account implements Serializable {
     @Column(name = "account_id")
-    @Id
     private Long accountId;
 
     private String name;
