@@ -5,46 +5,53 @@ import lombok.Data;
 
 @Data
 public class WebResponse<T> {
-    int code;
+    int status;
     String message;
-    T body;
+    T data;
 
-    public WebResponse(int code, String message, T body) {
-        this.code = code;
+    public WebResponse(int status, String message, T data) {
+        this.status = status;
         this.message = message;
-        this.body = body;
+        this.data = data;
     }
 
     /* 快捷方式 */
 
     public WebResponse() {
-        this.code = CONST.SUCCESS_CODE;
+        this.status = CONST.SUCCESS_CODE;
         this.message = CONST.SUCCESS_MESSAGE_DEFAULT;
     }
 
     public WebResponse<T> success() {
-        this.code = CONST.SUCCESS_CODE;
+        this.status = CONST.SUCCESS_CODE;
         this.message = CONST.SUCCESS_MESSAGE_DEFAULT;
         return this;
     }
 
     public WebResponse<T> success(T body) {
-        this.code = CONST.SUCCESS_CODE;
+        this.status = CONST.SUCCESS_CODE;
         this.message = CONST.SUCCESS_MESSAGE_DEFAULT;
-        this.body = body;
+        this.data = body;
         return this;
     }
 
     public WebResponse<T> fail() {
-        this.code = CONST.SUCCESS_CODE;
+        this.status = CONST.FAIL_CODE;
         this.message = CONST.SUCCESS_MESSAGE_DEFAULT;
         return this;
     }
 
     public WebResponse<T> fail(T body) {
-        this.code = CONST.SUCCESS_CODE;
+        this.status = CONST.FAIL_CODE;
         this.message = CONST.SUCCESS_MESSAGE_DEFAULT;
-        this.body = body;
+        this.data = body;
+        return this;
+    }
+
+    public WebResponse<T> fail(String message, T body) {
+        this.status = CONST.FAIL_CODE;
+        this.message = message;
+        this.data = body;
         return this;
     }
 }

@@ -12,12 +12,15 @@ import cn.edu.seu.alumni_server.dao.entity.Education;
 import cn.edu.seu.alumni_server.dao.entity.Friend;
 import cn.edu.seu.alumni_server.dao.entity.Job;
 import cn.edu.seu.alumni_server.dao.mapper.*;
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import tk.mybatis.mapper.entity.Example;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("ALL")
 @RestController
@@ -37,17 +40,71 @@ public class V2ApiController {
     @Autowired
     V2ApiMapper v2ApiMapper;
 
+    @Autowired
+    RestTemplate restTemplate;
+
+    @RequestMapping("/wechat/code2Session")
+    public WebResponse code2Session(@RequestParam String js_code) {
+        String url = "https://api.weixin.qq.com/sns/jscode2session?" +
+                "appid=" + CONST.appId +
+                "&secret=" + CONST.appSecret +
+                "&js_code=" + js_code +
+                "&grant_type=authorization_code";
+        String respronse = restTemplate.getForObject(url, String.class);
+        Map res = new Gson().fromJson(respronse, Map.class);
+        String openid = (String) res.get("openid");
+
+        if (openid != null && !openid.equals("")) {
+            Account account = new Account();
+            account.setOpenid(openid);
+            List<Account> resAccounts = accountMapper.select(account);
+            if (res.size() > 0) {
+                return new WebResponse().success(resAccounts.get(0).getAccountId());
+            } else {
+                Account accountNew = new Account();
+                accountNew.setOpenid(openid);
+                accountNew.setAccountId(Utils.generateId());
+                accountMapper.insertSelective(accountNew);
+                return new WebResponse().success(resAccounts.get(0).getAccountId());
+            }
+        }
+//        String session_key = (String) res.get("session_key");
+        return new WebResponse().fail("获取openid失败", null);
+    }
+
     @RequestMapping("/account/create")
-    public WebResponse createAccount(Account account) {
+    public WebResponse createAccount(@RequestBody Account account) {
+        Account temp = new Account();
+        temp.setOpenid(account.getOpenid());
+        if (accountMapper.selectCount(temp) > 0) {
+            return new WebResponse().fail("当前openid已注册", null);
+        }
         account.setAccountId(SnowflakeIdGenerator.getInstance().nextId());
         accountMapper.insertSelective(account);
 
-        return new WebResponse();
+        return new WebResponse().success(account.getAccountId());
+    }
+
+
+    public String checkAccountAllDTO(AccountAllDTO accountAllDTO) {
+
+        Account account = accountAllDTO.getAccount();
+        if (account.getGender() == null) {
+            return "gender is null";
+        }
+        if (account.getAvatar() == null) {
+            return "avatar is null";
+        }
+        if (account.getAvatar() == null) {
+            return "avatar is null";
+        }
+        return "SUCCESS";
     }
 
     @RequestMapping("/account/complete")
     public WebResponse completeAccount(@RequestBody AccountAllDTO accountAllDTO) {
 
+        checkAccountAllDTO(accountAllDTO);
         // account
         Account account = accountAllDTO.getAccount();
         if (account.getAccountId() != null &&
