@@ -1,9 +1,24 @@
 package cn.edu.seu.alumni_server.controller.dto;
 
+import cn.edu.seu.alumni_server.dao.entity.Friend;
 import lombok.Data;
+import org.springframework.beans.BeanUtils;
 
 @Data
-public class FriendDTO extends AccountAllDTO {
-    private String accountId;
-    private String friend_accountId;
+public class FriendDTO {
+    private Long friendAccountId;
+    private String name;
+    private String company;
+    private String position;
+    private Long status;
+
+    public FriendDTO(Friend friend) {
+        BeanUtils.copyProperties(friend, this);
+    }
+
+    public Friend toFriend() {
+        Friend friend = new Friend();
+        BeanUtils.copyProperties(this, friend);
+        return friend;
+    }
 }

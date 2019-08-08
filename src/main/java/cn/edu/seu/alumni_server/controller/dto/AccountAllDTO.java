@@ -14,9 +14,9 @@ public class AccountAllDTO {
     @NotNull
     private Account account;
     @NotNull
-    private List<Education> educations;
+    private List<EducationDTO> educations;
     @NotNull
-    private List<Job> jobs;
+    private List<JobDTO> jobs;
 
-    private List<Friend> friends;
+    private List<FriendDTO> friends;
 }

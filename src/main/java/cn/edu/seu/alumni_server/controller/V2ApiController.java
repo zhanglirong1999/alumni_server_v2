@@ -4,8 +4,7 @@ import cn.edu.seu.alumni_server.common.CONST;
 import cn.edu.seu.alumni_server.common.SnowflakeIdGenerator;
 import cn.edu.seu.alumni_server.common.Utils;
 import cn.edu.seu.alumni_server.common.enums.FriendStatus;
-import cn.edu.seu.alumni_server.controller.dto.AccountAllDTO;
-import cn.edu.seu.alumni_server.controller.dto.SearchResultDTO;
+import cn.edu.seu.alumni_server.controller.dto.*;
 import cn.edu.seu.alumni_server.controller.dto.common.WebResponse;
 import cn.edu.seu.alumni_server.dao.entity.Account;
 import cn.edu.seu.alumni_server.dao.entity.Education;
@@ -18,9 +17,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import tk.mybatis.mapper.entity.Example;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("ALL")
 @RestController
@@ -53,19 +52,21 @@ public class V2ApiController {
         String respronse = restTemplate.getForObject(url, String.class);
         Map res = new Gson().fromJson(respronse, Map.class);
         String openid = (String) res.get("openid");
+//        String openid = "oUTaL5Qkz-ClVPPa1b9MZgp-CDRQ";
 
         if (openid != null && !openid.equals("")) {
             Account account = new Account();
             account.setOpenid(openid);
             List<Account> resAccounts = accountMapper.select(account);
-            if (res.size() > 0) {
-                return new WebResponse().success(resAccounts.get(0).getAccountId());
+            if (resAccounts.size() > 0) {
+
+                return new WebResponse().success(resAccounts.get(0).getAccountId().toString());
             } else {
                 Account accountNew = new Account();
                 accountNew.setOpenid(openid);
                 accountNew.setAccountId(Utils.generateId());
                 accountMapper.insertSelective(accountNew);
-                return new WebResponse().success(resAccounts.get(0).getAccountId());
+                return new WebResponse().success(resAccounts.get(0).getAccountId().toString());
             }
         }
 //        String session_key = (String) res.get("session_key");
@@ -85,80 +86,53 @@ public class V2ApiController {
         return new WebResponse().success(account.getAccountId());
     }
 
-
-    public String checkAccountAllDTO(AccountAllDTO accountAllDTO) {
-
-        Account account = accountAllDTO.getAccount();
-        if (account.getGender() == null) {
-            return "gender is null";
-        }
-        if (account.getAvatar() == null) {
-            return "avatar is null";
-        }
-        if (account.getAvatar() == null) {
-            return "avatar is null";
-        }
-        return "SUCCESS";
-    }
-
     @RequestMapping("/account/complete")
     public WebResponse completeAccount(@RequestBody AccountAllDTO accountAllDTO) {
-
-        checkAccountAllDTO(accountAllDTO);
         // account
         Account account = accountAllDTO.getAccount();
         if (account.getAccountId() != null &&
                 accountMapper.selectByPrimaryKey(account.getAccountId()) != null) {
-
             accountMapper.updateByPrimaryKeySelective(account);
-
         } else {
             account.setAccountId(Utils.generateId());
             accountMapper.insertSelective(account);
         }
 
-
         // education
-        List<Education> educations = accountAllDTO.getEducations();
-        educations.parallelStream().forEach(e -> {
-            if (e.getEducationId() != null &&
-                    educationMapper.selectByPrimaryKey(e.getEducationId()) != null) {
-                educationMapper.updateByPrimaryKeySelective(e);
+        List<EducationDTO> educationDTOS = accountAllDTO.getEducations();
+        educationDTOS.parallelStream().forEach(educationDTO -> {
+            if (educationDTO.getEducationId() != null &&
+                    educationMapper.selectByPrimaryKey(educationDTO.getEducationId()) != null) {
+                educationMapper.updateByPrimaryKeySelective(educationDTO.toEducation());
             } else {
-                e.setAccountId(Utils.generateId());
-                educationMapper.insertSelective(e);
+                educationDTO.setAccountId(Utils.generateId());
+                educationMapper.insertSelective(educationDTO.toEducation());
             }
         });
 
         // job
-        List<Job> jobs = accountAllDTO.getJobs();
-        jobs.parallelStream().forEach(e -> {
-            if (e.getJobId() != null &&
-                    jobMapper.selectByPrimaryKey(e.getJobId()) != null) {
-                jobMapper.updateByPrimaryKeySelective(e);
+        List<JobDTO> jobDTOs = accountAllDTO.getJobs();
+        jobDTOs.parallelStream().forEach(jobDTO -> {
+            if (jobDTO.getJobId() != null &&
+                    jobMapper.selectByPrimaryKey(jobDTO.getJobId()) != null) {
+                jobMapper.updateByPrimaryKeySelective(jobDTO.toJob());
             } else {
-                e.setJobId(Utils.generateId());
-                jobMapper.insertSelective(e);
+                jobMapper.insertSelective(jobDTO.toJob());
             }
         });
-
         return new WebResponse();
     }
 
-    @RequestMapping("/account")
-    public WebResponse<AccountAllDTO> getAccountInfo(
-            @RequestParam Long accountId,
-            @RequestParam String openid) {
+    /**
+     * 获取个人信息大对象
+     *
+     * @param accountId
+     * @return
+     */
+    @RequestMapping("/accountAll")
+    public WebResponse<AccountAllDTO> getAccountInfo(@RequestParam Long accountId) {
 
-        AccountAllDTO accountAllDTO = new AccountAllDTO();
-        if (accountId == null && openid != null) {
-            Account a = new Account();
-            a.setOpenid(openid);
-            accountId = accountMapper.select(a).get(0).getAccountId();
-        } else {
-            return new WebResponse().fail();
-        }
-        getAccountAllDTOById(accountId);
+        AccountAllDTO accountAllDTO = getAccountAllDTOById(accountId);
 
         return new WebResponse<AccountAllDTO>().success(accountAllDTO);
     }
@@ -166,64 +140,45 @@ public class V2ApiController {
     public AccountAllDTO getAccountAllDTOById(Long accountId) {
 
         AccountAllDTO accountAllDTO = new AccountAllDTO();
-
+        // 查询 account 信息
         accountAllDTO.setAccount(accountMapper.selectByPrimaryKey(accountId));
 
+        // 查询 education 信息
         Education e = new Education();
         e.setAccountId(accountId);
-        accountAllDTO.setEducations(educationMapper.select(e));
+        accountAllDTO.setEducations(educationMapper.select(e)
+                .stream().map(education -> {
+                    return new EducationDTO(education);
+                }).collect(Collectors.toList()));
 
+        // 查询 job 信息
         Job j = new Job();
         j.setAccountId(accountId);
-        accountAllDTO.setJobs(jobMapper.select(j));
+        accountAllDTO.setJobs(jobMapper.select(j)
+                .stream().map(job -> {
+                    return new JobDTO(job);
+                }).collect(Collectors.toList()));
         return accountAllDTO;
     }
 
-    @RequestMapping("/friends")
-    public WebResponse getFriends(@RequestParam Long accountId) {
 
-        List<AccountAllDTO> res = new ArrayList<AccountAllDTO>();
+    @PostMapping("/friend/apply")
+    public WebResponse friendApply(@RequestParam Long A,
+                                   @RequestParam Long B) {
         Friend f = new Friend();
-        f.setAccountId(accountId);
-        friendMapper.select(f).stream().forEach(e -> {
-            res.add(getAccountAllDTOById(e.getFriendAccountId()));
-        });
-
-        return new WebResponse().success(res);
-    }
-
-    @RequestMapping("/education/{educationId}")
-    public WebResponse deleteEducation(@PathVariable Long educationId) {
-        educationMapper.deleteByPrimaryKey(educationId);
+        f.setAccountId(A);
+        f.setFriendAccountId(B);
+        f.setStatus(FriendStatus.apply.getStatus());
+        friendMapper.insertSelective(f);
         return new WebResponse();
     }
 
-    @RequestMapping("/education/{jobId}")
-    public WebResponse deleteJobExperience(@PathVariable Long jobId) {
-        jobMapper.deleteByPrimaryKey(jobId);
-        return new WebResponse();
-    }
+    @PostMapping("/friend/manage")
+    public WebResponse friendAction(@RequestParam Long A,
+                                    @RequestParam Long B,
+                                    @RequestParam int action) {
 
-    @RequestMapping("/query/{content}")
-    public WebResponse query(@PathVariable String content) {
-        SearchResultDTO res = new SearchResultDTO();
-        res.setCity(v2ApiMapper.searchByCity(content));
-        res.setCollege(v2ApiMapper.searchByCollege(content));
-        res.setName(v2ApiMapper.searchByName(content));
-        res.setPosition(v2ApiMapper.searchByPosition(content));
-        res.setSelfDesc(v2ApiMapper.searchBySelfDesc(content));
-        res.setCompany(v2ApiMapper.searchByCompany(content));
-        res.setSchool(v2ApiMapper.searchBySchool(content));
-        return new WebResponse().success(res);
-    }
-
-    @RequestMapping("/friend/{A}/{B}/{action}")
-    public WebResponse friendAction(
-            @PathVariable Long A,
-            @PathVariable Long B,
-            @PathVariable int C
-    ) {
-        if (C == CONST.FRIEND_ACTION_Y) {
+        if (action == CONST.FRIEND_ACTION_Y) {
             Friend f = new Friend();
             f.setStatus(FriendStatus.friend.getStatus());
 
@@ -234,9 +189,9 @@ public class V2ApiController {
             friendMapper.updateByExampleSelective(f, e1);
         }
 
-        if (C == CONST.FRIEND_ACTION_N) {
+        if (action == CONST.FRIEND_ACTION_N) {
             Friend f = new Friend();
-            f.setStatus(FriendStatus.rejected.getStatus());
+            f.setStatus(FriendStatus.stranger.getStatus());
 
             Example e1 = new Example(Friend.class);
             e1.createCriteria()
@@ -248,4 +203,23 @@ public class V2ApiController {
         return new WebResponse();
     }
 
+    @GetMapping("/friends")
+    public WebResponse getFriends(@RequestParam Long accountId) {
+
+        List<FriendDTO> friends = v2ApiMapper.getFriends(accountId);
+        return new WebResponse().success(friends);
+    }
+
+    @RequestMapping("/query")
+    public WebResponse query(@RequestParam String content) {
+        SearchResultDTO res = new SearchResultDTO();
+        res.setCity(v2ApiMapper.searchByCity(content));
+        res.setCollege(v2ApiMapper.searchByCollege(content));
+        res.setName(v2ApiMapper.searchByName(content));
+        res.setPosition(v2ApiMapper.searchByPosition(content));
+        res.setSelfDesc(v2ApiMapper.searchBySelfDesc(content));
+        res.setCompany(v2ApiMapper.searchByCompany(content));
+        res.setSchool(v2ApiMapper.searchBySchool(content));
+        return new WebResponse().success(res);
+    }
 }

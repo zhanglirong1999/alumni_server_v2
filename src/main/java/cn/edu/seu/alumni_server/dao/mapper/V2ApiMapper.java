@@ -1,6 +1,7 @@
 package cn.edu.seu.alumni_server.dao.mapper;
 
 import cn.edu.seu.alumni_server.controller.dto.BriefInfo;
+import cn.edu.seu.alumni_server.controller.dto.FriendDTO;
 
 import java.util.List;
 
@@ -18,4 +19,6 @@ public interface V2ApiMapper {
     List<BriefInfo> searchByPosition(String content);
 
     List<BriefInfo> searchBySelfDesc(String content);
+
+    List<FriendDTO> getFriends(Long accountId);
 }

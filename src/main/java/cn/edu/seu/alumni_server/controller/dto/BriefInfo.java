@@ -9,7 +9,8 @@ public class BriefInfo {
     private String avatar;
     private String name;
     private String city;
-    private String school_college;
+    private String school;
+    private String college;
     private String company;
     private String selfDesc;
     private String recommondReason;

@@ -17,8 +17,8 @@ public class Account implements Serializable {
 
     private Date birthday;
 
-    @Column(name = "selfDesc")
-    private String selfdesc;
+    @Column(name = "self_desc")
+    private String selfDesc;
 
     private String avatar;
 
@@ -119,17 +119,17 @@ public class Account implements Serializable {
     }
 
     /**
-     * @return selfDesc
+     * @return self_desc
      */
-    public String getSelfdesc() {
-        return selfdesc;
+    public String getSelfDesc() {
+        return selfDesc;
     }
 
     /**
-     * @param selfdesc
+     * @param selfDesc
      */
-    public void setSelfdesc(String selfdesc) {
-        this.selfdesc = selfdesc == null ? null : selfdesc.trim();
+    public void setSelfDesc(String selfDesc) {
+        this.selfDesc = selfDesc == null ? null : selfDesc.trim();
     }
 
     /**
@@ -322,7 +322,7 @@ public class Account implements Serializable {
         sb.append(", name=").append(name);
         sb.append(", gender=").append(gender);
         sb.append(", birthday=").append(birthday);
-        sb.append(", selfdesc=").append(selfdesc);
+        sb.append(", selfDesc=").append(selfDesc);
         sb.append(", avatar=").append(avatar);
         sb.append(", city=").append(city);
         sb.append(", openid=").append(openid);

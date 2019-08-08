@@ -6,6 +6,9 @@ public class CONST {
     public static final String SUCCESS_MESSAGE_DEFAULT = "SUCCESS";
     public static final String FAIL_MESSAGE_DEFAULT = "FAIL";
 
+    /**
+     * 同意1，拒绝0
+     */
     public static final int FRIEND_ACTION_Y = 1;
     public static final int FRIEND_ACTION_N = 0;
 
