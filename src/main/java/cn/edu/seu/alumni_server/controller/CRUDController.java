@@ -72,8 +72,9 @@ public class CRUDController {
 
     @DeleteMapping("/education")
     public WebResponse deleteEducation(@RequestBody EducationDTO educationDTO) {
-        educationDTO.setValidStatus(false);
-        educationMapper.updateByPrimaryKeySelective(educationDTO.toEducation());
+        Education education = educationDTO.toEducation();
+        education.setValidStatus(false);
+        educationMapper.updateByPrimaryKeySelective(education);
         return new WebResponse();
     }
 
@@ -98,8 +99,9 @@ public class CRUDController {
 
     @DeleteMapping("/job")
     public WebResponse deleteJobExperience(@RequestBody JobDTO jobDTO) {
-        jobDTO.setValidStatus(false);
-        jobMapper.updateByPrimaryKeySelective(jobDTO.toJob());
+        Job job = jobDTO.toJob();
+        job.setValidStatus(false);
+        jobMapper.updateByPrimaryKeySelective(job);
         return new WebResponse();
     }
 }
