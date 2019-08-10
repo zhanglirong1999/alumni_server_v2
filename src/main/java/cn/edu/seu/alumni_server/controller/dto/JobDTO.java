@@ -14,7 +14,6 @@ public class JobDTO {
     private String position;
     private long startTime;
     private long endTime;
-    private boolean validStatus;
 
     public JobDTO() {
     }

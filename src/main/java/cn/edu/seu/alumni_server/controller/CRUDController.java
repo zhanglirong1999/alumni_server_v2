@@ -41,6 +41,10 @@ public class CRUDController {
                 !accountDTO.getAccountId().equals("")) {
             accountMapper.
                     updateByPrimaryKeySelective(accountDTO.toAccount());
+        } else {
+            Account account = accountDTO.toAccount();
+            account.setAccountId(Utils.generateId());
+            accountMapper.insert(account);
         }
         return new WebResponse().success();
     }
@@ -67,8 +71,9 @@ public class CRUDController {
     }
 
     @DeleteMapping("/education")
-    public WebResponse deleteEducation(@RequestParam Long educationId) {
-        educationMapper.deleteByPrimaryKey(educationId);
+    public WebResponse deleteEducation(@RequestBody EducationDTO educationDTO) {
+        educationDTO.setValidStatus(false);
+        educationMapper.updateByPrimaryKeySelective(educationDTO.toEducation());
         return new WebResponse();
     }
 
@@ -92,8 +97,9 @@ public class CRUDController {
     }
 
     @DeleteMapping("/job")
-    public WebResponse deleteJobExperience(@RequestParam Long jobId) {
-        jobMapper.deleteByPrimaryKey(jobId);
+    public WebResponse deleteJobExperience(@RequestBody JobDTO jobDTO) {
+        jobDTO.setValidStatus(false);
+        jobMapper.updateByPrimaryKeySelective(jobDTO.toJob());
         return new WebResponse();
     }
 }

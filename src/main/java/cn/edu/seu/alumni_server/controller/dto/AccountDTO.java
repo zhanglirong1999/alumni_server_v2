@@ -22,7 +22,6 @@ public class AccountDTO {
     private String industry;
     private Boolean type;
     private Boolean registered;
-    private Boolean validStatus;
 
     public AccountDTO() {
     }

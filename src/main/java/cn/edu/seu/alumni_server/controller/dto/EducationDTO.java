@@ -15,7 +15,6 @@ public class EducationDTO {
     private String college;
     private long startTime;
     private long endTime;
-    private boolean validStatus;
 
     public EducationDTO() {
     }
