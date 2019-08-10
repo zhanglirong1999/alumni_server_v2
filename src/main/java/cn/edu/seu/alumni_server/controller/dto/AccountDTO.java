@@ -11,7 +11,7 @@ public class AccountDTO {
     private Long accountId;
     private String name;
     private Boolean gender;
-    private Date birthday;
+    private long birthday;
     private String selfDesc;
     private String avatar;
     private String city;
@@ -26,13 +26,16 @@ public class AccountDTO {
 
     public AccountDTO() {
     }
+
     public AccountDTO(Account account) {
         BeanUtils.copyProperties(account, this);
+        this.setBirthday(account.getBirthday().getTime());
     }
 
     public Account toAccount() {
         Account account = new Account();
         BeanUtils.copyProperties(this, account);
+        account.setBirthday(new Date(this.getBirthday()));
         return account;
     }
 }

@@ -11,6 +11,7 @@ import cn.edu.seu.alumni_server.dao.entity.Education;
 import cn.edu.seu.alumni_server.dao.entity.Friend;
 import cn.edu.seu.alumni_server.dao.entity.Job;
 import cn.edu.seu.alumni_server.dao.mapper.*;
+import com.github.pagehelper.PageHelper;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -88,14 +89,14 @@ public class V2ApiController {
 
     @RequestMapping("/account/complete")
     public WebResponse completeAccount(@RequestBody AccountAllDTO accountAllDTO) {
-        // account
-        Account account = accountAllDTO.getAccount();
-        if (account.getAccountId() != null &&
-                accountMapper.selectByPrimaryKey(account.getAccountId()) != null) {
-            accountMapper.updateByPrimaryKeySelective(account);
+        // accountDTO
+        AccountDTO accountDTO = accountAllDTO.getAccount();
+        if (accountDTO.getAccountId() != null &&
+                accountMapper.selectByPrimaryKey(accountDTO.getAccountId()) != null) {
+            accountMapper.updateByPrimaryKeySelective(accountDTO.toAccount());
         } else {
-            account.setAccountId(Utils.generateId());
-            accountMapper.insertSelective(account);
+            accountDTO.setAccountId(Utils.generateId());
+            accountMapper.insertSelective(accountDTO.toAccount());
         }
 
         // education
@@ -141,7 +142,7 @@ public class V2ApiController {
 
         AccountAllDTO accountAllDTO = new AccountAllDTO();
         // 查询 account 信息
-        accountAllDTO.setAccount(accountMapper.selectByPrimaryKey(accountId));
+        accountAllDTO.setAccount(new AccountDTO(accountMapper.selectByPrimaryKey(accountId)));
 
         // 查询 education 信息
         Education e = new Education();
@@ -204,8 +205,10 @@ public class V2ApiController {
     }
 
     @GetMapping("/friends")
-    public WebResponse getFriends(@RequestParam Long accountId) {
-
+    public WebResponse getFriends(@RequestParam Long accountId,
+                                  @RequestParam int page,
+                                  @RequestParam int limit) {
+        PageHelper.startPage(page, limit);
         List<FriendDTO> friends = v2ApiMapper.getFriends(accountId);
         return new WebResponse().success(friends);
     }

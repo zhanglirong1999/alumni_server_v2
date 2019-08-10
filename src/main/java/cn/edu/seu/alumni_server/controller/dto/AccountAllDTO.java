@@ -12,7 +12,7 @@ import java.util.List;
 @Data
 public class AccountAllDTO {
     @NotNull
-    private Account account;
+    private AccountDTO account;
     @NotNull
     private List<EducationDTO> educations;
     @NotNull

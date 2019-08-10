@@ -3,26 +3,26 @@ package cn.edu.seu.alumni_server.common.config.db;
 import com.alibaba.druid.pool.DruidDataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import javax.sql.DataSource;
 
-//@Configuration
+@Configuration
 public class DruidCfg {
 
-    @Value("db.mysql.url")
+    @Value("${db.mysql.url}")
     String url;
-    @Value("db.mysql.username")
+    @Value("${db.mysql.username}")
     String username;
-    @Value("db.mysql.password")
+    @Value("${db.mysql.password}")
     String password;
 
     @Bean
     public DataSource dataSource() {
         DruidDataSource ds = new DruidDataSource();
-
+        ds.setUrl(url);
         ds.setUsername(username);
         ds.setPassword(password);
-        ds.setUrl(url);
 
         // 配置初始化大小、最小、最大
         ds.setInitialSize(1);

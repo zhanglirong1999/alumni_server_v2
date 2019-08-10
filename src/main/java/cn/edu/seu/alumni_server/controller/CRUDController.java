@@ -88,8 +88,6 @@ public class CRUDController {
             job.setJobId(Utils.generateId());
             jobMapper.insert(job);
         }
-
-        jobMapper.updateByPrimaryKeySelective(jobDTO.toJob());
         return new WebResponse().success();
     }
 
