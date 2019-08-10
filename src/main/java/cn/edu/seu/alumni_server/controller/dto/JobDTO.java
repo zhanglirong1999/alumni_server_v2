@@ -16,6 +16,9 @@ public class JobDTO {
     private Date endTime;
     private boolean validStatus;
 
+    public JobDTO() {
+    }
+
     public JobDTO(Job job) {
         BeanUtils.copyProperties(job, this);
     }

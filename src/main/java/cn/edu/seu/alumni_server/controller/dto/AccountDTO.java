@@ -24,6 +24,8 @@ public class AccountDTO {
     private Boolean registered;
     private Boolean validStatus;
 
+    public AccountDTO() {
+    }
     public AccountDTO(Account account) {
         BeanUtils.copyProperties(account, this);
     }

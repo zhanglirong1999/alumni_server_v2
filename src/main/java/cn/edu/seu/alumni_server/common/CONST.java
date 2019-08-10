@@ -12,7 +12,7 @@ public class CONST {
     public static final int FRIEND_ACTION_Y = 1;
     public static final int FRIEND_ACTION_N = 0;
 
-    // wx
+    // wx 参数
     public static final String appId = "wxebacdf49b73f338b";
     public static final String appSecret = "4daee58bdef643b2ff1b29e8c219715a";
 

@@ -10,7 +10,7 @@
     <result column="company" jdbcType="VARCHAR" property="company" />
     <result column="position" jdbcType="VARCHAR" property="position" />
     <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
-    <result column="ennd_time" jdbcType="TIMESTAMP" property="enndTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
     <result column="c_time" jdbcType="TIMESTAMP" property="cTime" />
     <result column="u_time" jdbcType="TIMESTAMP" property="uTime" />
     <result column="valid_status" jdbcType="BIT" property="validStatus" />

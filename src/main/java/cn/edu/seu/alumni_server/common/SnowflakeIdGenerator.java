@@ -147,10 +147,11 @@ public class SnowflakeIdGenerator {
         lastTimestamp = timestamp;
 
         //移位并通过或运算拼到一起组成64位的ID
-        return ((timestamp - twepoch) << timestampLeftShift) //
+        long temp = ((timestamp - twepoch) << timestampLeftShift) //
                 | (datacenterId << datacenterIdShift) //
                 | (workerId << workerIdShift) //
                 | sequence;
+        return (temp << 12) >> 12 | sequence;
     }
 
     /**
@@ -182,12 +183,13 @@ public class SnowflakeIdGenerator {
      * 测试
      */
     public static void main(String[] args) {
-        SnowflakeIdGenerator idWorker = new SnowflakeIdGenerator(0, 0);
-        for (int i = 0; i < 1000; i++) {
-            long id = idWorker.nextId();
-//            System.out.println(Long.toBinaryString(id));
-            System.out.println(id);
-        }
-        System.out.println(Integer.MAX_VALUE);
+//        SnowflakeIdGenerator idWorker = new SnowflakeIdGenerator(0, 0);
+////        for (int i = 0; i < 1000; i++) {
+////            long id = idWorker.nextId();
+//////            System.out.println(Long.toBinaryString(id));
+////            System.out.println(id);
+////        }
+////        System.out.println(Integer.MAX_VALUE);
+//        System.out.println((607242746880589824L<<12)>>12 & 011111111111111);
     }
 }

@@ -41,10 +41,6 @@ public class CRUDController {
                 !accountDTO.getAccountId().equals("")) {
             accountMapper.
                     updateByPrimaryKeySelective(accountDTO.toAccount());
-        } else {
-            Account account = accountDTO.toAccount();
-            account.setAccountId(Utils.generateId());
-            accountMapper.insert(account);
         }
         return new WebResponse().success();
     }
@@ -63,7 +59,7 @@ public class CRUDController {
                     updateByPrimaryKeySelective(educationDTO.toEducation());
         } else {
             Education education = educationDTO.toEducation();
-            education.setAccountId(Utils.generateId());
+            education.setEducationId(Utils.generateId());
             educationMapper.insert(education);
         }
 
@@ -79,17 +75,17 @@ public class CRUDController {
     @GetMapping("/job")
     public WebResponse getJobExperience(@RequestParam Long jobId) {
         Job job = jobMapper.selectByPrimaryKey(jobId);
-        return new WebResponse().success(job);
+        return new WebResponse().success(new JobDTO(job));
     }
 
     @PostMapping("/job")
-    public WebResponse changeJobExperience(@RequestParam JobDTO jobDTO) {
+    public WebResponse changeJobExperience(@RequestBody JobDTO jobDTO) {
         if (jobDTO.getJobId() != null &&
                 !jobDTO.getJobId().equals("")) {
             jobMapper.updateByPrimaryKeySelective(jobDTO.toJob());
         } else {
             Job job = jobDTO.toJob();
-            job.setAccountId(Utils.generateId());
+            job.setJobId(Utils.generateId());
             jobMapper.insert(job);
         }
 

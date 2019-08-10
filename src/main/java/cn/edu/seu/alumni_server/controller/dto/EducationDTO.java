@@ -16,7 +16,8 @@ public class EducationDTO {
     private Date startTime;
     private Date endTime;
     private boolean validStatus;
-
+    public EducationDTO() {
+    }
     public EducationDTO(Education education) {
         BeanUtils.copyProperties(education, this);
     }

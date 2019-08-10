@@ -1,6 +1,7 @@
 package cn.edu.seu.alumni_server.dao.entity;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Date;
 import javax.persistence.*;
 
@@ -9,6 +10,7 @@ public class Job implements Serializable {
     private Long accountId;
 
     @Column(name = "job_id")
+    @Id
     private Long jobId;
 
     private String company;
@@ -16,14 +18,17 @@ public class Job implements Serializable {
     private String position;
 
     @Column(name = "start_time")
-    private Date startTime;
+    private Timestamp startTime;
 
-    @Column(name = "ennd_time")
-    private Date enndTime;
+    @Column(name = "end_time")
+    private Timestamp endTime;
 
     @Column(name = "c_time")
     private Date cTime;
 
+    /**
+     * update
+     */
     @Column(name = "u_time")
     private Date uTime;
 
@@ -91,29 +96,29 @@ public class Job implements Serializable {
     /**
      * @return start_time
      */
-    public Date getStartTime() {
+    public Timestamp getStartTime() {
         return startTime;
     }
 
     /**
      * @param startTime
      */
-    public void setStartTime(Date startTime) {
+    public void setStartTime(Timestamp startTime) {
         this.startTime = startTime;
     }
 
     /**
-     * @return ennd_time
+     * @return end_time
      */
-    public Date getEnndTime() {
-        return enndTime;
+    public Timestamp getEndTime() {
+        return endTime;
     }
 
     /**
-     * @param enndTime
+     * @param endTime
      */
-    public void setEnndTime(Date enndTime) {
-        this.enndTime = enndTime;
+    public void setEndTime(Timestamp endTime) {
+        this.endTime = endTime;
     }
 
     /**
@@ -131,14 +136,18 @@ public class Job implements Serializable {
     }
 
     /**
-     * @return u_time
+     * 获取update
+     *
+     * @return u_time - update
      */
     public Date getuTime() {
         return uTime;
     }
 
     /**
-     * @param uTime
+     * 设置update
+     *
+     * @param uTime update
      */
     public void setuTime(Date uTime) {
         this.uTime = uTime;
@@ -169,7 +178,7 @@ public class Job implements Serializable {
         sb.append(", company=").append(company);
         sb.append(", position=").append(position);
         sb.append(", startTime=").append(startTime);
-        sb.append(", enndTime=").append(enndTime);
+        sb.append(", endTime=").append(endTime);
         sb.append(", cTime=").append(cTime);
         sb.append(", uTime=").append(uTime);
         sb.append(", validStatus=").append(validStatus);

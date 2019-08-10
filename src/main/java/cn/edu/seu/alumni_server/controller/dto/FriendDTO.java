@@ -12,6 +12,8 @@ public class FriendDTO {
     private String position;
     private Long status;
 
+    public FriendDTO() {
+    }
     public FriendDTO(Friend friend) {
         BeanUtils.copyProperties(friend, this);
     }

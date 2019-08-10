@@ -3,7 +3,7 @@ package cn.edu.seu.alumni_server.controller;
 import cn.edu.seu.alumni_server.common.CONST;
 import cn.edu.seu.alumni_server.common.SnowflakeIdGenerator;
 import cn.edu.seu.alumni_server.common.Utils;
-import cn.edu.seu.alumni_server.common.enums.FriendStatus;
+import cn.edu.seu.alumni_server.controller.dto.enums.FriendStatus;
 import cn.edu.seu.alumni_server.controller.dto.*;
 import cn.edu.seu.alumni_server.controller.dto.common.WebResponse;
 import cn.edu.seu.alumni_server.dao.entity.Account;

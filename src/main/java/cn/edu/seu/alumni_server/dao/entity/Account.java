@@ -6,6 +6,7 @@ import javax.persistence.*;
 
 public class Account implements Serializable {
     @Column(name = "account_id")
+    @Id
     private Long accountId;
 
     private String name;
@@ -47,6 +48,9 @@ public class Account implements Serializable {
     @Column(name = "c_time")
     private Date cTime;
 
+    /**
+     * update
+     */
     @Column(name = "u_time")
     private Date uTime;
 
@@ -281,14 +285,18 @@ public class Account implements Serializable {
     }
 
     /**
-     * @return u_time
+     * 获取update
+     *
+     * @return u_time - update
      */
     public Date getuTime() {
         return uTime;
     }
 
     /**
-     * @param uTime
+     * 设置update
+     *
+     * @param uTime update
      */
     public void setuTime(Date uTime) {
         this.uTime = uTime;
