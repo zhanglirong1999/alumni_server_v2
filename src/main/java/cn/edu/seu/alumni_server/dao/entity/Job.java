@@ -1,9 +1,9 @@
 package cn.edu.seu.alumni_server.dao.entity;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.Date;
-import javax.persistence.*;
 
 public class Job implements Serializable {
     @Column(name = "account_id")
@@ -18,10 +18,10 @@ public class Job implements Serializable {
     private String position;
 
     @Column(name = "start_time")
-    private Timestamp startTime;
+    private Date startTime;
 
     @Column(name = "end_time")
-    private Timestamp endTime;
+    private Date endTime;
 
     @Column(name = "c_time")
     private Date cTime;
@@ -96,28 +96,28 @@ public class Job implements Serializable {
     /**
      * @return start_time
      */
-    public Timestamp getStartTime() {
+    public Date getStartTime() {
         return startTime;
     }
 
     /**
      * @param startTime
      */
-    public void setStartTime(Timestamp startTime) {
+    public void setStartTime(Date startTime) {
         this.startTime = startTime;
     }
 
     /**
      * @return end_time
      */
-    public Timestamp getEndTime() {
+    public Date getEndTime() {
         return endTime;
     }
 
     /**
      * @param endTime
      */
-    public void setEndTime(Timestamp endTime) {
+    public void setEndTime(Date endTime) {
         this.endTime = endTime;
     }
 

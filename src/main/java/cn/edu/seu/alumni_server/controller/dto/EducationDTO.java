@@ -4,7 +4,7 @@ import cn.edu.seu.alumni_server.dao.entity.Education;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 @Data
 public class EducationDTO {
@@ -13,18 +13,24 @@ public class EducationDTO {
     private String education;
     private String school;
     private String college;
-    private Date startTime;
-    private Date endTime;
+    private long startTime;
+    private long endTime;
     private boolean validStatus;
+
     public EducationDTO() {
     }
+
     public EducationDTO(Education education) {
         BeanUtils.copyProperties(education, this);
+        this.setStartTime(education.getStartTime().getTime());
+        this.setEndTime(education.getEndTime().getTime());
     }
 
     public Education toEducation() {
         Education education = new Education();
         BeanUtils.copyProperties(this, education);
+        education.setStartTime(new Timestamp(this.getStartTime()));
+        education.setEndTime(new Timestamp(this.getEndTime()));
         return education;
     }
 }
