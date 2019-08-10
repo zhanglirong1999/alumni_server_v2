@@ -19,13 +19,13 @@ public class Friend implements Serializable {
      */
     private Integer status;
 
-    @Column(name = "c_time")
+    @Column(name = "c_time", insertable = false)
     private Date cTime;
 
     /**
      * update
      */
-    @Column(name = "u_time")
+    @Column(name = "u_time", insertable = false)
     private Date uTime;
 
     @Column(name = "valid_status")

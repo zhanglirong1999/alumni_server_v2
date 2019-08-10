@@ -3,14 +3,15 @@ package cn.edu.seu.alumni_server.controller;
 import cn.edu.seu.alumni_server.common.CONST;
 import cn.edu.seu.alumni_server.common.SnowflakeIdGenerator;
 import cn.edu.seu.alumni_server.common.Utils;
-import cn.edu.seu.alumni_server.controller.dto.enums.FriendStatus;
 import cn.edu.seu.alumni_server.controller.dto.*;
 import cn.edu.seu.alumni_server.controller.dto.common.WebResponse;
+import cn.edu.seu.alumni_server.controller.dto.enums.FriendStatus;
 import cn.edu.seu.alumni_server.dao.entity.Account;
 import cn.edu.seu.alumni_server.dao.entity.Education;
 import cn.edu.seu.alumni_server.dao.entity.Friend;
 import cn.edu.seu.alumni_server.dao.entity.Job;
 import cn.edu.seu.alumni_server.dao.mapper.*;
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -206,11 +207,12 @@ public class V2ApiController {
 
     @GetMapping("/friends")
     public WebResponse getFriends(@RequestParam Long accountId,
-                                  @RequestParam int page,
-                                  @RequestParam int limit) {
-        PageHelper.startPage(page, limit);
+                                  @RequestParam int pageIndex,
+                                  @RequestParam int pageSize) {
+        PageHelper.startPage(pageIndex, pageSize);
         List<FriendDTO> friends = v2ApiMapper.getFriends(accountId);
-        return new WebResponse().success(friends);
+
+        return new WebResponse().success(new PageResult(((Page) friends).getTotal(), friends));
     }
 
     @RequestMapping("/query")

@@ -25,6 +25,7 @@ public class MybatisCfg {
         PageInterceptor pageHelper = new PageInterceptor();
         Properties properties = new Properties();
         properties.setProperty("reasonable", "true");
+        properties.setProperty("params", "count");
         pageHelper.setProperties(properties);
         bean.setPlugins(new Interceptor[]{pageHelper});
 

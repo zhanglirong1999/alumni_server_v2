@@ -1,8 +1,9 @@
 package cn.edu.seu.alumni_server.dao.entity;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.*;
 
 public class Account implements Serializable {
     @Column(name = "account_id")
@@ -45,13 +46,13 @@ public class Account implements Serializable {
      */
     private Boolean registered;
 
-    @Column(name = "c_time")
+    @Column(name = "c_time", insertable = false)
     private Date cTime;
 
     /**
      * update
      */
-    @Column(name = "u_time")
+    @Column(name = "u_time", insertable = false)
     private Date uTime;
 
     /**

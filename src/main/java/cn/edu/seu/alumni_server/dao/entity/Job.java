@@ -1,10 +1,13 @@
 package cn.edu.seu.alumni_server.dao.entity;
 
+import lombok.Data;
+
 import javax.persistence.Column;
 import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.Date;
 
+@Data
 public class Job implements Serializable {
     @Column(name = "account_id")
     private Long accountId;
@@ -23,13 +26,13 @@ public class Job implements Serializable {
     @Column(name = "end_time")
     private Date endTime;
 
-    @Column(name = "c_time")
+    @Column(name = "c_time", insertable = false)
     private Date cTime;
 
     /**
      * update
      */
-    @Column(name = "u_time")
+    @Column(name = "u_time", insertable = false)
     private Date uTime;
 
     @Column(name = "valid_status")
