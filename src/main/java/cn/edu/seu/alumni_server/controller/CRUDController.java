@@ -4,13 +4,19 @@ import cn.edu.seu.alumni_server.common.Utils;
 import cn.edu.seu.alumni_server.controller.dto.AccountDTO;
 import cn.edu.seu.alumni_server.controller.dto.EducationDTO;
 import cn.edu.seu.alumni_server.controller.dto.JobDTO;
+import cn.edu.seu.alumni_server.controller.dto.MessageDTO;
 import cn.edu.seu.alumni_server.controller.dto.common.WebResponse;
 import cn.edu.seu.alumni_server.dao.entity.Account;
 import cn.edu.seu.alumni_server.dao.entity.Education;
 import cn.edu.seu.alumni_server.dao.entity.Job;
+import cn.edu.seu.alumni_server.dao.entity.Message;
 import cn.edu.seu.alumni_server.dao.mapper.*;
+import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
 
 @SuppressWarnings("ALL")
 @RestController
@@ -27,6 +33,8 @@ public class CRUDController {
     FriendMapper friendMapper;
     @Autowired
     V2ApiMapper v2ApiMapper;
+    @Autowired
+    MessageMapper messageMapper;
 
 
     @GetMapping("/account")
@@ -102,6 +110,27 @@ public class CRUDController {
         Job job = jobDTO.toJob();
         job.setValidStatus(false);
         jobMapper.updateByPrimaryKeySelective(job);
+        return new WebResponse();
+    }
+
+    @GetMapping("/message")
+    public WebResponse readMessgae(@RequestParam Long accountId,
+                                   @RequestParam int pageIndex,
+                                   @RequestParam int pageSize) {
+        PageHelper.startPage(pageIndex, pageSize);
+
+        Message message = new Message();
+        message.setTo(accountId);
+        List<Message> res = messageMapper.select(message);
+        return new WebResponse().success(res);
+    }
+
+    @PostMapping("/message/changeStatus")
+    public WebResponse readMessgae(@RequestBody MessageDTO messageDTO) {
+        Message message = new Message();
+        message.setMessageId(messageDTO.getMessageId());
+        message.setStatus(messageDTO.getStatus());
+        messageMapper.updateByPrimaryKeySelective(message);
         return new WebResponse();
     }
 }

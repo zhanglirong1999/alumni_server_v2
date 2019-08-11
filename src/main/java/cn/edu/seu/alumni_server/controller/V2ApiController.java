@@ -6,11 +6,11 @@ import cn.edu.seu.alumni_server.common.Utils;
 import cn.edu.seu.alumni_server.controller.dto.*;
 import cn.edu.seu.alumni_server.controller.dto.common.WebResponse;
 import cn.edu.seu.alumni_server.controller.dto.enums.FriendStatus;
-import cn.edu.seu.alumni_server.dao.entity.Account;
-import cn.edu.seu.alumni_server.dao.entity.Education;
-import cn.edu.seu.alumni_server.dao.entity.Friend;
-import cn.edu.seu.alumni_server.dao.entity.Job;
+import cn.edu.seu.alumni_server.controller.dto.enums.MessageType;
+import cn.edu.seu.alumni_server.controller.dto.enums.SearchType;
+import cn.edu.seu.alumni_server.dao.entity.*;
 import cn.edu.seu.alumni_server.dao.mapper.*;
+import cn.edu.seu.alumni_server.service.MessageService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.google.gson.Gson;
@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import tk.mybatis.mapper.entity.Example;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -43,6 +44,9 @@ public class V2ApiController {
 
     @Autowired
     RestTemplate restTemplate;
+
+    @Autowired
+    MessageMapper messageMapper;
 
     @RequestMapping("/wechat/code2Session")
     public WebResponse code2Session(@RequestParam String js_code) {
@@ -107,7 +111,7 @@ public class V2ApiController {
                     educationMapper.selectByPrimaryKey(educationDTO.getEducationId()) != null) {
                 educationMapper.updateByPrimaryKeySelective(educationDTO.toEducation());
             } else {
-                educationDTO.setAccountId(Utils.generateId());
+                educationDTO.setEducationId(Utils.generateId());
                 educationMapper.insertSelective(educationDTO.toEducation());
             }
         });
@@ -119,6 +123,7 @@ public class V2ApiController {
                     jobMapper.selectByPrimaryKey(jobDTO.getJobId()) != null) {
                 jobMapper.updateByPrimaryKeySelective(jobDTO.toJob());
             } else {
+                jobDTO.setJobId(Utils.generateId());
                 jobMapper.insertSelective(jobDTO.toJob());
             }
         });
@@ -132,9 +137,20 @@ public class V2ApiController {
      * @return
      */
     @RequestMapping("/accountAll")
-    public WebResponse<AccountAllDTO> getAccountInfo(@RequestParam Long accountId) {
-
+    public WebResponse<AccountAllDTO> getAccountInfo(@RequestParam Long myAccountId,
+                                                     @RequestParam Long accountId) {
         AccountAllDTO accountAllDTO = getAccountAllDTOById(accountId);
+        if (!myAccountId.equals(accountId)) {
+            Friend relationShip = v2ApiMapper.getRelationShip(myAccountId, accountId);
+            if (relationShip != null) {
+                accountAllDTO.setRelationShip(relationShip.getStatus());
+                if (relationShip.getStatus() != FriendStatus.friend.getStatus()) {
+                    accountAllDTO.getAccount().setBirthday(null);
+                    accountAllDTO.getAccount().setWechat(null);
+                    accountAllDTO.getAccount().setPhone(null);
+                }
+            }
+        }
 
         return new WebResponse<AccountAllDTO>().success(accountAllDTO);
     }
@@ -172,6 +188,14 @@ public class V2ApiController {
         f.setFriendAccountId(B);
         f.setStatus(FriendStatus.apply.getStatus());
         friendMapper.insertSelective(f);
+
+        Message message = new Message();
+        message.setMessageId(Utils.generateId());
+        message.setFrom(A);
+        message.setTo(B);
+        message.setType(MessageType.APPLY.value);
+        messageMapper.insertSelective(message);
+
         return new WebResponse();
     }
 
@@ -189,6 +213,13 @@ public class V2ApiController {
                     .andEqualTo("account_id", A)
                     .andEqualTo("friend_account_id", B);
             friendMapper.updateByExampleSelective(f, e1);
+
+            Message message = new Message();
+            message.setMessageId(Utils.generateId());
+            message.setFrom(A);
+            message.setTo(B);
+            message.setType(MessageType.AGREE.value);
+            messageMapper.insertSelective(message);
         }
 
         if (action == CONST.FRIEND_ACTION_N) {
@@ -200,6 +231,13 @@ public class V2ApiController {
                     .andEqualTo("account_id", A)
                     .andEqualTo("friend_account_id", B);
             friendMapper.updateByExampleSelective(f, e1);
+
+            Message message = new Message();
+            message.setMessageId(Utils.generateId());
+            message.setFrom(A);
+            message.setTo(B);
+            message.setType(MessageType.REJECT.value);
+            messageMapper.insertSelective(message);
         }
 
         return new WebResponse();
@@ -216,15 +254,69 @@ public class V2ApiController {
     }
 
     @RequestMapping("/query")
-    public WebResponse query(@RequestParam String content) {
-        SearchResultDTO res = new SearchResultDTO();
-        res.setCity(v2ApiMapper.searchByCity(content));
-        res.setCollege(v2ApiMapper.searchByCollege(content));
-        res.setName(v2ApiMapper.searchByName(content));
-        res.setPosition(v2ApiMapper.searchByPosition(content));
-        res.setSelfDesc(v2ApiMapper.searchBySelfDesc(content));
-        res.setCompany(v2ApiMapper.searchByCompany(content));
-        res.setSchool(v2ApiMapper.searchBySchool(content));
+    public WebResponse query(@RequestParam String content,
+                             @RequestParam String type,
+                             @RequestParam int pageSize,
+                             @RequestParam int pageIndex) {
+        List<SearchResultDTO> res = new ArrayList<SearchResultDTO>();
+
+        if (type.equals("") || type == null || type.equals(SearchType.name)) {
+            PageHelper.startPage(pageIndex, pageSize);
+            List<BriefInfo> temp = v2ApiMapper.searchByName(content);
+            res.add(new SearchResultDTO(
+                    ((Page) temp).getTotal(),
+                    SearchType.name,
+                    temp));
+        }
+        if (type.equals("") || type == null || type.equals(SearchType.selfDesc)) {
+            PageHelper.startPage(pageIndex, pageSize);
+            List<BriefInfo> temp = v2ApiMapper.searchBySelfDesc(content);
+            res.add(new SearchResultDTO(
+                    ((Page) temp).getTotal(),
+                    SearchType.selfDesc,
+                    temp));
+        }
+
+        if (type.equals("") || type == null || type.equals(SearchType.city)) {
+            PageHelper.startPage(pageIndex, pageSize);
+            List<BriefInfo> temp = v2ApiMapper.searchByCity(content);
+            res.add(new SearchResultDTO(
+                    ((Page) temp).getTotal(),
+                    SearchType.city,
+                    temp));
+        }
+        if (type.equals("") || type == null || type.equals(SearchType.company)) {
+            PageHelper.startPage(pageIndex, pageSize);
+            List<BriefInfo> temp = v2ApiMapper.searchByCompany(content);
+            res.add(new SearchResultDTO(
+                    ((Page) temp).getTotal(),
+                    SearchType.company,
+                    temp));
+        }
+        if (type.equals("") || type == null || type.equals(SearchType.position)) {
+            PageHelper.startPage(pageIndex, pageSize);
+            List<BriefInfo> temp = v2ApiMapper.searchByPosition(content);
+            res.add(new SearchResultDTO(
+                    ((Page) temp).getTotal(),
+                    SearchType.position,
+                    temp));
+        }
+        if (type.equals("") || type == null || type.equals(SearchType.school)) {
+            PageHelper.startPage(pageIndex, pageSize);
+            List<BriefInfo> temp = v2ApiMapper.searchBySchool(content);
+            res.add(new SearchResultDTO(
+                    ((Page) temp).getTotal(),
+                    SearchType.school,
+                    temp));
+        }
+        if (type.equals("") || type == null || type.equals(SearchType.college)) {
+            PageHelper.startPage(pageIndex, pageSize);
+            List<BriefInfo> temp = v2ApiMapper.searchByCollege(content);
+            res.add(new SearchResultDTO(
+                    ((Page) temp).getTotal(),
+                    SearchType.college,
+                    temp));
+        }
         return new WebResponse().success(res);
     }
 }

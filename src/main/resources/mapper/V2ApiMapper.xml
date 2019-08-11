@@ -79,9 +79,9 @@
           UNION DISTINCT
           select b.account_id as friendAccountId,b.name,c.company,c.position,b.avatar,b.city,
           CASE a.status
-          WHEN a.status=0 THEN 0
-          WHEN a.status=1 THEN 3
-          WHEN a.status=2 THEN 2
+          WHEN 0 THEN 0
+          WHEN 1 THEN 3
+          WHEN 2 THEN 2
           END
           from ((friend a left join account b on a.account_id = b.account_id)
           left join (
@@ -90,10 +90,24 @@
           where a.friend_account_id=#{accountId}
       </select>
 
+    <select id="getRelationShip" resultType="cn.edu.seu.alumni_server.dao.entity.Friend">
+        select a.account_id,a.friend_account_id,a.status,a.valid_status from friend a
+        where a.account_id=#{myAccountId} and a.friend_account_id=#{accountId}
+        union
+        select a.account_id,a.friend_account_id,
+        (CASE a.status
+          WHEN 0 THEN 0
+          WHEN 1 THEN 3
+          WHEN 2 THEN 2
+          else 0
+        END) as status,a.valid_status from friend a
+        where a.account_id=#{accountId} and a.friend_account_id=#{myAccountId}
+    </select>
+    <select id="test" resultType="cn.edu.seu.alumni_server.dao.entity.Account">
+        select * from account a
+        where a.account_id=#{accountId}
 
-    <!--    private Long friendAccountId;-->
-    <!--    private String name;-->
-    <!--    private String company;-->
-    <!--    private String position;-->
-    <!--    private Long status;-->
+    </select>
+
+    <!--  (long myAccountId, long accountId)  -->
 </mapper>

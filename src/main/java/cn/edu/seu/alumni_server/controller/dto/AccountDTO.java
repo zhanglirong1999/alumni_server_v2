@@ -11,7 +11,7 @@ public class AccountDTO {
     private Long accountId;
     private String name;
     private Boolean gender;
-    private long birthday;
+    private Long birthday;
     private String selfDesc;
     private String avatar;
     private String city;

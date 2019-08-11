@@ -11,12 +11,6 @@ public class Friend implements Serializable {
     @Column(name = "friend_account_id")
     private Long friendAccountId;
 
-    /**
-     *     stranger(0, "路人"),
-    applying(2, "A向B发起好友申请，或者A有待处理的B的好友申请"),
-    friend(1, "好友"),
-    rejected(3, "被拒绝");
-     */
     private Integer status;
 
     @Column(name = "c_time", insertable = false)
@@ -61,32 +55,10 @@ public class Friend implements Serializable {
         this.friendAccountId = friendAccountId;
     }
 
-    /**
-     * 获取    stranger(0, "路人"),
-    applying(2, "A向B发起好友申请，或者A有待处理的B的好友申请"),
-    friend(1, "好友"),
-    rejected(3, "被拒绝");
-     *
-     * @return status -     stranger(0, "路人"),
-    applying(2, "A向B发起好友申请，或者A有待处理的B的好友申请"),
-    friend(1, "好友"),
-    rejected(3, "被拒绝");
-     */
     public Integer getStatus() {
         return status;
     }
 
-    /**
-     * 设置    stranger(0, "路人"),
-    applying(2, "A向B发起好友申请，或者A有待处理的B的好友申请"),
-    friend(1, "好友"),
-    rejected(3, "被拒绝");
-     *
-     * @param status     stranger(0, "路人"),
-    applying(2, "A向B发起好友申请，或者A有待处理的B的好友申请"),
-    friend(1, "好友"),
-    rejected(3, "被拒绝");
-     */
     public void setStatus(Integer status) {
         this.status = status;
     }
