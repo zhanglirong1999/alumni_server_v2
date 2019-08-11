@@ -16,7 +16,7 @@ public class IdGenerator {
     private final long sequenceBits = 10L;
 
     /**
-     * 时间截向左移22位(10)
+     * 时间截向左移(10)
      */
     private final long timestampLeftShift = sequenceBits;
 
@@ -99,7 +99,7 @@ public class IdGenerator {
         IdGenerator idWorker = new IdGenerator();
         for (int i = 0; i < 1000; i++) {
             long id = idWorker.nextId();
-//            System.out.println(Long.toBinaryString(id));
+            System.out.println(Long.toBinaryString(id));
             System.out.println(id);
         }
     }

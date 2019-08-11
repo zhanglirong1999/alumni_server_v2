@@ -52,7 +52,7 @@ public class CRUDController {
     @GetMapping("/education")
     public WebResponse getEducation(@RequestParam Long educationId) {
         Education education = educationMapper.selectByPrimaryKey(educationId);
-        return new WebResponse().success(education);
+        return new WebResponse().success(new EducationDTO(education));
     }
 
     @PostMapping("/education")

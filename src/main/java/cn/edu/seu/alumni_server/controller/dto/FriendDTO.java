@@ -10,6 +10,8 @@ public class FriendDTO {
     private String name;
     private String company;
     private String position;
+    private String avatar;
+    private String city;
     private Long status;
 
     public FriendDTO() {

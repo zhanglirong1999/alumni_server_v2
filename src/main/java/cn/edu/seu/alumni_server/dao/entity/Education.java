@@ -33,7 +33,7 @@ public class Education implements Serializable {
     @Column(name = "u_time", insertable = false)
     private Date uTime;
 
-    @Column(name = "valid_status")
+    @Column(name = "valid_status", insertable = false)
     private Boolean validStatus;
 
     private static final long serialVersionUID = 1L;

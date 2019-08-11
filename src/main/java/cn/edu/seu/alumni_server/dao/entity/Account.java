@@ -58,7 +58,7 @@ public class Account implements Serializable {
     /**
      * 1有效0无效
      */
-    @Column(name = "valid_status")
+    @Column(name = "valid_status", insertable = false)
     private Boolean validStatus;
 
     private static final long serialVersionUID = 1L;
