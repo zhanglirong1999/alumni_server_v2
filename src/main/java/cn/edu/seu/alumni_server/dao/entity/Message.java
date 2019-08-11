@@ -28,9 +28,11 @@ public class Message implements Serializable {
     @Column(name = "valid_status", insertable = false)
     private Integer validStatus;
 
-    private Long from;
+    @Column(name = "from_user")
+    private Long fromUser;
 
-    private Long to;
+    @Column(name = "to_user")
+    private Long toUser;
 
     private static final long serialVersionUID = 1L;
 
@@ -139,29 +141,29 @@ public class Message implements Serializable {
     /**
      * @return from
      */
-    public Long getFrom() {
-        return from;
+    public Long getFromUser() {
+        return fromUser;
     }
 
     /**
-     * @param from
+     * @param fromUser
      */
-    public void setFrom(Long from) {
-        this.from = from;
+    public void setFromUser(Long fromUser) {
+        this.fromUser = fromUser;
     }
 
     /**
      * @return to
      */
-    public Long getTo() {
-        return to;
+    public Long getToUser() {
+        return toUser;
     }
 
     /**
-     * @param to
+     * @param toUser
      */
-    public void setTo(Long to) {
-        this.to = to;
+    public void setToUser(Long toUser) {
+        this.toUser = toUser;
     }
 
     @Override
@@ -177,8 +179,8 @@ public class Message implements Serializable {
         sb.append(", cTime=").append(cTime);
         sb.append(", uTime=").append(uTime);
         sb.append(", validStatus=").append(validStatus);
-        sb.append(", from=").append(from);
-        sb.append(", to=").append(to);
+        sb.append(", from=").append(fromUser);
+        sb.append(", to=").append(toUser);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

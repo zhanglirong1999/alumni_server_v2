@@ -10,24 +10,28 @@ public class MessageDTO {
 
     private Integer type;
 
-    private String payload;
+//    private String payload;
 
     /**
      * 0未读1已读
      */
     private Integer status;
 
+    private Long fromUser;
 
-    private Long from;
+    private String fromUserName;
 
-    private Long to;
+    private Long toUser;
+
+    private Long createTime;
 
     MessageDTO() {
 
     }
 
-    MessageDTO(Message message) {
+    public MessageDTO(Message message) {
         BeanUtils.copyProperties(message, this);
+        this.setCreateTime(message.getcTime().getTime());
     }
 
     public Message toMessage() {

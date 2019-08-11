@@ -10,7 +10,6 @@ import cn.edu.seu.alumni_server.controller.dto.enums.MessageType;
 import cn.edu.seu.alumni_server.controller.dto.enums.SearchType;
 import cn.edu.seu.alumni_server.dao.entity.*;
 import cn.edu.seu.alumni_server.dao.mapper.*;
-import cn.edu.seu.alumni_server.service.MessageService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.google.gson.Gson;
@@ -191,8 +190,8 @@ public class V2ApiController {
 
         Message message = new Message();
         message.setMessageId(Utils.generateId());
-        message.setFrom(A);
-        message.setTo(B);
+        message.setFromUser(A);
+        message.setToUser(B);
         message.setType(MessageType.APPLY.value);
         messageMapper.insertSelective(message);
 
@@ -216,8 +215,8 @@ public class V2ApiController {
 
             Message message = new Message();
             message.setMessageId(Utils.generateId());
-            message.setFrom(A);
-            message.setTo(B);
+            message.setFromUser(A);
+            message.setToUser(B);
             message.setType(MessageType.AGREE.value);
             messageMapper.insertSelective(message);
         }
@@ -234,8 +233,8 @@ public class V2ApiController {
 
             Message message = new Message();
             message.setMessageId(Utils.generateId());
-            message.setFrom(A);
-            message.setTo(B);
+            message.setFromUser(A);
+            message.setToUser(B);
             message.setType(MessageType.REJECT.value);
             messageMapper.insertSelective(message);
         }
@@ -260,7 +259,7 @@ public class V2ApiController {
                              @RequestParam int pageIndex) {
         List<SearchResultDTO> res = new ArrayList<SearchResultDTO>();
 
-        if (type.equals("") || type == null || type.equals(SearchType.name)) {
+        if (type.equals("") || type == null || type.equals(SearchType.name.getValue())) {
             PageHelper.startPage(pageIndex, pageSize);
             List<BriefInfo> temp = v2ApiMapper.searchByName(content);
             res.add(new SearchResultDTO(
@@ -268,7 +267,7 @@ public class V2ApiController {
                     SearchType.name,
                     temp));
         }
-        if (type.equals("") || type == null || type.equals(SearchType.selfDesc)) {
+        if (type.equals("") || type == null || type.equals(SearchType.selfDesc.getValue())) {
             PageHelper.startPage(pageIndex, pageSize);
             List<BriefInfo> temp = v2ApiMapper.searchBySelfDesc(content);
             res.add(new SearchResultDTO(
@@ -277,7 +276,7 @@ public class V2ApiController {
                     temp));
         }
 
-        if (type.equals("") || type == null || type.equals(SearchType.city)) {
+        if (type.equals("") || type == null || type.equals(SearchType.city.getValue())) {
             PageHelper.startPage(pageIndex, pageSize);
             List<BriefInfo> temp = v2ApiMapper.searchByCity(content);
             res.add(new SearchResultDTO(
@@ -285,7 +284,7 @@ public class V2ApiController {
                     SearchType.city,
                     temp));
         }
-        if (type.equals("") || type == null || type.equals(SearchType.company)) {
+        if (type.equals("") || type == null || type.equals(SearchType.company.getValue())) {
             PageHelper.startPage(pageIndex, pageSize);
             List<BriefInfo> temp = v2ApiMapper.searchByCompany(content);
             res.add(new SearchResultDTO(
@@ -293,7 +292,7 @@ public class V2ApiController {
                     SearchType.company,
                     temp));
         }
-        if (type.equals("") || type == null || type.equals(SearchType.position)) {
+        if (type.equals("") || type == null || type.equals(SearchType.position.getValue())) {
             PageHelper.startPage(pageIndex, pageSize);
             List<BriefInfo> temp = v2ApiMapper.searchByPosition(content);
             res.add(new SearchResultDTO(
@@ -301,7 +300,7 @@ public class V2ApiController {
                     SearchType.position,
                     temp));
         }
-        if (type.equals("") || type == null || type.equals(SearchType.school)) {
+        if (type.equals("") || type == null || type.equals(SearchType.school.getValue())) {
             PageHelper.startPage(pageIndex, pageSize);
             List<BriefInfo> temp = v2ApiMapper.searchBySchool(content);
             res.add(new SearchResultDTO(
@@ -309,7 +308,7 @@ public class V2ApiController {
                     SearchType.school,
                     temp));
         }
-        if (type.equals("") || type == null || type.equals(SearchType.college)) {
+        if (type.equals("") || type == null || type.equals(SearchType.college.getValue())) {
             PageHelper.startPage(pageIndex, pageSize);
             List<BriefInfo> temp = v2ApiMapper.searchByCollege(content);
             res.add(new SearchResultDTO(
@@ -319,4 +318,27 @@ public class V2ApiController {
         }
         return new WebResponse().success(res);
     }
+
+    @RequestMapping("/recommand")
+    public WebResponse recommand(@RequestParam long accountId,
+                                 @RequestParam int pageSize,
+                                 @RequestParam int pageIndex) {
+        BriefInfo briefInfo = new BriefInfo();
+        AccountAllDTO accountAllDTO = getAccountAllDTOById(accountId);
+        briefInfo.setAccountId(accountId);
+        briefInfo.setCity(accountAllDTO.getAccount().getCity());
+        briefInfo.setSchool(
+                accountAllDTO.getEducations().get(0).getSchool());
+        briefInfo.setCollege(
+                accountAllDTO.getEducations().get(0).getCollege());
+
+        PageHelper.startPage(pageIndex, pageSize);
+        List<BriefInfo> temp = v2ApiMapper.recommand(briefInfo);
+
+        return new WebResponse().success(
+                new PageResult<BriefInfo>(
+                        ((Page) temp).getTotal(),
+                        temp));
+    }
+
 }

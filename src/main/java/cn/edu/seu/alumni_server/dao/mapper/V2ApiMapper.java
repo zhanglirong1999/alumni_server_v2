@@ -27,4 +27,7 @@ public interface V2ApiMapper {
     Friend getRelationShip(long myAccountId, long accountId);
 
     List<Account> test(long accountId);
+
+    List<BriefInfo> recommand(BriefInfo briefInfo);
+    BriefInfo getBriefInfo ();
 }
