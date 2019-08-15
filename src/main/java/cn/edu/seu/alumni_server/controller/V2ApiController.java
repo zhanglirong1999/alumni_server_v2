@@ -71,7 +71,7 @@ public class V2ApiController {
                 accountNew.setOpenid(openid);
                 accountNew.setAccountId(Utils.generateId());
                 accountMapper.insertSelective(accountNew);
-                return new WebResponse().success(resAccounts.get(0).getAccountId().toString());
+                return new WebResponse().success(accountNew.getAccountId().toString());
             }
         }
 //        String session_key = (String) res.get("session_key");
@@ -327,10 +327,13 @@ public class V2ApiController {
         AccountAllDTO accountAllDTO = getAccountAllDTOById(accountId);
         briefInfo.setAccountId(accountId);
         briefInfo.setCity(accountAllDTO.getAccount().getCity());
-        briefInfo.setSchool(
-                accountAllDTO.getEducations().get(0).getSchool());
-        briefInfo.setCollege(
-                accountAllDTO.getEducations().get(0).getCollege());
+        if (accountAllDTO.getEducations() != null &&
+                accountAllDTO.getEducations().size() > 0) {
+            briefInfo.setSchool(
+                    accountAllDTO.getEducations().get(0).getSchool());
+            briefInfo.setCollege(
+                    accountAllDTO.getEducations().get(0).getCollege());
+        }
 
         PageHelper.startPage(pageIndex, pageSize);
         List<BriefInfo> temp = v2ApiMapper.recommand(briefInfo);

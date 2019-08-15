@@ -21,8 +21,12 @@ public class EducationDTO {
 
     public EducationDTO(Education education) {
         BeanUtils.copyProperties(education, this);
-        this.setStartTime(education.getStartTime().getTime());
-        this.setEndTime(education.getEndTime().getTime());
+        if (education.getStartTime() != null) {
+            this.setStartTime(education.getStartTime().getTime());
+        }
+        if (education.getEndTime() != null) {
+            this.setEndTime(education.getEndTime().getTime());
+        }
     }
 
     public Education toEducation() {

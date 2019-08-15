@@ -15,7 +15,7 @@ public class Account implements Serializable {
     /**
      * 0男1女
      */
-    private Boolean gender;
+    private Integer gender;
 
     private Date birthday;
 
@@ -96,7 +96,7 @@ public class Account implements Serializable {
      *
      * @return gender - 0男1女
      */
-    public Boolean getGender() {
+    public Integer getGender() {
         return gender;
     }
 
@@ -105,7 +105,7 @@ public class Account implements Serializable {
      *
      * @param gender 0男1女
      */
-    public void setGender(Boolean gender) {
+    public void setGender(Integer gender) {
         this.gender = gender;
     }
 

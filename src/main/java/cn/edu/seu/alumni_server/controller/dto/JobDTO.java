@@ -20,8 +20,14 @@ public class JobDTO {
 
     public JobDTO(Job job) {
         BeanUtils.copyProperties(job, this);
-        this.setStartTime(job.getStartTime().getTime());
-        this.setEndTime(job.getEndTime().getTime());
+        if (job.getStartTime() != null) {
+            this.setStartTime(job.getStartTime().getTime());
+
+        }
+        if (job.getEndTime() != null) {
+            this.setEndTime(job.getEndTime().getTime());
+
+        }
     }
 
     public Job toJob() {

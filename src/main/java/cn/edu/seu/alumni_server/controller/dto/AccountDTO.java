@@ -10,7 +10,7 @@ import java.util.Date;
 public class AccountDTO {
     private Long accountId;
     private String name;
-    private Boolean gender;
+    private Integer gender;
     private Long birthday;
     private String selfDesc;
     private String avatar;
@@ -28,13 +28,17 @@ public class AccountDTO {
 
     public AccountDTO(Account account) {
         BeanUtils.copyProperties(account, this);
-        this.setBirthday(account.getBirthday().getTime());
+        if (account.getBirthday() != null) {
+            this.setBirthday(account.getBirthday().getTime());
+        }
     }
 
     public Account toAccount() {
         Account account = new Account();
         BeanUtils.copyProperties(this, account);
-        account.setBirthday(new Date(this.getBirthday()));
+        if (this.getBirthday() != null) {
+            account.setBirthday(new Date(this.getBirthday()));
+        }
         return account;
     }
 }
