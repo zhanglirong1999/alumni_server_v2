@@ -216,20 +216,18 @@ public class V2ApiController {
         return accountAllDTO;
     }
 
-
     @PostMapping("/friend/apply")
-    public WebResponse friendApply(@RequestParam Long A,
-                                   @RequestParam Long B) {
+    public WebResponse friendApply(@RequestBody Map<String,Long> req) {
         Friend f = new Friend();
-        f.setAccountId(A);
-        f.setFriendAccountId(B);
+        f.setAccountId(req.get("A"));
+        f.setFriendAccountId(req.get("B"));
         f.setStatus(FriendStatus.apply.getStatus());
         friendMapper.insertSelective(f);
 
         Message message = new Message();
         message.setMessageId(Utils.generateId());
-        message.setFromUser(A);
-        message.setToUser(B);
+        message.setFromUser(req.get("A"));
+        message.setToUser(req.get("B"));
         message.setType(MessageType.APPLY.value);
         messageMapper.insertSelective(message);
 
