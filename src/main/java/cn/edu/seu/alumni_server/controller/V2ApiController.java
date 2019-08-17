@@ -235,42 +235,40 @@ public class V2ApiController {
     }
 
     @PostMapping("/friend/manage")
-    public WebResponse friendAction(@RequestParam Long A,
-                                    @RequestParam Long B,
-                                    @RequestParam int action) {
+    public WebResponse friendAction(@RequestBody Map<String,Long> req) {
 
-        if (action == CONST.FRIEND_ACTION_Y) {
+        if (req.get("action") == CONST.FRIEND_ACTION_Y) {
             Friend f = new Friend();
             f.setStatus(FriendStatus.friend.getStatus());
 
             Example e1 = new Example(Friend.class);
             e1.createCriteria()
-                    .andEqualTo("account_id", A)
-                    .andEqualTo("friend_account_id", B);
+                    .andEqualTo("account_id", req.get("A"))
+                    .andEqualTo("friend_account_id", req.get("B"));
             friendMapper.updateByExampleSelective(f, e1);
 
             Message message = new Message();
             message.setMessageId(Utils.generateId());
-            message.setFromUser(A);
-            message.setToUser(B);
+            message.setFromUser(req.get("A"));
+            message.setToUser(req.get("B"));
             message.setType(MessageType.AGREE.value);
             messageMapper.insertSelective(message);
         }
 
-        if (action == CONST.FRIEND_ACTION_N) {
+        if (req.get("action")  == CONST.FRIEND_ACTION_N) {
             Friend f = new Friend();
             f.setStatus(FriendStatus.stranger.getStatus());
 
             Example e1 = new Example(Friend.class);
             e1.createCriteria()
-                    .andEqualTo("account_id", A)
-                    .andEqualTo("friend_account_id", B);
+                    .andEqualTo("account_id", req.get("A"))
+                    .andEqualTo("friend_account_id", req.get("B"));
             friendMapper.updateByExampleSelective(f, e1);
 
             Message message = new Message();
             message.setMessageId(Utils.generateId());
-            message.setFromUser(A);
-            message.setToUser(B);
+            message.setFromUser(req.get("A"));
+            message.setToUser(req.get("B"));
             message.setType(MessageType.REJECT.value);
             messageMapper.insertSelective(message);
         }
