@@ -17,6 +17,8 @@ public class MessageDTO {
      */
     private Integer status;
 
+    private Long timestamp;
+
     private Long fromUser;
 
     private String fromUserName;

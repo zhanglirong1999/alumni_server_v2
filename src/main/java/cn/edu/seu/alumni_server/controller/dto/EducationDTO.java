@@ -13,27 +13,23 @@ public class EducationDTO {
     private String education;
     private String school;
     private String college;
-    private long startTime;
-    private long endTime;
+    private Long startTime;
+    private Long endTime;
 
     public EducationDTO() {
     }
 
     public EducationDTO(Education education) {
         BeanUtils.copyProperties(education, this);
-        if (education.getStartTime() != null) {
-            this.setStartTime(education.getStartTime().getTime());
-        }
-        if (education.getEndTime() != null) {
-            this.setEndTime(education.getEndTime().getTime());
-        }
+        this.setStartTime(education.getStartTime());
+        this.setEndTime(education.getEndTime());
     }
 
     public Education toEducation() {
         Education education = new Education();
         BeanUtils.copyProperties(this, education);
-        education.setStartTime(new Timestamp(this.getStartTime()));
-        education.setEndTime(new Timestamp(this.getEndTime()));
+        education.setStartTime(this.getStartTime());
+        education.setEndTime(this.getEndTime());
         return education;
     }
 }

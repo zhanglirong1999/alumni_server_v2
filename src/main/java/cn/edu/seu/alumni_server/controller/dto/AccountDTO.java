@@ -28,17 +28,13 @@ public class AccountDTO {
 
     public AccountDTO(Account account) {
         BeanUtils.copyProperties(account, this);
-        if (account.getBirthday() != null) {
-            this.setBirthday(account.getBirthday().getTime());
-        }
+        this.setBirthday(account.getBirthday());
     }
 
     public Account toAccount() {
         Account account = new Account();
         BeanUtils.copyProperties(this, account);
-        if (this.getBirthday() != null) {
-            account.setBirthday(new Date(this.getBirthday()));
-        }
+        account.setBirthday(this.getBirthday());
         return account;
     }
 }
