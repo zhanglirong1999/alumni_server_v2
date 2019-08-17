@@ -29,4 +29,15 @@ public class Job implements Serializable {
     @Column(name = "c_time", insertable = false)
     private Date cTime;
 
+    /**
+     * update
+     */
+    @Column(name = "u_time", insertable = false)
+    private Date uTime;
+
+    @Column(name = "valid_status", insertable = false)
+    private Boolean validStatus;
+
+    private static final long serialVersionUID = 1L;
+
 }
