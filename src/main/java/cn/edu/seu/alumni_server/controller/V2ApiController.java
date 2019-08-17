@@ -117,6 +117,10 @@ public class V2ApiController {
 
     @RequestMapping("/account/step2")
     public WebResponse completeAccount(@RequestBody AccountAllDTO accountAllDTO) {
+        // account
+        AccountDTO accountDTO = accountAllDTO.getAccount();
+
+        accountService.checkAccountInfo(accountDTO);
 
         // education
         List<EducationDTO> educationDTOS = accountAllDTO.getEducations();
@@ -131,32 +135,30 @@ public class V2ApiController {
                 }
             });
         } else {
-            return new WebResponse().fail("至少需要一条教育信息",null);
+            return new WebResponse().fail("至少需要一条教育信息", null);
         }
 
         // job
         List<JobDTO> jobDTOs = accountAllDTO.getJobs();
-        if (jobDTOs.size() > 0) {
-            jobDTOs.parallelStream().forEach(jobDTO -> {
-                if (jobDTO.getJobId() != null &&
-                        jobMapper.selectByPrimaryKey(jobDTO.getJobId()) != null) {
-                    jobMapper.updateByPrimaryKeySelective(jobDTO.toJob());
-                } else {
-                    jobDTO.setJobId(Utils.generateId());
-                    jobMapper.insertSelective(jobDTO.toJob());
-                }
-            });
-        } else {
-            return new WebResponse().fail("至少需要一条工作经历",null);
+        if (accountDTO.getType()) {
+            if (jobDTOs.size() > 0) {
+                jobDTOs.parallelStream().forEach(jobDTO -> {
+                    if (jobDTO.getJobId() != null &&
+                            jobMapper.selectByPrimaryKey(jobDTO.getJobId()) != null) {
+                        jobMapper.updateByPrimaryKeySelective(jobDTO.toJob());
+                    } else {
+                        jobDTO.setJobId(Utils.generateId());
+                        jobMapper.insertSelective(jobDTO.toJob());
+                    }
+                });
+            } else {
+                return new WebResponse().fail("至少需要一条工作经历", null);
+            }
         }
 
         // account
-        AccountDTO accountDTO = accountAllDTO.getAccount();
-
-        accountService.checkAccountInfo(accountDTO);
-
         if (accountDTO.getAccountId() != null && accountMapper.selectByPrimaryKey(accountDTO.getAccountId()) != null) {
-            Account account=accountDTO.toAccount();
+            Account account = accountDTO.toAccount();
             account.setRegistered(true);
             accountMapper.updateByPrimaryKeySelective(account);
         } else {
