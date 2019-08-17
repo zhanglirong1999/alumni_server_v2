@@ -103,8 +103,10 @@ public class V2ApiController {
     }
 
     @RequestMapping("/account/step1")
-    public WebResponse createAccount(@RequestBody Account account) {
+    public WebResponse createAccount(@RequestBody AccountDTO accountDTO) {
 
+        Account account = accountDTO.toAccount();
+        account.setStep1Finished(true);
         accountMapper.updateByPrimaryKeySelective(account);
 
         return new WebResponse().success(account.getAccountId());
@@ -112,18 +114,6 @@ public class V2ApiController {
 
     @RequestMapping("/account/step2")
     public WebResponse completeAccount(@RequestBody AccountAllDTO accountAllDTO) {
-        // accountDTO
-        AccountDTO accountDTO = accountAllDTO.getAccount();
-
-        accountService.checkAccountInfo(accountDTO);
-
-        if (accountDTO.getAccountId() != null &&
-                accountMapper.selectByPrimaryKey(accountDTO.getAccountId()) != null) {
-            accountMapper.updateByPrimaryKeySelective(accountDTO.toAccount());
-        } else {
-            accountDTO.setAccountId(Utils.generateId());
-            accountMapper.insertSelective(accountDTO.toAccount());
-        }
 
         // education
         List<EducationDTO> educationDTOS = accountAllDTO.getEducations();
@@ -138,7 +128,7 @@ public class V2ApiController {
                 }
             });
         } else {
-            return new WebResponse().fail("至少需要一条教育信息");
+            return new WebResponse().fail("至少需要一条教育信息",null);
         }
 
         // job
@@ -154,7 +144,20 @@ public class V2ApiController {
                 }
             });
         } else {
-            return new WebResponse().fail("至少需要一条工作经历");
+            return new WebResponse().fail("至少需要一条工作经历",null);
+        }
+
+        // account
+        AccountDTO accountDTO = accountAllDTO.getAccount();
+
+        accountService.checkAccountInfo(accountDTO);
+
+        if (accountDTO.getAccountId() != null && accountMapper.selectByPrimaryKey(accountDTO.getAccountId()) != null) {
+            Account account=accountDTO.toAccount();
+            account.setStep1Finished(true);
+            accountMapper.updateByPrimaryKeySelective(account);
+        } else {
+            return new WebResponse().fail("accountId 不存在", null);
         }
         return new WebResponse();
     }

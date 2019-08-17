@@ -21,7 +21,6 @@ public class AccountDTO {
     private String email;
     private String industry;
     private Boolean type;
-    private Boolean registered;
 
     public AccountDTO() {
     }

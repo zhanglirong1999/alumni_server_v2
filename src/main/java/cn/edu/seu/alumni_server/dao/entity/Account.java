@@ -48,6 +48,8 @@ public class Account implements Serializable {
      * 0未注册1已注册
      */
     private Boolean registered;
+    @Column(name = "step1_finished")
+    private Boolean step1Finished;
 
     @Column(name = "c_time", insertable = false)
     private Date cTime;
