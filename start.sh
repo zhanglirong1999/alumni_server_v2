@@ -1,4 +1,3 @@
-
 git pull
 mvn clean package
 pkill -f alumni

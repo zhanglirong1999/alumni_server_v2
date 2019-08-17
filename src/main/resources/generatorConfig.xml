@@ -74,7 +74,8 @@
 <!--        </table>-->
 <!--        <table schema="alumnidb_dev" tableName="friend">-->
 <!--        </table>-->
-        <table schema="alumnidb_dev" tableName="message">
+        <table schema="alumnidb_dev" tableName="const_major">
+
         </table>
 
         <!--<table schema="world" tableName="city">-->

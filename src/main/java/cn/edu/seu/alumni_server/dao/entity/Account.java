@@ -13,11 +13,11 @@ public class Account implements Serializable {
     private String name;
 
     /**
-     * 0男1女
+     * 男 1 女 2
      */
     private Integer gender;
 
-    private Date birthday;
+    private Long birthday;
 
     @Column(name = "self_desc")
     private String selfDesc;
@@ -112,14 +112,14 @@ public class Account implements Serializable {
     /**
      * @return birthday
      */
-    public Date getBirthday() {
+    public Long getBirthday() {
         return birthday;
     }
 
     /**
      * @param birthday
      */
-    public void setBirthday(Date birthday) {
+    public void setBirthday(Long birthday) {
         this.birthday = birthday;
     }
 

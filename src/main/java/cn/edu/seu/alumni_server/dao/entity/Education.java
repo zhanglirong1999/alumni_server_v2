@@ -19,10 +19,10 @@ public class Education implements Serializable {
     private String college;
 
     @Column(name = "start_time")
-    private Date startTime;
+    private Long startTime;
 
     @Column(name = "end_time")
-    private Date endTime;
+    private Long endTime;
 
     @Column(name = "c_time", insertable = false)
     private Date cTime;
@@ -111,28 +111,28 @@ public class Education implements Serializable {
     /**
      * @return start_time
      */
-    public Date getStartTime() {
+    public Long getStartTime() {
         return startTime;
     }
 
     /**
      * @param startTime
      */
-    public void setStartTime(Date startTime) {
+    public void setStartTime(Long startTime) {
         this.startTime = startTime;
     }
 
     /**
      * @return end_time
      */
-    public Date getEndTime() {
+    public Long getEndTime() {
         return endTime;
     }
 
     /**
      * @param endTime
      */
-    public void setEndTime(Date endTime) {
+    public void setEndTime(Long endTime) {
         this.endTime = endTime;
     }
 

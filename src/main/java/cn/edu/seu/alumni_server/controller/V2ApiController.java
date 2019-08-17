@@ -9,6 +9,7 @@ import cn.edu.seu.alumni_server.controller.dto.enums.MessageType;
 import cn.edu.seu.alumni_server.controller.dto.enums.SearchType;
 import cn.edu.seu.alumni_server.dao.entity.*;
 import cn.edu.seu.alumni_server.dao.mapper.*;
+import cn.edu.seu.alumni_server.service.AccountService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.google.gson.Gson;
@@ -27,6 +28,9 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/v2")
 public class V2ApiController {
+
+    @Autowired
+    AccountService accountService;
 
     @Autowired
     AccountMapper accountMapper;
@@ -110,6 +114,9 @@ public class V2ApiController {
     public WebResponse completeAccount(@RequestBody AccountAllDTO accountAllDTO) {
         // accountDTO
         AccountDTO accountDTO = accountAllDTO.getAccount();
+
+        accountService.checkAccountInfo(accountDTO);
+
         if (accountDTO.getAccountId() != null &&
                 accountMapper.selectByPrimaryKey(accountDTO.getAccountId()) != null) {
             accountMapper.updateByPrimaryKeySelective(accountDTO.toAccount());
@@ -120,27 +127,35 @@ public class V2ApiController {
 
         // education
         List<EducationDTO> educationDTOS = accountAllDTO.getEducations();
-        educationDTOS.parallelStream().forEach(educationDTO -> {
-            if (educationDTO.getEducationId() != null &&
-                    educationMapper.selectByPrimaryKey(educationDTO.getEducationId()) != null) {
-                educationMapper.updateByPrimaryKeySelective(educationDTO.toEducation());
-            } else {
-                educationDTO.setEducationId(Utils.generateId());
-                educationMapper.insertSelective(educationDTO.toEducation());
-            }
-        });
+        if (educationDTOS.size() > 0) {
+            educationDTOS.parallelStream().forEach(educationDTO -> {
+                if (educationDTO.getEducationId() != null &&
+                        educationMapper.selectByPrimaryKey(educationDTO.getEducationId()) != null) {
+                    educationMapper.updateByPrimaryKeySelective(educationDTO.toEducation());
+                } else {
+                    educationDTO.setEducationId(Utils.generateId());
+                    educationMapper.insertSelective(educationDTO.toEducation());
+                }
+            });
+        } else {
+            return new WebResponse().fail("至少需要一条教育信息");
+        }
 
         // job
         List<JobDTO> jobDTOs = accountAllDTO.getJobs();
-        jobDTOs.parallelStream().forEach(jobDTO -> {
-            if (jobDTO.getJobId() != null &&
-                    jobMapper.selectByPrimaryKey(jobDTO.getJobId()) != null) {
-                jobMapper.updateByPrimaryKeySelective(jobDTO.toJob());
-            } else {
-                jobDTO.setJobId(Utils.generateId());
-                jobMapper.insertSelective(jobDTO.toJob());
-            }
-        });
+        if (jobDTOs.size() > 0) {
+            jobDTOs.parallelStream().forEach(jobDTO -> {
+                if (jobDTO.getJobId() != null &&
+                        jobMapper.selectByPrimaryKey(jobDTO.getJobId()) != null) {
+                    jobMapper.updateByPrimaryKeySelective(jobDTO.toJob());
+                } else {
+                    jobDTO.setJobId(Utils.generateId());
+                    jobMapper.insertSelective(jobDTO.toJob());
+                }
+            });
+        } else {
+            return new WebResponse().fail("至少需要一条工作经历");
+        }
         return new WebResponse();
     }
 
