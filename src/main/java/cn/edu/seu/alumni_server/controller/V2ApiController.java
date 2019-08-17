@@ -68,25 +68,27 @@ public class V2ApiController {
         String openid = (String) res.get("openid");
 //        String openid = "oUTaL5Qkz-ClVPPa1b9MZgp-CDRQ";
         // 获取accountId,有则返回，无则新增（注册）
-        LoginResTemp resTemp = new LoginResTemp();
+        LoginResTemp loginResTemp = new LoginResTemp();
         if (openid != null && !openid.equals("")) {
             Account account = new Account();
             account.setOpenid(openid);
             List<Account> resAccounts = accountMapper.select(account);
             if (resAccounts.size() > 0) {
                 Account accountTemp = resAccounts.get(0);
-                resTemp.setAccountId(accountTemp.getAccountId());
-                resTemp.setRegistered(accountTemp.getRegistered());
-                return new WebResponse().success(resTemp);
+                loginResTemp.setAccountId(accountTemp.getAccountId());
+                loginResTemp.setRegistered(accountTemp.getRegistered());
+                loginResTemp.setStep1Finished(accountTemp.getStep1Finished());
+                return new WebResponse().success(loginResTemp);
             } else {
                 Account accountNew = new Account();
                 accountNew.setOpenid(openid);
                 accountNew.setAccountId(Utils.generateId());
                 accountMapper.insertSelective(accountNew);
 
-                resTemp.setAccountId(accountNew.getAccountId());
-                resTemp.setRegistered(false);
-                return new WebResponse().success(resTemp);
+                loginResTemp.setAccountId(accountNew.getAccountId());
+                loginResTemp.setRegistered(false);
+                loginResTemp.setStep1Finished(false);
+                return new WebResponse().success(loginResTemp);
             }
         } else {
             new WebResponse().fail("获取openid失败", null);
@@ -97,6 +99,7 @@ public class V2ApiController {
     @Data
     class LoginResTemp {
         Long accountId;
+        Boolean step1Finished;
         Boolean registered;
         String token;
         Long expireTime;
