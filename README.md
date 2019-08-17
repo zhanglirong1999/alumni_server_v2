@@ -1,9 +1,3 @@
-
-### mybatis gennerator
-执行 maven plugin ：mybatis-generator:gennerate,会直接生成dao层代码
-这个不要再执行了，不然有些后来的改动就没了。。
-//TODO 但是不会自动生成@Id,insertable = false等注解
-
 ### 发布
 优化了一下发布
 ```
