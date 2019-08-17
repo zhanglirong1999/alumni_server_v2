@@ -261,8 +261,8 @@ public class V2ApiController {
 
             Example e1 = new Example(Friend.class);
             e1.createCriteria()
-                    .andEqualTo("accountId", req.get("A"))
-                    .andEqualTo("friendAccountId", req.get("B"));
+                    .andEqualTo("friendAccountId", req.get("A"))
+                    .andEqualTo("accountId", req.get("B"));
             friendMapper.updateByExampleSelective(f, e1);
 
             Message message = new Message();
