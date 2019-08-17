@@ -5,19 +5,12 @@
 //TODO 但是不会自动生成@Id,insertable = false等注解
 
 ### 发布
-目前手动发布，本地 maven package 打成jar包，scp到root@62.234.134.210:/root/dev，ssh上去手动启动。
-
-maven package
-
-scp jar包 root@62.234.134.210:/root/dev
-
+优化了一下发布
+```
 ssh root@62.234.134.210
-
-kill 应用pid
-
-java -jar alumni_server-0.0.1-SNAPSHOT.jar &
-
-exit // 注意不要直接ctrl c，会停掉应用
-
+Seu@Zimotion6102
+cd /root/dev/alumni_server/
+sh start.sh
+```
 // TODO CICD
 
