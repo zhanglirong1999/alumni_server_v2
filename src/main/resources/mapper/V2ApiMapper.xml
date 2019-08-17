@@ -166,6 +166,7 @@
           where a.account_id NOT in
           (select distinct d.friend_account_id from friend d
           where d.account_id=#{accountId})
+          and a.account_id != #{accountId}
           order by recommondReason
       </select>
     <!--  (long myAccountId, long accountId)  -->
