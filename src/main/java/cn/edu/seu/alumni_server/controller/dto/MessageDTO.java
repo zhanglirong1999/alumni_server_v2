@@ -25,15 +25,12 @@ public class MessageDTO {
 
     private Long toUser;
 
-    private Long createTime;
-
     MessageDTO() {
 
     }
 
     public MessageDTO(Message message) {
         BeanUtils.copyProperties(message, this);
-        this.setCreateTime(message.getcTime().getTime());
     }
 
     public Message toMessage() {
