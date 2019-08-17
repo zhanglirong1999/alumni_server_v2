@@ -73,7 +73,7 @@ public class V2ApiController {
                 Account accountTemp = resAccounts.get(0);
                 resTemp.setAccountId(accountTemp.getAccountId());
                 resTemp.setRegistered(accountTemp.getRegistered());
-                return new WebResponse().success();
+                return new WebResponse().success(resTemp);
             } else {
                 Account accountNew = new Account();
                 accountNew.setOpenid(openid);
