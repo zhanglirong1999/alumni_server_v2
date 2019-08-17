@@ -154,7 +154,7 @@ public class V2ApiController {
 
         if (accountDTO.getAccountId() != null && accountMapper.selectByPrimaryKey(accountDTO.getAccountId()) != null) {
             Account account=accountDTO.toAccount();
-            account.setStep1Finished(true);
+            account.setRegistered(true);
             accountMapper.updateByPrimaryKeySelective(account);
         } else {
             return new WebResponse().fail("accountId 不存在", null);
