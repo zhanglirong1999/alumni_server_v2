@@ -1,7 +1,6 @@
 package cn.edu.seu.alumni_server.controller;
 
 import cn.edu.seu.alumni_server.common.CONST;
-import cn.edu.seu.alumni_server.common.SnowflakeIdGenerator;
 import cn.edu.seu.alumni_server.common.Utils;
 import cn.edu.seu.alumni_server.controller.dto.*;
 import cn.edu.seu.alumni_server.controller.dto.common.WebResponse;
@@ -13,6 +12,7 @@ import cn.edu.seu.alumni_server.dao.mapper.*;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.google.gson.Gson;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -47,8 +47,13 @@ public class V2ApiController {
     @Autowired
     MessageMapper messageMapper;
 
-    @RequestMapping("/wechat/code2Session")
-    public WebResponse code2Session(@RequestParam String js_code) {
+    /**
+     * @param js_code
+     * @return
+     */
+    @RequestMapping("/login/wechat")
+    public WebResponse login(@RequestParam String js_code) {
+        // 微信登陆，获取openid
         String url = "https://api.weixin.qq.com/sns/jscode2session?" +
                 "appid=" + CONST.appId +
                 "&secret=" + CONST.appSecret +
@@ -58,40 +63,50 @@ public class V2ApiController {
         Map res = new Gson().fromJson(respronse, Map.class);
         String openid = (String) res.get("openid");
 //        String openid = "oUTaL5Qkz-ClVPPa1b9MZgp-CDRQ";
-
+        // 获取accountId,有则返回，无则新增（注册）
+        LoginResTemp resTemp = new LoginResTemp();
         if (openid != null && !openid.equals("")) {
             Account account = new Account();
             account.setOpenid(openid);
             List<Account> resAccounts = accountMapper.select(account);
             if (resAccounts.size() > 0) {
-
-                return new WebResponse().success(resAccounts.get(0).getAccountId().toString());
+                Account accountTemp = resAccounts.get(0);
+                resTemp.setAccountId(accountTemp.getAccountId());
+                resTemp.setRegistered(accountTemp.getRegistered());
+                return new WebResponse().success();
             } else {
                 Account accountNew = new Account();
                 accountNew.setOpenid(openid);
                 accountNew.setAccountId(Utils.generateId());
                 accountMapper.insertSelective(accountNew);
-                return new WebResponse().success(accountNew.getAccountId().toString());
+
+                resTemp.setAccountId(accountNew.getAccountId());
+                resTemp.setRegistered(false);
+                return new WebResponse().success(resTemp);
             }
+        } else {
+            new WebResponse().fail("获取openid失败", null);
         }
-//        String session_key = (String) res.get("session_key");
-        return new WebResponse().fail("获取openid失败", null);
+        return new WebResponse().fail("获取用户信息失败", null);
     }
 
-    @RequestMapping("/account/create")
+    @Data
+    class LoginResTemp {
+        Long accountId;
+        Boolean registered;
+        String token;
+        Long expireTime;
+    }
+
+    @RequestMapping("/account/step1")
     public WebResponse createAccount(@RequestBody Account account) {
-        Account temp = new Account();
-        temp.setOpenid(account.getOpenid());
-        if (accountMapper.selectCount(temp) > 0) {
-            return new WebResponse().fail("当前openid已注册", null);
-        }
-        account.setAccountId(SnowflakeIdGenerator.getInstance().nextId());
-        accountMapper.insertSelective(account);
+
+        accountMapper.updateByPrimaryKeySelective(account);
 
         return new WebResponse().success(account.getAccountId());
     }
 
-    @RequestMapping("/account/complete")
+    @RequestMapping("/account/step2")
     public WebResponse completeAccount(@RequestBody AccountAllDTO accountAllDTO) {
         // accountDTO
         AccountDTO accountDTO = accountAllDTO.getAccount();
