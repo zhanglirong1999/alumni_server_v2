@@ -6,6 +6,7 @@
       WARNING - @mbg.generated
     -->
     <result column="message_id" jdbcType="INTEGER" property="messageId" />
+    <result column="timestamp" jdbcType="INTEGER" property="timestamp" />
     <result column="type" jdbcType="INTEGER" property="type" />
     <result column="payload" jdbcType="VARCHAR" property="payload" />
     <result column="status" jdbcType="INTEGER" property="status" />
