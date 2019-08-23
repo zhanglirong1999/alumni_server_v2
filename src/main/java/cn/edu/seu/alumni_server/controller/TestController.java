@@ -67,7 +67,7 @@ public class TestController {
         return new WebResponse().success();
     }
 
-    @GetMapping("/test/office/callback")
+    @PostMapping("/test/office/callback")
     WebResponse officeCallback(@RequestBody Map req) {
 
         System.out.println(new Gson().toJson(req));
