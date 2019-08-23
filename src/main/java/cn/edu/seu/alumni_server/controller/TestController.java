@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/v2")
@@ -63,5 +64,11 @@ public class TestController {
             constMajorMapper.insertSelective(constMajor);
         });
         return new WebResponse().success();
+    }
+
+    @GetMapping("/test/office/callback")
+    WebResponse officeCallback(@RequestBody Map req) {
+
+        return new WebResponse().success(req);
     }
 }
