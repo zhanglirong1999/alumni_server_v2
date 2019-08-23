@@ -9,6 +9,7 @@ import cn.edu.seu.alumni_server.dao.mapper.AccountMapper;
 import cn.edu.seu.alumni_server.dao.mapper.ConstMajorMapper;
 import cn.edu.seu.alumni_server.dao.mapper.ConstSchoolMapper;
 import cn.edu.seu.alumni_server.dao.mapper.V2ApiMapper;
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -69,6 +70,7 @@ public class TestController {
     @GetMapping("/test/office/callback")
     WebResponse officeCallback(@RequestBody Map req) {
 
+        System.out.println(new Gson().toJson(req));
         return new WebResponse().success(req);
     }
 }
