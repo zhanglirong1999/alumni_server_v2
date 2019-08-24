@@ -26,7 +26,6 @@ import java.util.Map;
  * 申请、拒绝、查询等
  */
 @RestController
-@RequestMapping("/v2")
 @SuppressWarnings("ALL")
 public class FriendManageController {
     @Autowired

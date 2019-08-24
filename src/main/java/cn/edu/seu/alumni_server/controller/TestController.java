@@ -20,7 +20,7 @@ import java.util.Map;
  * 系统测试用
  */
 @RestController
-@RequestMapping("/v2")
+@RequestMapping("/test")
 @SuppressWarnings("ALL")
 public class TestController {
 
@@ -34,18 +34,18 @@ public class TestController {
     @Autowired
     ConstMajorMapper constMajorMapper;
 
-    @RequestMapping("/test")
+    @RequestMapping("/")
     String demo() {
         return "ok";
     }
 
-    @RequestMapping("/test/mysql")
+    @RequestMapping("/mysql")
     WebResponse test(@RequestParam long accountId) {
         List<Account> list = v2ApiMapper.test(accountId);
         return new WebResponse().success(list);
     }
 
-    @GetMapping("/test/account")
+    @GetMapping("/account")
     WebResponse demo2(@RequestParam String openid) {
         Account accountNew = new Account();
         accountNew.setOpenid(openid);
@@ -54,7 +54,7 @@ public class TestController {
         return new WebResponse().success(accountNew.getAccountId().toString());
     }
 
-    @GetMapping("/test/school")
+    @GetMapping("/school")
     WebResponse school(@RequestBody List<ConstSchool> constSchools) {
         constSchools.stream().forEach(constSchool -> {
             constSchoolMapper.insertSelective(constSchool);
@@ -62,7 +62,7 @@ public class TestController {
         return new WebResponse().success();
     }
 
-    @GetMapping("/test/major")
+    @GetMapping("/major")
     WebResponse major(@RequestBody List<ConstMajor> constMajors) {
         constMajors.stream().forEach(constMajor -> {
             constMajorMapper.insertSelective(constMajor);
@@ -70,7 +70,7 @@ public class TestController {
         return new WebResponse().success();
     }
 
-    @PostMapping("/test/office/callback")
+    @PostMapping("/office/callback")
     String officeCallback(@RequestBody Map req) {
 
         System.out.println(new Gson().toJson(req));

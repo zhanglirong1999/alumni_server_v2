@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 
 @SuppressWarnings("ALL")
 @RestController
-@RequestMapping("/v2")
 public class V2ApiController {
 
     @Autowired
@@ -48,8 +47,6 @@ public class V2ApiController {
     @Autowired
     RestTemplate restTemplate;
 
-    @Autowired
-    MessageMapper messageMapper;
 
     /**
      * @param js_code

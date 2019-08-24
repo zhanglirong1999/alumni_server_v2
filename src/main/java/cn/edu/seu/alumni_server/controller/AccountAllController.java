@@ -19,8 +19,7 @@ import java.util.stream.Collectors;
 
 @SuppressWarnings("ALL")
 @RestController
-@RequestMapping("/v2")
-public class CRUDController {
+public class AccountAllController {
 
     @Autowired
     AccountMapper accountMapper;
@@ -112,37 +111,5 @@ public class CRUDController {
         return new WebResponse();
     }
 
-    @GetMapping("/message")
-    public WebResponse readMessgae(@RequestParam Long accountId,
-                                   @RequestParam int pageIndex,
-                                   @RequestParam int pageSize) {
-        PageHelper.startPage(pageIndex, pageSize);
 
-        Message message = new Message();
-        message.setToUser(accountId);
-        List<Message> temp = messageMapper.select(message);
-
-        List<MessageDTO> res = temp
-                .stream().map(m -> {
-                    MessageDTO messageDTO = new MessageDTO(m);
-                    messageDTO.setFromUserName(
-                            accountMapper.selectByPrimaryKey(
-                                    messageDTO.getFromUser()
-                            ).getName()
-                    );
-                    return messageDTO;
-                }).collect(Collectors.toList());
-        return new WebResponse().success(new PageResult<MessageDTO>(
-                ((Page) temp).getTotal(), res
-        ));
-    }
-
-    @PostMapping("/message/changeStatus")
-    public WebResponse readMessgae(@RequestBody MessageDTO messageDTO) {
-        Message message = new Message();
-        message.setMessageId(messageDTO.getMessageId());
-        message.setStatus(messageDTO.getStatus());
-        messageMapper.updateByPrimaryKeySelective(message);
-        return new WebResponse();
-    }
 }
