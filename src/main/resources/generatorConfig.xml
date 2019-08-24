@@ -74,7 +74,7 @@
 <!--        </table>-->
 <!--        <table schema="alumnidb_dev" tableName="friend">-->
 <!--        </table>-->
-        <table schema="alumnidb_dev" tableName="const_major">
+        <table schema="alumnidb_dev" tableName="favorite">
 
         </table>
 
