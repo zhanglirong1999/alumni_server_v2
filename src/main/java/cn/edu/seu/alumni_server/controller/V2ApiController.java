@@ -5,7 +5,6 @@ import cn.edu.seu.alumni_server.common.Utils;
 import cn.edu.seu.alumni_server.controller.dto.*;
 import cn.edu.seu.alumni_server.controller.dto.common.WebResponse;
 import cn.edu.seu.alumni_server.controller.dto.enums.FriendStatus;
-import cn.edu.seu.alumni_server.controller.dto.enums.MessageType;
 import cn.edu.seu.alumni_server.controller.dto.enums.SearchType;
 import cn.edu.seu.alumni_server.dao.entity.*;
 import cn.edu.seu.alumni_server.dao.mapper.*;
@@ -15,7 +14,10 @@ import com.github.pagehelper.PageHelper;
 import com.google.gson.Gson;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import tk.mybatis.mapper.entity.Example;
 
@@ -189,7 +191,7 @@ public class V2ApiController {
             favorite.setAccountId(myAccountId);
             favorite.setFavoriteAccountId(accountId);
             List<Favorite> temp = favoriteMapper.select(favorite);
-            if(temp.size()>0){
+            if (temp.size() > 0) {
                 accountAllDTO.setFavorite(temp.get(0).getStatus());
             }
         }
@@ -204,17 +206,24 @@ public class V2ApiController {
         accountAllDTO.setAccount(new AccountDTO(accountMapper.selectByPrimaryKey(accountId)));
 
         // 查询 education 信息
-        Education e = new Education();
-        e.setAccountId(accountId);
-        accountAllDTO.setEducations(educationMapper.select(e)
+//        Education e = new Education();
+//        e.setAccountId(accountId);
+
+        Example example1 = new Example(Education.class);
+        example1.orderBy("endTime").desc();
+        example1.createCriteria().andEqualTo("accountId", accountId);
+        accountAllDTO.setEducations(educationMapper.selectByExample(example1)
                 .stream().map(education -> {
                     return new EducationDTO(education);
                 }).collect(Collectors.toList()));
 
         // 查询 job 信息
-        Job j = new Job();
-        j.setAccountId(accountId);
-        accountAllDTO.setJobs(jobMapper.select(j)
+//        Job j = new Job();
+//        j.setAccountId(accountId);
+        Example example2 = new Example(Job.class);
+        example2.orderBy("endTime").desc();
+        example2.createCriteria().andEqualTo("accountId", accountId);
+        accountAllDTO.setJobs(jobMapper.selectByExample(example2)
                 .stream().map(job -> {
                     return new JobDTO(job);
                 }).collect(Collectors.toList()));
