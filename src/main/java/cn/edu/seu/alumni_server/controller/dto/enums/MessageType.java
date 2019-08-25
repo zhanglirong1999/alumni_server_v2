@@ -8,10 +8,19 @@ public enum MessageType {
     AGREE(1, "同意"),
     REJECT(2, "拒绝");
 
-    public Integer value;
-    public String desc;
+    Integer value;
+    String desc;
 
-    MessageType(Integer status, String desc) {
+    MessageType(Integer value, String desc) {
+        this.value = value;
+        this.desc = desc;
+    }
 
+    public Integer getValue() {
+        return value;
+    }
+
+    public String getDesc() {
+        return desc;
     }
 }

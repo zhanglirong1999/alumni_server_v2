@@ -49,7 +49,7 @@ public class FriendManageController {
         message.setMessageId(Utils.generateId());
         message.setFromUser(req.get("A"));
         message.setToUser(req.get("B"));
-        message.setType(MessageType.APPLY.value);
+        message.setType(MessageType.APPLY.getValue());
         messageMapper.insertSelective(message);
 
         return new WebResponse();
@@ -72,7 +72,7 @@ public class FriendManageController {
             message.setMessageId(Utils.generateId());
             message.setFromUser(req.get("A"));
             message.setToUser(req.get("B"));
-            message.setType(MessageType.AGREE.value);
+            message.setType(MessageType.AGREE.getValue());
             messageMapper.insertSelective(message);
         }
 
@@ -90,7 +90,7 @@ public class FriendManageController {
             message.setMessageId(Utils.generateId());
             message.setFromUser(req.get("A"));
             message.setToUser(req.get("B"));
-            message.setType(MessageType.REJECT.value);
+            message.setType(MessageType.REJECT.getValue());
             messageMapper.insertSelective(message);
         }
 
