@@ -28,9 +28,9 @@ public class MessageController {
 
     @GetMapping("/message")
     public WebResponse readMessgae(@RequestParam Long accountId,
-                                   @RequestParam(required = false) int status,
-                                   @RequestParam int pageIndex,
-                                   @RequestParam int pageSize) {
+                                   @RequestParam(required = false) Integer status,
+                                   @RequestParam Integer pageIndex,
+                                   @RequestParam Integer pageSize) {
         if (status != 0 || status != 1 || status != 2) {
             return new WebResponse().fail("status只能为0，1，2");
         }
