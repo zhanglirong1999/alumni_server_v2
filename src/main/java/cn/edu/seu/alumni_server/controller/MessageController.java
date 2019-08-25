@@ -46,8 +46,7 @@ public class MessageController {
                     return messageDTO;
                 }).collect(Collectors.toList());
         return new WebResponse().success(new PageResult<MessageDTO>(
-                ((Page) temp).getTotal(), res
-        ));
+                ((Page) temp).getTotal(), res));
     }
 
     @PostMapping("/message/changeStatus")
