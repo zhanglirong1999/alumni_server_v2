@@ -5,18 +5,45 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.util.StringUtils;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class TokenUtil {
-    static final long EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;     // 7天
-    static final String SECRET = "password@1";            // 密码
-    static final String TOKEN_PREFIX = "Bearer";        // Token前缀
-    static final String HEADER_STRING = "Authorization";// 存放Token的Header Key
-    static final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256); //
+    static final long EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;
+    static final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
-    public static String createJWT(String accountId) {
+    // TODO 换成redis
+    public static volatile ConcurrentHashMap<String, String> tokens;
+
+    public static boolean checkToken(String token) {
+        if (StringUtils.isEmpty(token)) {
+            return false;
+        }
+        try {
+            String accountId = parseJWT(token);
+            if (tokens.get(accountId).equals(token)) {
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static String createToken(String accountId) {
+        return createJWT(accountId);
+    }
+
+    public static String getTokenInfo(String token) throws Exception {
+        return parseJWT(token);
+    }
+
+    static String createJWT(String accountId) {
 
         String jws = Jwts.builder()
                 .setSubject(accountId)
@@ -27,7 +54,7 @@ public class TokenUtil {
         return jws;
     }
 
-    public static String parseJWT(String jws) throws Exception {
+    static String parseJWT(String jws) throws Exception {
         if (jws != null) {
             Jws<Claims> jwsObj = Jwts.parser().setSigningKey(key).parseClaimsJws(jws);
 
@@ -37,4 +64,5 @@ public class TokenUtil {
         }
         return null;
     }
+
 }

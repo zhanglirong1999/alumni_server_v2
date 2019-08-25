@@ -1,6 +1,6 @@
 package cn.edu.seu.alumni_server.controller;
 
-import cn.edu.seu.alumni_server.common.token.TokenVerify;
+import cn.edu.seu.alumni_server.common.token.Acl;
 import cn.edu.seu.alumni_server.controller.dto.FavoriteDTO;
 import cn.edu.seu.alumni_server.controller.dto.PageResult;
 import cn.edu.seu.alumni_server.controller.dto.common.WebResponse;
@@ -17,7 +17,7 @@ import java.util.Map;
  * 名片收藏逻辑
  */
 @RestController
-@TokenVerify
+@Acl
 @SuppressWarnings("ALL")
 public class FavoriteController {
 

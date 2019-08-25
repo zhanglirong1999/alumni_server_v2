@@ -78,7 +78,7 @@ public class V2ApiController {
             );
             if (resAccount != null) {
                 BeanUtils.copyProperties(resAccount, loginResTemp);
-                loginResTemp.setToken(TokenUtil.createJWT(resAccount.getAccountId().toString()));
+                loginResTemp.setToken(TokenUtil.createToken(resAccount.getAccountId().toString()));
                 return new WebResponse().success(loginResTemp);
             } else {
                 Account accountNew = new Account();
@@ -86,7 +86,7 @@ public class V2ApiController {
                 accountNew.setAccountId(Utils.generateId());
                 accountMapper.insertSelective(accountNew);
 
-                loginResTemp.setToken(TokenUtil.createJWT(accountNew.getAccountId().toString()));
+                loginResTemp.setToken(TokenUtil.createToken(accountNew.getAccountId().toString()));
                 loginResTemp.setAccountId(accountNew.getAccountId());
                 loginResTemp.setRegistered(false);
                 loginResTemp.setStep1Finished(false);
