@@ -22,5 +22,9 @@ public class AccountAllDTO {
      * 其他状态 FriendStatus
      */
     private Integer relationShip;
+    /**
+     * 
+     */
+    private Integer favorite;
 
 }

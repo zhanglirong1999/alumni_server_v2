@@ -46,7 +46,8 @@ public class V2ApiController {
 
     @Autowired
     RestTemplate restTemplate;
-
+    @Autowired
+    FavoriteMapper favoriteMapper;
 
     /**
      * @param js_code
@@ -183,6 +184,13 @@ public class V2ApiController {
                     accountAllDTO.getAccount().setWechat(null);
                     accountAllDTO.getAccount().setPhone(null);
                 }
+            }
+            Favorite favorite = new Favorite();
+            favorite.setAccountId(myAccountId);
+            favorite.setFavoriteAccountId(accountId);
+            List<Favorite> temp = favoriteMapper.select(favorite);
+            if(temp.size()>0){
+                accountAllDTO.setFavorite(temp.get(0).getStatus());
             }
         }
 
