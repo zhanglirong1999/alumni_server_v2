@@ -1,5 +1,6 @@
 package cn.edu.seu.alumni_server.controller;
 
+import cn.edu.seu.alumni_server.controller.dto.FavoriteDTO;
 import cn.edu.seu.alumni_server.controller.dto.MessageDTO;
 import cn.edu.seu.alumni_server.controller.dto.PageResult;
 import cn.edu.seu.alumni_server.controller.dto.common.WebResponse;
@@ -28,14 +29,15 @@ public class FavoriteController {
     WebResponse getFavorite(@RequestParam Long accountId,
                             @RequestParam int pageIndex,
                             @RequestParam int pageSize) {
+        PageHelper.startPage(pageIndex, pageSize);
+
         Favorite favorite = new Favorite();
         favorite.setAccountId(accountId);
         favorite.setStatus(1);
-        PageHelper.startPage(pageIndex, pageSize);
-        List<Favorite> res = favoriteMapper.select(favorite);
+        List<FavoriteDTO> res = favoriteMapper.getFavoriteList(accountId);
 
         return new WebResponse().success(
-                new PageResult<Favorite>(((Page) res).getTotal(), res));
+                new PageResult<FavoriteDTO>(((Page) res).getTotal(), res));
     }
 
     @PostMapping("/favorite")

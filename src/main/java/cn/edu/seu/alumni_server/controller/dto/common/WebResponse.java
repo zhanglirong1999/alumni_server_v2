@@ -41,10 +41,9 @@ public class WebResponse<T> {
         return this;
     }
 
-    public WebResponse<T> fail(T body) {
+    public WebResponse<T> fail(String message) {
         this.status = CONST.FAIL_CODE;
-        this.message = CONST.SUCCESS_MESSAGE_DEFAULT;
-        this.data = body;
+        this.message = message;
         return this;
     }
 

@@ -25,14 +25,20 @@ public class MessageController {
     MessageMapper messageMapper;
     @Autowired
     AccountMapper accountMapper;
+
     @GetMapping("/message")
     public WebResponse readMessgae(@RequestParam Long accountId,
+                                   @RequestParam(required = false) int status,
                                    @RequestParam int pageIndex,
                                    @RequestParam int pageSize) {
+        if (status != 0 || status != 1 || status != 2) {
+            return new WebResponse().fail("status只能为0，1，2");
+        }
         PageHelper.startPage(pageIndex, pageSize);
 
         Message message = new Message();
         message.setToUser(accountId);
+        message.setStatus(status);
         List<Message> temp = messageMapper.select(message);
 
         List<MessageDTO> res = temp
