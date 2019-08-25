@@ -1,13 +1,11 @@
 package cn.edu.seu.alumni_server.controller;
 
+import cn.edu.seu.alumni_server.common.token.TokenVerify;
 import cn.edu.seu.alumni_server.controller.dto.FavoriteDTO;
-import cn.edu.seu.alumni_server.controller.dto.MessageDTO;
 import cn.edu.seu.alumni_server.controller.dto.PageResult;
 import cn.edu.seu.alumni_server.controller.dto.common.WebResponse;
 import cn.edu.seu.alumni_server.dao.entity.Favorite;
 import cn.edu.seu.alumni_server.dao.mapper.FavoriteMapper;
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import tk.mybatis.mapper.entity.Example;
@@ -19,6 +17,7 @@ import java.util.Map;
  * 名片收藏逻辑
  */
 @RestController
+@TokenVerify
 @SuppressWarnings("ALL")
 public class FavoriteController {
 

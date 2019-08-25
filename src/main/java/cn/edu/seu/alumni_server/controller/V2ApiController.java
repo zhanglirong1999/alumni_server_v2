@@ -2,6 +2,7 @@ package cn.edu.seu.alumni_server.controller;
 
 import cn.edu.seu.alumni_server.common.CONST;
 import cn.edu.seu.alumni_server.common.Utils;
+import cn.edu.seu.alumni_server.common.token.TokenUtil;
 import cn.edu.seu.alumni_server.controller.dto.*;
 import cn.edu.seu.alumni_server.controller.dto.common.WebResponse;
 import cn.edu.seu.alumni_server.controller.dto.enums.FriendStatus;
@@ -13,6 +14,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.google.gson.Gson;
 import lombok.Data;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import tk.mybatis.mapper.entity.Example;
+import tk.mybatis.mapper.util.Sqls;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,26 +61,24 @@ public class V2ApiController {
     @RequestMapping("/login/wechat")
     public WebResponse login(@RequestParam String js_code) {
         // 微信登陆，获取openid
-        String url = "https://api.weixin.qq.com/sns/jscode2session?" +
+        String wxApiUrl = "https://api.weixin.qq.com/sns/jscode2session?" +
                 "appid=" + CONST.appId +
                 "&secret=" + CONST.appSecret +
                 "&js_code=" + js_code +
                 "&grant_type=authorization_code";
-        String respronse = restTemplate.getForObject(url, String.class);
+        String respronse = restTemplate.getForObject(wxApiUrl, String.class);
         Map res = new Gson().fromJson(respronse, Map.class);
         String openid = (String) res.get("openid");
-//        String openid = "oUTaL5Qkz-ClVPPa1b9MZgp-CDRQ";
-        // 获取accountId,有则返回，无则新增（注册）
-        LoginResTemp loginResTemp = new LoginResTemp();
         if (openid != null && !openid.equals("")) {
-            Account account = new Account();
-            account.setOpenid(openid);
-            List<Account> resAccounts = accountMapper.select(account);
-            if (resAccounts.size() > 0) {
-                Account accountTemp = resAccounts.get(0);
-                loginResTemp.setAccountId(accountTemp.getAccountId());
-                loginResTemp.setRegistered(accountTemp.getRegistered());
-                loginResTemp.setStep1Finished(accountTemp.getStep1Finished());
+            LoginResTemp loginResTemp = new LoginResTemp();
+            // 获取accountId,有则返回，无则新增（注册）
+            Account resAccount = accountMapper.selectOneByExample(
+                    Example.builder(Account.class)
+                            .where(Sqls.custom().andEqualTo("openid", openid))
+            );
+            if (resAccount != null) {
+                BeanUtils.copyProperties(resAccount, loginResTemp);
+                loginResTemp.setToken(TokenUtil.createJWT(resAccount.getAccountId().toString()));
                 return new WebResponse().success(loginResTemp);
             } else {
                 Account accountNew = new Account();
@@ -85,15 +86,15 @@ public class V2ApiController {
                 accountNew.setAccountId(Utils.generateId());
                 accountMapper.insertSelective(accountNew);
 
+                loginResTemp.setToken(TokenUtil.createJWT(accountNew.getAccountId().toString()));
                 loginResTemp.setAccountId(accountNew.getAccountId());
                 loginResTemp.setRegistered(false);
                 loginResTemp.setStep1Finished(false);
                 return new WebResponse().success(loginResTemp);
             }
         } else {
-            new WebResponse().fail("获取openid失败", null);
+            return new WebResponse().fail("获取openid失败", null);
         }
-        return new WebResponse().fail("获取用户信息失败", null);
     }
 
     @Data
@@ -102,7 +103,6 @@ public class V2ApiController {
         Boolean step1Finished;
         Boolean registered;
         String token;
-        Long expireTime;
     }
 
     @RequestMapping("/account/step1")
