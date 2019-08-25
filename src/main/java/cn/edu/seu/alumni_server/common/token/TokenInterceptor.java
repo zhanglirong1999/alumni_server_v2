@@ -27,7 +27,7 @@ public class TokenInterceptor extends HandlerInterceptorAdapter {
     }
 
     Boolean checkToken(HttpServletRequest request, HttpServletResponse response, Acl acl) throws Exception {
-        String token = request.getHeader("Authorization");
+        String token = request.getHeader(TokenUtil.TOKEN_HEADER);
 
         if (!TokenUtil.checkToken(token)) {
             response.setContentType("text/plain;charset=UTF-8");

@@ -17,7 +17,6 @@ import java.util.Map;
  * 名片收藏逻辑
  */
 @RestController
-@Acl
 @SuppressWarnings("ALL")
 public class FavoriteController {
 
