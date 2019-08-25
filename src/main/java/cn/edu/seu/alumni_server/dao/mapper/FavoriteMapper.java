@@ -7,5 +7,5 @@ import tk.mybatis.mapper.common.Mapper;
 import java.util.List;
 
 public interface FavoriteMapper extends Mapper<Favorite> {
-    List<FavoriteDTO> getFavoriteList(Long accountId);
+    List<FavoriteDTO> getFavoriteList(Long accountId,Integer pageIndex,Integer pageSize);
 }

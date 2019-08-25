@@ -29,15 +29,13 @@ public class FavoriteController {
     WebResponse getFavorite(@RequestParam Long accountId,
                             @RequestParam int pageIndex,
                             @RequestParam int pageSize) {
-        PageHelper.startPage(pageIndex, pageSize);
 
         Favorite favorite = new Favorite();
         favorite.setAccountId(accountId);
         favorite.setStatus(1);
-        List<FavoriteDTO> res = favoriteMapper.getFavoriteList(accountId);
-
+        List<FavoriteDTO> res = favoriteMapper.getFavoriteList(accountId,pageIndex,pageSize);
         return new WebResponse().success(
-                new PageResult<FavoriteDTO>(((Page) res).getTotal(), res));
+                new PageResult<FavoriteDTO>(favoriteMapper.selectCount(favorite), res));
     }
 
     @PostMapping("/favorite")
