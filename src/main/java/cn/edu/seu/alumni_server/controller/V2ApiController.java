@@ -2,6 +2,7 @@ package cn.edu.seu.alumni_server.controller;
 
 import cn.edu.seu.alumni_server.common.CONST;
 import cn.edu.seu.alumni_server.common.Utils;
+import cn.edu.seu.alumni_server.common.token.Acl;
 import cn.edu.seu.alumni_server.common.token.TokenUtil;
 import cn.edu.seu.alumni_server.controller.dto.*;
 import cn.edu.seu.alumni_server.controller.dto.common.WebResponse;
@@ -105,7 +106,7 @@ public class V2ApiController {
         Boolean registered;
         String token;
     }
-
+    @Acl
     @RequestMapping("/account/step1")
     public WebResponse createAccount(@RequestBody AccountDTO accountDTO) {
 
@@ -115,7 +116,7 @@ public class V2ApiController {
 
         return new WebResponse().success(account.getAccountId());
     }
-
+    @Acl
     @RequestMapping("/account/step2")
     public WebResponse completeAccount(@RequestBody AccountAllDTO accountAllDTO) {
         // account
@@ -174,6 +175,7 @@ public class V2ApiController {
      * @param accountId
      * @return
      */
+    @Acl
     @RequestMapping("/accountAll")
     public WebResponse<AccountAllDTO> getAccountInfo(@RequestParam Long myAccountId,
                                                      @RequestParam Long accountId) {
@@ -230,7 +232,7 @@ public class V2ApiController {
                 }).collect(Collectors.toList()));
         return accountAllDTO;
     }
-
+    @Acl
     @RequestMapping("/query")
     public WebResponse query(@RequestParam String content,
                              @RequestParam String type,
@@ -297,7 +299,7 @@ public class V2ApiController {
         }
         return new WebResponse().success(res);
     }
-
+    @Acl
     @RequestMapping("/recommand")
     public WebResponse recommand(@RequestParam long accountId,
                                  @RequestParam int pageSize,

@@ -2,6 +2,7 @@ package cn.edu.seu.alumni_server.controller;
 
 import cn.edu.seu.alumni_server.common.CONST;
 import cn.edu.seu.alumni_server.common.Utils;
+import cn.edu.seu.alumni_server.common.token.Acl;
 import cn.edu.seu.alumni_server.controller.dto.FriendDTO;
 import cn.edu.seu.alumni_server.controller.dto.PageResult;
 import cn.edu.seu.alumni_server.controller.dto.common.WebResponse;
@@ -26,6 +27,7 @@ import java.util.Map;
  * 申请、拒绝、查询等
  */
 @RestController
+@Acl
 @SuppressWarnings("ALL")
 public class FriendManageController {
     @Autowired

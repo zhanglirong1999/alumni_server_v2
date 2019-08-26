@@ -18,6 +18,7 @@ import java.util.Map;
  */
 @RestController
 @SuppressWarnings("ALL")
+@Acl
 public class FavoriteController {
 
     @Autowired

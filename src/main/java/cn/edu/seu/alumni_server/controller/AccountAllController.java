@@ -1,6 +1,7 @@
 package cn.edu.seu.alumni_server.controller;
 
 import cn.edu.seu.alumni_server.common.Utils;
+import cn.edu.seu.alumni_server.common.token.Acl;
 import cn.edu.seu.alumni_server.controller.dto.*;
 import cn.edu.seu.alumni_server.controller.dto.common.WebResponse;
 import cn.edu.seu.alumni_server.dao.entity.Account;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 
 @SuppressWarnings("ALL")
 @RestController
+@Acl
 public class AccountAllController {
 
     @Autowired
