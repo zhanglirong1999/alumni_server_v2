@@ -75,6 +75,7 @@ public class V2ApiController {
             Account resAccount = accountMapper.selectOneByExample(
                     Example.builder(Account.class)
                             .where(Sqls.custom().andEqualTo("openid", openid))
+                    .build()
             );
             if (resAccount != null) {
                 BeanUtils.copyProperties(resAccount, loginResTemp);
