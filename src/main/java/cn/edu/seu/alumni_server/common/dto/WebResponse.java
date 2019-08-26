@@ -1,17 +1,29 @@
-package cn.edu.seu.alumni_server.controller.dto.common;
+package cn.edu.seu.alumni_server.common.dto;
 
 import cn.edu.seu.alumni_server.common.CONST;
 import lombok.Data;
 
 @Data
 public class WebResponse<T> {
-    int status;
+    Integer status;
     String message;
     T data;
 
-    public WebResponse(int status, String message, T data) {
+    public WebResponse(Integer status, String message, T data) {
         this.status = status;
         this.message = message;
+        this.data = data;
+    }
+
+    public WebResponse(WebResponseEnum webResponseEnum) {
+        this.status = webResponseEnum.getStatus();
+        this.message = webResponseEnum.getMessage();
+        this.data = null;
+    }
+
+    public WebResponse(WebResponseEnum webResponseEnum, T data) {
+        this.status = webResponseEnum.getStatus();
+        this.message = webResponseEnum.getMessage();
         this.data = data;
     }
 

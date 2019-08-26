@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class TokenUtil {
-    public static final String TOKEN_HEADER = "token";
+    public static final String TOKEN_HEADER = "X-Wx-Token";
     static final long EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;
     static final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 

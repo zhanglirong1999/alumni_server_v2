@@ -3,7 +3,7 @@ package cn.edu.seu.alumni_server.controller;
 import cn.edu.seu.alumni_server.common.token.Acl;
 import cn.edu.seu.alumni_server.controller.dto.FavoriteDTO;
 import cn.edu.seu.alumni_server.controller.dto.PageResult;
-import cn.edu.seu.alumni_server.controller.dto.common.WebResponse;
+import cn.edu.seu.alumni_server.common.dto.WebResponse;
 import cn.edu.seu.alumni_server.dao.entity.Favorite;
 import cn.edu.seu.alumni_server.dao.mapper.FavoriteMapper;
 import org.springframework.beans.factory.annotation.Autowired;

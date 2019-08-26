@@ -5,7 +5,7 @@ import cn.edu.seu.alumni_server.common.Utils;
 import cn.edu.seu.alumni_server.common.token.Acl;
 import cn.edu.seu.alumni_server.common.token.TokenUtil;
 import cn.edu.seu.alumni_server.controller.dto.*;
-import cn.edu.seu.alumni_server.controller.dto.common.WebResponse;
+import cn.edu.seu.alumni_server.common.dto.WebResponse;
 import cn.edu.seu.alumni_server.controller.dto.enums.FriendStatus;
 import cn.edu.seu.alumni_server.controller.dto.enums.SearchType;
 import cn.edu.seu.alumni_server.dao.entity.*;

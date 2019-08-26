@@ -2,6 +2,9 @@ package cn.edu.seu.alumni_server.controller.dto.enums;
 
 public enum FriendStatus {
 
+    /**
+     *
+     */
     stranger(0, "路人"),
     apply(1, "A向B发起好友申请"),
     friend(2, "好友"),

@@ -1,10 +1,14 @@
 package cn.edu.seu.alumni_server.common.token;
 
+import cn.edu.seu.alumni_server.common.dto.WebResponse;
+import cn.edu.seu.alumni_server.common.dto.WebResponseEnum;
+import com.google.gson.Gson;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.PrintWriter;
 
 public class TokenInterceptor extends HandlerInterceptorAdapter {
     @Override
@@ -30,12 +34,25 @@ public class TokenInterceptor extends HandlerInterceptorAdapter {
         String token = request.getHeader(TokenUtil.TOKEN_HEADER);
 
         if (!TokenUtil.checkToken(token)) {
+            response.reset();
+
+            response.setCharacterEncoding("UTF-8");
             response.setContentType("text/plain;charset=UTF-8");
-            response.sendError(401);
+
+            PrintWriter pw = response.getWriter();
+
+            pw.write(new Gson().toJson(
+                    new WebResponse(WebResponseEnum.tokenError)
+            ));
+
+            pw.flush();
+            pw.close();
+//            response.sendError(401);
             return false;
         } else {
             request.setAttribute("accountId", TokenUtil.getTokenInfo(token));
         }
         return true;
     }
+
 }

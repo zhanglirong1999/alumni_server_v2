@@ -5,7 +5,7 @@ import cn.edu.seu.alumni_server.common.Utils;
 import cn.edu.seu.alumni_server.common.token.Acl;
 import cn.edu.seu.alumni_server.controller.dto.FriendDTO;
 import cn.edu.seu.alumni_server.controller.dto.PageResult;
-import cn.edu.seu.alumni_server.controller.dto.common.WebResponse;
+import cn.edu.seu.alumni_server.common.dto.WebResponse;
 import cn.edu.seu.alumni_server.controller.dto.enums.FriendStatus;
 import cn.edu.seu.alumni_server.controller.dto.enums.MessageType;
 import cn.edu.seu.alumni_server.dao.entity.Friend;

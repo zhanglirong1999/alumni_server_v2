@@ -3,19 +3,13 @@ package cn.edu.seu.alumni_server.controller;
 import cn.edu.seu.alumni_server.common.Utils;
 import cn.edu.seu.alumni_server.common.token.Acl;
 import cn.edu.seu.alumni_server.controller.dto.*;
-import cn.edu.seu.alumni_server.controller.dto.common.WebResponse;
+import cn.edu.seu.alumni_server.common.dto.WebResponse;
 import cn.edu.seu.alumni_server.dao.entity.Account;
 import cn.edu.seu.alumni_server.dao.entity.Education;
 import cn.edu.seu.alumni_server.dao.entity.Job;
-import cn.edu.seu.alumni_server.dao.entity.Message;
 import cn.edu.seu.alumni_server.dao.mapper.*;
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 
 @SuppressWarnings("ALL")
