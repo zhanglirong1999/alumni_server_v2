@@ -9,7 +9,6 @@ import org.springframework.util.StringUtils;
 
 import java.security.Key;
 import java.util.Date;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class TokenUtil {
@@ -18,7 +17,7 @@ public class TokenUtil {
     static final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
     // TODO 换成redis
-    public static volatile ConcurrentHashMap<String, String> tokens;
+    public static volatile ConcurrentHashMap<String, String> tokens = new ConcurrentHashMap<String, String>();
 
     public static boolean checkToken(String token) {
         if (StringUtils.isEmpty(token)) {
@@ -37,7 +36,13 @@ public class TokenUtil {
     }
 
     public static String createToken(String accountId) {
-        return createJWT(accountId);
+        if (tokens.get(accountId) != null) {
+            return tokens.get(accountId);
+        }
+
+        String token = createJWT(accountId);
+        tokens.put(accountId, token);
+        return token;
     }
 
     public static String getTokenInfo(String token) throws Exception {
