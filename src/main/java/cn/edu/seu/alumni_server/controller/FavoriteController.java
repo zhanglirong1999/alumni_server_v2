@@ -46,7 +46,7 @@ public class FavoriteController {
         Long favoriteAccountId = (Long) req.get("favoriteAccountId");
         Integer status = (Integer) req.get("status");
 
-        if (status != 0 || status != 1) {
+        if (status != 0 && status != 1) {
             return new WebResponse().fail("status只能为0或1");
         }
         Favorite favorite = new Favorite();
