@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 @SuppressWarnings("ALL")
-@Acl
+//@Acl
 public class MessageController {
 
     @Autowired
@@ -33,8 +33,8 @@ public class MessageController {
                                    @RequestParam(required = false) Integer status,
                                    @RequestParam Integer pageIndex,
                                    @RequestParam Integer pageSize) {
-        if (status != null && (status != 0 || status != 1 || status != 2)) {
-            return new WebResponse().fail("status只能为0，1，2");
+        if (status == null ||( status != 0 && status != 1)) {
+            return new WebResponse().fail("status只能为0，1");
         }
         PageHelper.startPage(pageIndex, pageSize);
 
