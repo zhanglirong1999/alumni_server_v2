@@ -1,9 +1,9 @@
 package cn.edu.seu.alumni_server.controller;
 
+import cn.edu.seu.alumni_server.common.dto.WebResponse;
 import cn.edu.seu.alumni_server.common.token.Acl;
 import cn.edu.seu.alumni_server.controller.dto.MessageDTO;
 import cn.edu.seu.alumni_server.controller.dto.PageResult;
-import cn.edu.seu.alumni_server.common.dto.WebResponse;
 import cn.edu.seu.alumni_server.dao.entity.Message;
 import cn.edu.seu.alumni_server.dao.mapper.AccountMapper;
 import cn.edu.seu.alumni_server.dao.mapper.MessageMapper;
@@ -12,6 +12,7 @@ import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,20 +21,21 @@ import java.util.stream.Collectors;
  */
 @RestController
 @SuppressWarnings("ALL")
-//@Acl
+@Acl
 public class MessageController {
 
     @Autowired
     MessageMapper messageMapper;
     @Autowired
     AccountMapper accountMapper;
-
+    @Autowired
+    HttpServletRequest request;
     @GetMapping("/message")
-    public WebResponse readMessgae(@RequestParam Long accountId,
-                                   @RequestParam(required = false) Integer status,
+    public WebResponse readMessgae(@RequestParam(required = false) Integer status,
                                    @RequestParam Integer pageIndex,
                                    @RequestParam Integer pageSize) {
-        if (status == null ||( status != 0 && status != 1)) {
+        Long accountId = (Long) request.getAttribute("accountId");
+        if (status == null || (status != 0 && status != 1)) {
             return new WebResponse().fail("status只能为0，1");
         }
         PageHelper.startPage(pageIndex, pageSize);

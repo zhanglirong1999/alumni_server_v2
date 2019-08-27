@@ -45,8 +45,8 @@ public class TokenUtil {
         return token;
     }
 
-    public static String getTokenInfo(String token) throws Exception {
-        return parseJWT(token);
+    public static Long getAccountId(String token) throws Exception {
+        return Long.parseLong(parseJWT(token));
     }
 
     static String createJWT(String accountId) {

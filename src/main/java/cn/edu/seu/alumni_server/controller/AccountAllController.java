@@ -1,15 +1,19 @@
 package cn.edu.seu.alumni_server.controller;
 
 import cn.edu.seu.alumni_server.common.Utils;
-import cn.edu.seu.alumni_server.common.token.Acl;
-import cn.edu.seu.alumni_server.controller.dto.*;
 import cn.edu.seu.alumni_server.common.dto.WebResponse;
+import cn.edu.seu.alumni_server.common.token.Acl;
+import cn.edu.seu.alumni_server.controller.dto.AccountDTO;
+import cn.edu.seu.alumni_server.controller.dto.EducationDTO;
+import cn.edu.seu.alumni_server.controller.dto.JobDTO;
 import cn.edu.seu.alumni_server.dao.entity.Account;
 import cn.edu.seu.alumni_server.dao.entity.Education;
 import cn.edu.seu.alumni_server.dao.entity.Job;
 import cn.edu.seu.alumni_server.dao.mapper.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 
 @SuppressWarnings("ALL")
@@ -29,10 +33,12 @@ public class AccountAllController {
     V2ApiMapper v2ApiMapper;
     @Autowired
     MessageMapper messageMapper;
-
+    @Autowired
+    HttpServletRequest request;
 
     @GetMapping("/account")
-    public WebResponse getAccount(@RequestParam Long accountId) {
+    public WebResponse getAccount() {
+        Long accountId = (Long) request.getAttribute("accountId");
         Account account = accountMapper.selectByPrimaryKey(accountId);
         return new WebResponse().success(new AccountDTO(account));
     }

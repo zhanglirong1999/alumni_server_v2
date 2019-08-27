@@ -1,15 +1,16 @@
 package cn.edu.seu.alumni_server.controller;
 
+import cn.edu.seu.alumni_server.common.dto.WebResponse;
 import cn.edu.seu.alumni_server.common.token.Acl;
 import cn.edu.seu.alumni_server.controller.dto.FavoriteDTO;
 import cn.edu.seu.alumni_server.controller.dto.PageResult;
-import cn.edu.seu.alumni_server.common.dto.WebResponse;
 import cn.edu.seu.alumni_server.dao.entity.Favorite;
 import cn.edu.seu.alumni_server.dao.mapper.FavoriteMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import tk.mybatis.mapper.entity.Example;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
@@ -23,16 +24,18 @@ public class FavoriteController {
 
     @Autowired
     FavoriteMapper favoriteMapper;
+    @Autowired
+    HttpServletRequest request;
 
     @GetMapping("/favorite")
-    WebResponse getFavorite(@RequestParam Long accountId,
-                            @RequestParam int pageIndex,
+    WebResponse getFavorite(@RequestParam int pageIndex,
                             @RequestParam int pageSize) {
+        Long accountId = (Long) request.getAttribute("accountId");
 
         Favorite favorite = new Favorite();
         favorite.setAccountId(accountId);
         favorite.setStatus(1);
-        List<FavoriteDTO> res = favoriteMapper.getFavoriteList(accountId,pageIndex,pageSize);
+        List<FavoriteDTO> res = favoriteMapper.getFavoriteList(accountId, pageIndex, pageSize);
         return new WebResponse().success(
                 new PageResult<FavoriteDTO>(favoriteMapper.selectCount(favorite), res));
     }
@@ -43,7 +46,7 @@ public class FavoriteController {
         Long favoriteAccountId = (Long) req.get("favoriteAccountId");
         Integer status = (Integer) req.get("status");
 
-        if(status!=0||status!=1){
+        if (status != 0 || status != 1) {
             return new WebResponse().fail("status只能为0或1");
         }
         Favorite favorite = new Favorite();

@@ -16,6 +16,7 @@ public class FriendDTO {
 
     public FriendDTO() {
     }
+
     public FriendDTO(Friend friend) {
         BeanUtils.copyProperties(friend, this);
     }

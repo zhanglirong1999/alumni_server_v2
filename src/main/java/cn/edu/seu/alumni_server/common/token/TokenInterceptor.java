@@ -50,7 +50,7 @@ public class TokenInterceptor extends HandlerInterceptorAdapter {
 //            response.sendError(401);
             return false;
         } else {
-            request.setAttribute("accountId", TokenUtil.getTokenInfo(token));
+            request.setAttribute("accountId", TokenUtil.getAccountId(token));
         }
         return true;
     }

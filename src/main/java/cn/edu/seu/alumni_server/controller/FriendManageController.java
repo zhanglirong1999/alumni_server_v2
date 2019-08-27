@@ -2,10 +2,10 @@ package cn.edu.seu.alumni_server.controller;
 
 import cn.edu.seu.alumni_server.common.CONST;
 import cn.edu.seu.alumni_server.common.Utils;
+import cn.edu.seu.alumni_server.common.dto.WebResponse;
 import cn.edu.seu.alumni_server.common.token.Acl;
 import cn.edu.seu.alumni_server.controller.dto.FriendDTO;
 import cn.edu.seu.alumni_server.controller.dto.PageResult;
-import cn.edu.seu.alumni_server.common.dto.WebResponse;
 import cn.edu.seu.alumni_server.controller.dto.enums.FriendStatus;
 import cn.edu.seu.alumni_server.controller.dto.enums.MessageType;
 import cn.edu.seu.alumni_server.dao.entity.Friend;
@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import tk.mybatis.mapper.entity.Example;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
@@ -40,7 +41,7 @@ public class FriendManageController {
     V2ApiMapper v2ApiMapper;
 
     @PostMapping("/friend/apply")
-    public WebResponse friendApply(@RequestBody Map<String,Long> req) {
+    public WebResponse friendApply(@RequestBody Map<String, Long> req) {
         Friend f = new Friend();
         f.setAccountId(req.get("A"));
         f.setFriendAccountId(req.get("B"));
@@ -58,7 +59,7 @@ public class FriendManageController {
     }
 
     @PostMapping("/friend/manage")
-    public WebResponse friendAction(@RequestBody Map<String,Long> req) {
+    public WebResponse friendAction(@RequestBody Map<String, Long> req) {
 
         if (req.get("action") == CONST.FRIEND_ACTION_Y) {
             Friend f = new Friend();
@@ -78,7 +79,7 @@ public class FriendManageController {
             messageMapper.insertSelective(message);
         }
 
-        if (req.get("action")  == CONST.FRIEND_ACTION_N) {
+        if (req.get("action") == CONST.FRIEND_ACTION_N) {
             Friend f = new Friend();
             f.setStatus(FriendStatus.stranger.getStatus());
 
@@ -98,11 +99,14 @@ public class FriendManageController {
 
         return new WebResponse();
     }
+    @Autowired
+    HttpServletRequest request;
 
     @GetMapping("/friends")
-    public WebResponse getFriends(@RequestParam Long accountId,
-                                  @RequestParam int pageIndex,
+    public WebResponse getFriends(@RequestParam int pageIndex,
                                   @RequestParam int pageSize) {
+        Long accountId = (Long) request.getAttribute("accountId");
+
         PageHelper.startPage(pageIndex, pageSize);
         List<FriendDTO> friends = v2ApiMapper.getFriends(accountId);
 

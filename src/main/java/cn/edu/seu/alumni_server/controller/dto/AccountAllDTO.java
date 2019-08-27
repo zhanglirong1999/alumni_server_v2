@@ -23,7 +23,7 @@ public class AccountAllDTO {
      */
     private Integer relationShip;
     /**
-     * 
+     *
      */
     private Integer favorite;
 

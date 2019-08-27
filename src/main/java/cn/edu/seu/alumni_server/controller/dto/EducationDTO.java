@@ -4,8 +4,6 @@ import cn.edu.seu.alumni_server.dao.entity.Education;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
 
-import java.sql.Timestamp;
-
 @Data
 public class EducationDTO {
     private Long accountId;

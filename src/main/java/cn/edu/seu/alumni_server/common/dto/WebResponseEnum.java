@@ -9,6 +9,7 @@ public enum WebResponseEnum {
     //    tokenExpired(),
 //    tokenNull(),
     tokenError(401, "token无效");
+
     private Integer status;
     private String message;
 

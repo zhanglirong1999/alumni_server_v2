@@ -13,6 +13,7 @@ import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
@@ -38,9 +39,13 @@ public class TestController {
     String demo() {
         return "ok";
     }
+    @Autowired
+    HttpServletRequest request;
 
     @RequestMapping("/mysql")
-    WebResponse test(@RequestParam long accountId) {
+    WebResponse test() {
+        Long accountId = (Long) request.getAttribute("accountId");
+
         List<Account> list = v2ApiMapper.test(accountId);
         return new WebResponse().success(list);
     }

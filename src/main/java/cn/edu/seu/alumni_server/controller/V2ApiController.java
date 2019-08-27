@@ -2,10 +2,10 @@ package cn.edu.seu.alumni_server.controller;
 
 import cn.edu.seu.alumni_server.common.CONST;
 import cn.edu.seu.alumni_server.common.Utils;
+import cn.edu.seu.alumni_server.common.dto.WebResponse;
 import cn.edu.seu.alumni_server.common.token.Acl;
 import cn.edu.seu.alumni_server.common.token.TokenUtil;
 import cn.edu.seu.alumni_server.controller.dto.*;
-import cn.edu.seu.alumni_server.common.dto.WebResponse;
 import cn.edu.seu.alumni_server.controller.dto.enums.FriendStatus;
 import cn.edu.seu.alumni_server.controller.dto.enums.SearchType;
 import cn.edu.seu.alumni_server.dao.entity.*;
@@ -25,6 +25,7 @@ import org.springframework.web.client.RestTemplate;
 import tk.mybatis.mapper.entity.Example;
 import tk.mybatis.mapper.util.Sqls;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -76,7 +77,7 @@ public class V2ApiController {
             Account resAccount = accountMapper.selectOneByExample(
                     Example.builder(Account.class)
                             .where(Sqls.custom().andEqualTo("openid", openid))
-                    .build()
+                            .build()
             );
             if (resAccount != null) {
                 BeanUtils.copyProperties(resAccount, loginResTemp);
@@ -106,6 +107,7 @@ public class V2ApiController {
         Boolean registered;
         String token;
     }
+
     @Acl
     @RequestMapping("/account/step1")
     public WebResponse createAccount(@RequestBody AccountDTO accountDTO) {
@@ -116,6 +118,7 @@ public class V2ApiController {
 
         return new WebResponse().success(account.getAccountId());
     }
+
     @Acl
     @RequestMapping("/account/step2")
     public WebResponse completeAccount(@RequestBody AccountAllDTO accountAllDTO) {
@@ -169,6 +172,9 @@ public class V2ApiController {
         return new WebResponse();
     }
 
+    @Autowired
+    HttpServletRequest request;
+
     /**
      * 获取个人信息大对象
      *
@@ -177,8 +183,9 @@ public class V2ApiController {
      */
     @Acl
     @RequestMapping("/accountAll")
-    public WebResponse<AccountAllDTO> getAccountInfo(@RequestParam Long myAccountId,
-                                                     @RequestParam Long accountId) {
+    public WebResponse<AccountAllDTO> getAccountInfo(@RequestParam Long accountId) {
+
+        Long myAccountId = (Long) request.getAttribute("accountId");
         AccountAllDTO accountAllDTO = getAccountAllDTOById(accountId);
         if (!myAccountId.equals(accountId)) {
             Friend relationShip = v2ApiMapper.getRelationShip(myAccountId, accountId);
@@ -232,6 +239,7 @@ public class V2ApiController {
                 }).collect(Collectors.toList()));
         return accountAllDTO;
     }
+
     @Acl
     @RequestMapping("/query")
     public WebResponse query(@RequestParam String content,
@@ -299,11 +307,14 @@ public class V2ApiController {
         }
         return new WebResponse().success(res);
     }
+
     @Acl
     @RequestMapping("/recommand")
-    public WebResponse recommand(@RequestParam long accountId,
-                                 @RequestParam int pageSize,
+    public WebResponse recommand(HttpServletRequest request,
+            @RequestParam int pageSize,
                                  @RequestParam int pageIndex) {
+        Long accountId = (Long) request.getAttribute("accountId");
+
         BriefInfo briefInfo = new BriefInfo();
         AccountAllDTO accountAllDTO = getAccountAllDTOById(accountId);
         briefInfo.setAccountId(accountId);
