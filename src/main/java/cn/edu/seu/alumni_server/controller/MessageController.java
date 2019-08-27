@@ -30,12 +30,13 @@ public class MessageController {
     AccountMapper accountMapper;
     @Autowired
     HttpServletRequest request;
+
     @GetMapping("/message")
     public WebResponse readMessgae(@RequestParam(required = false) Integer status,
                                    @RequestParam Integer pageIndex,
                                    @RequestParam Integer pageSize) {
         Long accountId = (Long) request.getAttribute("accountId");
-        if (status == null || (status != 0 && status != 1)) {
+        if (status != null && status != 0 && status != 1) {
             return new WebResponse().fail("status只能为0，1");
         }
         PageHelper.startPage(pageIndex, pageSize);
