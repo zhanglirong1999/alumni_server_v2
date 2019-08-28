@@ -14,8 +14,9 @@ public class MessageDTO {
 
     /**
      * 0未读1已读
+     * 默认未读
      */
-    private Integer status;
+    private Integer status = 0;
 
     private Long timestamp;
 
