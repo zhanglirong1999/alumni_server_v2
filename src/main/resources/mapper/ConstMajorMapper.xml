@@ -10,7 +10,7 @@
   </resultMap>
 
   <select id="queryConstMajorList" resultType="cn.edu.seu.alumni_server.dao.entity.ConstMajor">
-    SELECT *
+    SELECT major_id as majorId, major_name as majorName
     FROM const_major
     WHERE major_name LIKE CONCAT('%',#{majorName},'%')
   </select>

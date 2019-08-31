@@ -10,7 +10,7 @@
   </resultMap>
 
   <select id="queryConstSchoolList" resultType="cn.edu.seu.alumni_server.dao.entity.ConstSchool">
-    SELECT *
+    SELECT school_id as schoolId, school_name as schoolName
     FROM const_school
     WHERE school_name LIKE CONCAT('%',#{schoolName},'%')
   </select>

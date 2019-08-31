@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class ConstSchoolDTO {
 
-    private Long schoolId;
+    private Integer schoolId;
 
     private String schoolName;
 }

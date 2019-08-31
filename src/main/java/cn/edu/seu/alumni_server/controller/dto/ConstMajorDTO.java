@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class ConstMajorDTO {
 
-    private Long majorId;
+    private Integer majorId;
 
     private String majorName;
 }
