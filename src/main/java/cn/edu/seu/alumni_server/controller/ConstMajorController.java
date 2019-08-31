@@ -3,6 +3,7 @@ package cn.edu.seu.alumni_server.controller;
 import cn.edu.seu.alumni_server.common.dto.WebResponse;
 import cn.edu.seu.alumni_server.common.token.Acl;
 import cn.edu.seu.alumni_server.controller.dto.ConstMajorDTO;
+import cn.edu.seu.alumni_server.controller.dto.PageResult;
 import cn.edu.seu.alumni_server.dao.entity.ConstMajor;
 import cn.edu.seu.alumni_server.dao.mapper.ConstMajorMapper;
 import com.github.pagehelper.Page;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -26,39 +28,16 @@ public class ConstMajorController {
     public WebResponse queryConstMajor(@RequestParam String majorName,
                                        @RequestParam int pageSize,
                                        @RequestParam int pageIndex){
-        System.out.println("进入查询专业函数");
         PageHelper.startPage(pageIndex, pageSize);
-        List<ConstMajor> list = constMajorDao.queryConstMajorList(majorName);
-        return new WebResponse().success(wrapPageInfo(list));
+        List<ConstMajor> temp = constMajorDao.queryConstMajorList(majorName);
+        List<ConstMajorDTO> list = new ArrayList<>();
+        temp.forEach(major -> {
+            list.add(new ConstMajorDTO(major));
+        });
+        return new WebResponse().success(
+                new PageResult<>(((Page)temp).getTotal(), list)
+        );
     }
 
-    private PageInfo<ConstMajorDTO> wrapPageInfo(List<ConstMajor> list) {
-        Page<ConstMajorDTO> resultList = new Page<>();
-        for(ConstMajor constMajor:list) {
-            try {
-                ConstMajorDTO constMajorDTO = new ConstMajorDTO();
-                BeanUtils.copyProperties(constMajor, constMajorDTO);
-                resultList.add(constMajorDTO);
-            }
-            catch(Exception e){
-                throw new RuntimeException(e);
-            }
-        }
-        if(list instanceof Page) {
-            Page page = (Page) list;
-            resultList.setPageNum(page.getPageNum());
-            resultList.setPageSize(page.getPageSize());
-            resultList.setStartRow(page.getStartRow());
-            resultList.setEndRow(page.getEndRow());
-            resultList.setTotal(page.getTotal());
-            resultList.setPages(page.getPages());
-            resultList.setCount(page.isCount());
-            resultList.setOrderBy(page.getOrderBy());
-            resultList.setOrderByOnly(page.isOrderByOnly());
-            resultList.reasonable(page.getReasonable());
-            resultList.pageSizeZero(page.getPageSizeZero());
-        }
-        PageInfo<ConstMajorDTO> pageInfo = new PageInfo<>(resultList);
-        return pageInfo;
-    }
+
 }
