@@ -8,4 +8,10 @@
     <result column="major_id" jdbcType="INTEGER" property="majorId" />
     <result column="major_name" jdbcType="VARCHAR" property="majorName" />
   </resultMap>
+
+  <select id="queryConstMajorList" resultType="cn.edu.seu.alumni_server.dao.entity.ConstMajor">
+    SELECT *
+    FROM const_major
+    WHERE major_name LIKE CONCAT('%',#{majorName},'%')
+  </select>
 </mapper>

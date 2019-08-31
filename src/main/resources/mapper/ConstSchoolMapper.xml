@@ -8,4 +8,10 @@
     <result column="school_id" jdbcType="INTEGER" property="schoolId" />
     <result column="school_name" jdbcType="VARCHAR" property="schoolName" />
   </resultMap>
+
+  <select id="queryConstSchoolList" resultType="cn.edu.seu.alumni_server.dao.entity.ConstSchool">
+    SELECT *
+    FROM const_school
+    WHERE school_name LIKE CONCAT('%',#{schoolName},'%')
+  </select>
 </mapper>
