@@ -32,6 +32,12 @@ public class MybatisCfg {
         // xml目录配置
         ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
         bean.setMapperLocations(resourcePatternResolver.getResources("classpath:mapper/*.xml"));
+
+        //配置实体类属性与表字段的映射
+        org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration();
+        configuration.setMapUnderscoreToCamelCase(true);
+        bean.setConfiguration(configuration);
+
         return bean.getObject();
     }
 

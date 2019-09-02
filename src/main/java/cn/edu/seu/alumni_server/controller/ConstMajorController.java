@@ -20,6 +20,7 @@ import java.util.List;
 
 
 @RestController
+@Acl
 public class ConstMajorController {
     @Autowired
     private ConstMajorMapper constMajorDao;

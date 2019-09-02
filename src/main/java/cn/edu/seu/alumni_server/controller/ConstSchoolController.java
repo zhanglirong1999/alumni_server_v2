@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@Acl
 public class ConstSchoolController {
 
     @Autowired
