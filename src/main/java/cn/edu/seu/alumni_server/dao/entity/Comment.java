@@ -3,6 +3,7 @@ package cn.edu.seu.alumni_server.dao.entity;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.sql.Date;
 import java.sql.Timestamp;
 
 @Data
@@ -18,7 +19,7 @@ public class Comment implements Serializable {
 
     private String content;
 
-    private Timestamp cTime;
+    private Date cTime;
 
     private Boolean validStatus;
 

@@ -1,6 +1,5 @@
-package cn.edu.seu.alumni_server.controller.intrapolate.dto;
+package cn.edu.seu.alumni_server.controller.internalRecommend.dto;
 
-import cn.edu.seu.alumni_server.dao.entity.Account;
 import cn.edu.seu.alumni_server.dao.entity.Post;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
