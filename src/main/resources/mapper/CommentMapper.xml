@@ -14,8 +14,8 @@
         <result column="valid_status" jdbcType="BIT" property="validStatus" />
     </resultMap>
 
-    <select id="getCommentList" resultType="HashMap">
-      select t1.comment_id as commentId, t1.post_id as postId, t1.top_comment_id as commentId, t1.father_comment_id as fatherCommentId,
+    <select id="getCommentList" resultType="cn.edu.seu.alumni_server.controller.internalRecommend.dto.CommentDTO">
+      select t1.comment_id as commentId, t1.post_id as postId, t1.top_comment_id as topCommentId, t1.father_comment_id as fatherCommentId, t1.content as content
       t1.account_id as accountId, t1.name as name, t2.account_id as fatherCommentAccountId,
       t2.name as fatherCommentAccountName, t1.c_time as cTime
       FROM
@@ -30,6 +30,6 @@
       LEFT JOIN account e ON d.account_id = e.account_id
       WHERE d.post_id = #{postId}) t2
       ON t1.father_comment_id = t2.comment_id
-
+      ORDER BY t1.c_time ASC
     </select>
 </mapper>

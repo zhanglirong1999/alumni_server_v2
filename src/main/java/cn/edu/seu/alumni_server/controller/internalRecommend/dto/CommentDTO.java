@@ -1,6 +1,8 @@
 package cn.edu.seu.alumni_server.controller.internalRecommend.dto;
 
+import cn.edu.seu.alumni_server.dao.entity.Comment;
 import lombok.Data;
+import org.springframework.beans.BeanUtils;
 
 import java.sql.Date;
 
@@ -12,6 +14,8 @@ public class CommentDTO {
     private Long postId;
     //根评论id
     private Long topCommentId;
+    //评论内容
+    private String content;
     //父评论id
     private Long fatherCommentId;
     //用户id
@@ -24,4 +28,10 @@ public class CommentDTO {
     private String fatherCommentAccountName;
     //创建时间
     private Date cTime;
+
+    public Comment toComment() {
+        Comment comment = new Comment();
+        BeanUtils.copyProperties(this, comment);
+        return comment;
+    }
 }
