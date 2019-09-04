@@ -16,7 +16,7 @@
 
     <select id="getCommentList" resultType="cn.edu.seu.alumni_server.controller.internalRecommend.dto.CommentDTO">
       select t1.comment_id as commentId, t1.post_id as postId, t1.top_comment_id as topCommentId, t1.father_comment_id as fatherCommentId, t1.content as content
-      t1.account_id as accountId, t1.name as name, t2.account_id as fatherCommentAccountId,
+      ,t1.account_id as accountId, t1.name as name, t2.account_id as fatherCommentAccountId,
       t2.name as fatherCommentAccountName, t1.c_time as cTime
       FROM
       (SELECT a.comment_id as comment_id, a.post_id as post_id, a.top_comment_id as top_comment_id, a.father_comment_id as father_comment_id,
