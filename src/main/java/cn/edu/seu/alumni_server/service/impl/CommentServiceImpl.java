@@ -24,12 +24,12 @@ public class CommentServiceImpl implements CommentService {
         List<CommentDTO> commentList = commentDao.getCommentList(postId);
         HashMap<Long, TopCommentDTO> resultList = new HashMap<>();
         for(CommentDTO comment : commentList) {
-            if(comment.getAccountId() == comment.getTopCommentId()) {
-                resultList.put(comment.getAccountId(), new TopCommentDTO(comment));
+            if(comment.getCommentId() == comment.getTopCommentId()) {
+                resultList.put(comment.getCommentId(), new TopCommentDTO(comment));
             }
         }
         for(CommentDTO comment : commentList) {
-            if(comment.getAccountId() != comment.getTopCommentId()) {
+            if(comment.getCommentId() != comment.getTopCommentId()) {
                 resultList.get(comment.getTopCommentId()).getCommentList().add(comment);
             }
         }
