@@ -18,14 +18,20 @@ public class CommentController {
     @Autowired
     private CommentService commentService;
 
-    @GetMapping("/query")
+    /**
+     * 获取某条帖子下的评论列表
+     * */
+    @GetMapping("/list")
     public WebResponse getCommentList(@RequestParam long postId) {
         List<TopCommentDTO> list = commentService.getCommentList(postId);
         return new WebResponse().success(list);
     }
 
+    /**
+     * 新增评论
+     * */
     @PostMapping("/")
-    public WebResponse newPost(@RequestBody CommentDTO commentDTO) {
+    public WebResponse newComment(@RequestBody CommentDTO commentDTO) {
         commentDTO.setCommentId(Utils.generateId());
         commentService.insertComment(commentDTO);
         return new WebResponse().success();
