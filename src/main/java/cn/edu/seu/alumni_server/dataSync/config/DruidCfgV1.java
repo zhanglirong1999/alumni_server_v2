@@ -1,4 +1,4 @@
-package cn.edu.seu.alumni_server.common.config.db;
+package cn.edu.seu.alumni_server.dataSync.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import javax.sql.DataSource;
 
 @Configuration
-public class V1DruidCfg {
+public class DruidCfgV1 {
 
     @Value("${v1.db.mysql.url}")
     String url;
@@ -18,7 +18,7 @@ public class V1DruidCfg {
     String password;
 
     @Bean
-    public DataSource V1DataSource() {
+    public DataSource dataSourceV1() {
         DruidDataSource ds = new DruidDataSource();
         ds.setUrl(url);
         ds.setUsername(username);
