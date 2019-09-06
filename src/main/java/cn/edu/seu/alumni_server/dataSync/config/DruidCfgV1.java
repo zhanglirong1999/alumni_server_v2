@@ -24,14 +24,16 @@ public class DruidCfgV1 {
         ds.setUsername(username);
         ds.setPassword(password);
 
+        ds.setValidationQuery("select 1");
+        ds.setTestWhileIdle(true);
+        ds.setTestOnBorrow(true);
+
         // 配置初始化大小、最小、最大
         ds.setInitialSize(1);
         ds.setMinIdle(10);
         ds.setMaxActive(30);
         // 配置获取连接等待超时的时间
-        ds.setMaxWait(60 * 1000);
-        ds.setMinEvictableIdleTimeMillis(600 * 1000);
-        ds.setMaxEvictableIdleTimeMillis(900 * 1000);
+//        ds.setMaxWait(60 * 1000);
 
         return ds;
     }

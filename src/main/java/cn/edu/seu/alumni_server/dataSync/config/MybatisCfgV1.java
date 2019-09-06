@@ -17,7 +17,7 @@ import java.util.Properties;
 @Configuration
 public class MybatisCfgV1 {
     @Bean(name = "sqlSessionFactoryV1")
-    public SqlSessionFactory sqlSessionFactoryBean(@Qualifier("dataSourceV1") DataSource dataSource) throws Exception {
+    public SqlSessionFactory sqlSessionFactoryBeanV1(@Qualifier("dataSourceV1") DataSource dataSource) throws Exception {
         SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
         bean.setDataSource(dataSource);
         bean.setTypeAliasesPackage("cn.edu.seu.alumni_server.dataSync.entity");
@@ -41,7 +41,7 @@ public class MybatisCfgV1 {
     }
 
     @Bean(name = "mapperScannerConfigurerV1")
-    public MapperScannerConfigurer mapperScannerConfigurer() {
+    public MapperScannerConfigurer mapperScannerConfigurerV1() {
         MapperScannerConfigurer mapperScannerConfigurer = new MapperScannerConfigurer();
         mapperScannerConfigurer.setBasePackage("cn.edu.seu.alumni_server.dataSync.mapper");
         mapperScannerConfigurer.setSqlSessionFactoryBeanName("sqlSessionFactoryV1");
