@@ -57,28 +57,11 @@ public class DataSyncController {
         PageHelper.startPage(1, 10);
         List<Personal> res = personalMapper.selectAll();
 
-        res.forEach(personal -> {
-            Account account = new Account();
-            account.setAccountId(Utils.generateId());
-
-            account.setOpenid(personal.getOpenid());
-            account.setWechat(personal.getWechat());
-            account.setPhone(personal.getPhone());
-            account.setEmail(personal.getEmail());
-
-            try {
-                if (accountMapper.insertSelective(account) != 1) {
-                    log.error("account 插入失败");
-                }
-            } catch (Throwable t) {
-                log.info(t.getMessage());
-            }
-        });
-
         long total = ((Page) res).getTotal();
-        int pageNum = 1;
+        int pageNum = 0;
         int pageSize = 10;
-        while (total > 10 && pageNum * pageSize < total) {
+
+        while (pageNum * pageSize < total) {
             pageNum++;
 
             PageHelper.startPage(pageNum, pageSize);
