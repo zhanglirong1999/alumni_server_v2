@@ -4,6 +4,7 @@ import cn.edu.seu.alumni_server.common.Utils;
 import cn.edu.seu.alumni_server.common.dto.WebResponse;
 import cn.edu.seu.alumni_server.dao.entity.Account;
 import cn.edu.seu.alumni_server.dao.mapper.AccountMapper;
+import cn.edu.seu.alumni_server.dataSync.entity.Education;
 import cn.edu.seu.alumni_server.dataSync.entity.Personal;
 import cn.edu.seu.alumni_server.dataSync.entity.Personalinfor;
 import cn.edu.seu.alumni_server.dataSync.mapper.*;
@@ -49,13 +50,68 @@ public class DataSyncController {
     @Autowired
     AccountMapper accountMapper;
 
+    @Autowired
+    cn.edu.seu.alumni_server.dao.mapper.EducationMapper educationMapper;
 
     @GetMapping("/sync")
     public WebResponse dataSync() {
         personal2account();
 
         personalInfor2Account();
+
+        education2();
         return new WebResponse();
+    }
+
+    void education2() {
+
+        PageHelper.startPage(1, 1);
+        List<Education> res = educationMapperV1.selectAll();
+
+        long total = ((Page) res).getTotal();
+        int pageNum = 0;
+        int pageSize = 10;
+
+        while (pageNum * pageSize < total) {
+            pageNum++;
+
+            PageHelper.startPage(pageNum, pageSize);
+            List<Education> resTemp = educationMapperV1.selectAll();
+
+            resTemp.forEach(education -> {
+                cn.edu.seu.alumni_server.dao.entity.Education educationV2 =
+                        new cn.edu.seu.alumni_server.dao.entity.Education();
+
+                Example example = new Example(Account.class);
+                example.createCriteria().andEqualTo("openid", education.getOpenid());
+                Account account = accountMapper.selectOneByExample(example);
+
+                if (account != null && account.getAccountId() != null) {
+                    educationV2.setAccountId(account.getAccountId());
+                    educationV2.setCollege(education.getDepartment());
+                    educationV2.setSchool(education.getSchool());
+                    try {
+                        educationV2.setStartTime(
+                                new SimpleDateFormat("yyyy")
+                                        .parse(education.getStartYear())
+                                        .getTime()
+                        );
+
+                        educationV2.setEndTime(
+                                new SimpleDateFormat("yyyy")
+                                        .parse(education.getStartYear())
+                                        .getTime()
+                        );
+                    } catch (Throwable e) {
+                        e.printStackTrace();
+                    }
+                    educationV2.setEducation(education.getBackground());
+                } else {
+                    log.info(education.getOpenid(), "education 转换报错");
+                }
+            });
+        }
+
     }
 
     void personal2account() {

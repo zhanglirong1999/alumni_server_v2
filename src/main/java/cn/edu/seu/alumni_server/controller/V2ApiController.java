@@ -56,6 +56,9 @@ public class V2ApiController {
     @Autowired
     FavoriteMapper favoriteMapper;
 
+    @Autowired
+    HttpServletRequest request;
+
     /**
      * @param js_code
      * @return
@@ -170,43 +173,6 @@ public class V2ApiController {
             return new WebResponse().fail("accountId 不存在", null);
         }
         return new WebResponse();
-    }
-
-    @Autowired
-    HttpServletRequest request;
-
-    /**
-     * 获取个人信息大对象
-     *
-     * @param accountId
-     * @return
-     */
-    @Acl
-    @RequestMapping("/accountAll")
-    public WebResponse<AccountAllDTO> getAccountInfo(@RequestParam Long accountId) {
-
-        Long myAccountId = (Long) request.getAttribute("accountId");
-        AccountAllDTO accountAllDTO = getAccountAllDTOById(accountId);
-        if (!myAccountId.equals(accountId)) {
-            Friend relationShip = v2ApiMapper.getRelationShip(myAccountId, accountId);
-            if (relationShip != null) {
-                accountAllDTO.setRelationShip(relationShip.getStatus());
-                if (relationShip.getStatus() != FriendStatus.friend.getStatus()) {
-                    accountAllDTO.getAccount().setBirthday(null);
-                    accountAllDTO.getAccount().setWechat(null);
-                    accountAllDTO.getAccount().setPhone(null);
-                }
-            }
-            Favorite favorite = new Favorite();
-            favorite.setAccountId(myAccountId);
-            favorite.setFavoriteAccountId(accountId);
-            List<Favorite> temp = favoriteMapper.select(favorite);
-            if (temp.size() > 0) {
-                accountAllDTO.setFavorite(temp.get(0).getStatus());
-            }
-        }
-
-        return new WebResponse<AccountAllDTO>().success(accountAllDTO);
     }
 
     public AccountAllDTO getAccountAllDTOById(Long accountId) {

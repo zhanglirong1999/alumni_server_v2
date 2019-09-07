@@ -1,5 +1,6 @@
 package cn.edu.seu.alumni_server.common.token;
 
+import cn.edu.seu.alumni_server.common.CONST;
 import cn.edu.seu.alumni_server.common.dto.WebResponse;
 import cn.edu.seu.alumni_server.common.dto.WebResponseEnum;
 import com.google.gson.Gson;
@@ -50,7 +51,7 @@ public class TokenInterceptor extends HandlerInterceptorAdapter {
 //            response.sendError(401);
             return false;
         } else {
-            request.setAttribute("accountId", TokenUtil.getAccountId(token));
+            request.setAttribute(CONST.ACL_ACCOUNTID, TokenUtil.getAccountId(token));
         }
         return true;
     }
