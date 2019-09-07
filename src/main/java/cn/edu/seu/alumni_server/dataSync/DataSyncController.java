@@ -3,13 +3,17 @@ package cn.edu.seu.alumni_server.dataSync;
 import cn.edu.seu.alumni_server.common.Utils;
 import cn.edu.seu.alumni_server.common.dto.WebResponse;
 import cn.edu.seu.alumni_server.dao.entity.Account;
+import cn.edu.seu.alumni_server.dao.entity.Job;
 import cn.edu.seu.alumni_server.dao.mapper.AccountMapper;
+import cn.edu.seu.alumni_server.dao.mapper.JobMapper;
 import cn.edu.seu.alumni_server.dataSync.entity.Education;
 import cn.edu.seu.alumni_server.dataSync.entity.Personal;
 import cn.edu.seu.alumni_server.dataSync.entity.Personalinfor;
+import cn.edu.seu.alumni_server.dataSync.entity.Work;
 import cn.edu.seu.alumni_server.dataSync.mapper.*;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -51,19 +55,22 @@ public class DataSyncController {
     AccountMapper accountMapper;
 
     @Autowired
-    cn.edu.seu.alumni_server.dao.mapper.EducationMapper educationMapper;
+    cn.edu.seu.alumni_server.dao.mapper.EducationMapper educationMapperV2;
+
+    @Autowired
+    JobMapper jobMapper;
 
     @GetMapping("/sync")
     public WebResponse dataSync() {
-        personal2account();
+//        personal2account();
+//        personalInfor2Account();
+//        educationSync();
+        WorkSync();
 
-        personalInfor2Account();
-
-        education2();
         return new WebResponse();
     }
 
-    void education2() {
+    void educationSync() {
 
         PageHelper.startPage(1, 1);
         List<Education> res = educationMapperV1.selectAll();
@@ -87,6 +94,7 @@ public class DataSyncController {
                 Account account = accountMapper.selectOneByExample(example);
 
                 if (account != null && account.getAccountId() != null) {
+                    educationV2.setEducationId(Utils.generateId());
                     educationV2.setAccountId(account.getAccountId());
                     educationV2.setCollege(education.getDepartment());
                     educationV2.setSchool(education.getSchool());
@@ -106,12 +114,72 @@ public class DataSyncController {
                         e.printStackTrace();
                     }
                     educationV2.setEducation(education.getBackground());
+
+                    educationMapperV2.insertSelective(educationV2);
                 } else {
-                    log.info(education.getOpenid(), "education 转换报错");
+                    log.info(education.getOpenid() + "education 转换报错,account {}",
+                            new Gson().toJson(account));
                 }
             });
         }
 
+    }
+
+    void WorkSync() {
+
+        PageHelper.startPage(1, 1);
+        List<Work> res = workMapper.selectAll();
+
+        long total = ((Page) res).getTotal();
+        int pageNum = 0;
+        int pageSize = 10;
+
+        while (pageNum * pageSize < total) {
+            pageNum++;
+
+            PageHelper.startPage(pageNum, pageSize);
+            List<Work> resT = workMapper.selectAll();
+
+            resT.forEach(work -> {
+
+                Job job = new Job();
+
+                Example example = new Example(Account.class);
+                example.createCriteria().andEqualTo("openid", work.getOpenid());
+                Account account = accountMapper.selectOneByExample(example);
+                if (account != null && account.getAccountId() != null) {
+                    job.setAccountId(account.getAccountId());
+                    job.setJobId(Utils.generateId());
+                    job.setCompany(work.getCompany());
+                    job.setPosition(work.getJob());
+                    try {
+                        if (!StringUtils.isEmpty(work.getStartYear())) {
+                            job.setStartTime(
+                                    new SimpleDateFormat("yyyy")
+                                            .parse(work.getStartYear())
+                                            .getTime());
+                        }
+                        if (!StringUtils.isEmpty(work.getEndYear())) {
+                            job.setStartTime(
+                                    new SimpleDateFormat("yyyy")
+                                            .parse(work.getEndYear())
+                                            .getTime()
+                            );
+                        }
+
+                    } catch (Throwable e) {
+                        e.printStackTrace();
+                        log.info(work.getOpenid() + "work 转换失败");
+
+                    }
+                    jobMapper.insertSelective(job);
+                } else {
+                    log.info(work.getOpenid() + "work 转换失败，account {}",
+                            new Gson().toJson(account));
+                }
+
+            });
+        }
     }
 
     void personal2account() {
