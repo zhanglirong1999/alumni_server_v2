@@ -16,6 +16,7 @@ import cn.edu.seu.alumni_server.dao.mapper.V2ApiMapper;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import tk.mybatis.mapper.entity.Example;
 
@@ -41,13 +42,22 @@ public class FriendManageController {
     V2ApiMapper v2ApiMapper;
 
     @PostMapping("/friend/apply")
+    @Transactional
     public WebResponse friendApply(@RequestBody Map<String, Long> req) {
+        //
         Friend f = new Friend();
         f.setAccountId(req.get("A"));
         f.setFriendAccountId(req.get("B"));
         f.setStatus(FriendStatus.apply.getStatus());
         friendMapper.insertSelective(f);
 
+        Friend f2 = new Friend();
+        f2.setAccountId(req.get("B"));
+        f2.setFriendAccountId(req.get("A"));
+        f2.setStatus(FriendStatus.todo.getStatus());
+        friendMapper.insertSelective(f2);
+
+        //消息通知
         Message message = new Message();
         message.setMessageId(Utils.generateId());
         message.setFromUser(req.get("A"));
@@ -65,11 +75,18 @@ public class FriendManageController {
             Friend f = new Friend();
             f.setStatus(FriendStatus.friend.getStatus());
 
+            // 跟新两个人的好友关系
             Example e1 = new Example(Friend.class);
             e1.createCriteria()
                     .andEqualTo("friendAccountId", req.get("A"))
                     .andEqualTo("accountId", req.get("B"));
             friendMapper.updateByExampleSelective(f, e1);
+
+            Example e2 = new Example(Friend.class);
+            e2.createCriteria()
+                    .andEqualTo("friendAccountId", req.get("B"))
+                    .andEqualTo("accountId", req.get("A"));
+            friendMapper.updateByExampleSelective(f, e2);
 
             Message message = new Message();
             message.setMessageId(Utils.generateId());
@@ -89,12 +106,18 @@ public class FriendManageController {
                     .andEqualTo("accountId", req.get("B"));
             friendMapper.updateByExampleSelective(f, e1);
 
-            Message message = new Message();
-            message.setMessageId(Utils.generateId());
-            message.setFromUser(req.get("A"));
-            message.setToUser(req.get("B"));
-            message.setType(MessageType.REJECT.getValue());
-            messageMapper.insertSelective(message);
+            /**
+             * 1、拒绝机制变更
+             * 现象：A拒绝B的好友申请后，B会收到通知（消息模块上线的情况下）
+             * 调整为：A拒绝B的好友申请后，B不会收到任何通知，且A的名片对于B一直保持“已申请”的状态。
+             * 原因：不引导用户间发生负面反馈
+             */
+//            Message message = new Message();
+//            message.setMessageId(Utils.generateId());
+//            message.setFromUser(req.get("A"));
+//            message.setToUser(req.get("B"));
+//            message.setType(MessageType.REJECT.getValue());
+//            messageMapper.insertSelective(message);
         }
 
         return new WebResponse();
@@ -108,7 +131,7 @@ public class FriendManageController {
         Long accountId = (Long) request.getAttribute("accountId");
 
         PageHelper.startPage(pageIndex, pageSize);
-        List<FriendDTO> friends = v2ApiMapper.getFriends(accountId);
+        List<FriendDTO> friends = friendMapper.getFriends(accountId);
 
         return new WebResponse().success(new PageResult(((Page) friends).getTotal(), friends));
     }

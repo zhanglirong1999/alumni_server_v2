@@ -24,12 +24,9 @@ public interface V2ApiMapper {
 
     List<BriefInfo> searchBySelfDesc(String content);
 
-    List<FriendDTO> getFriends(Long accountId);
-
-    Friend getRelationShip(long myAccountId, long accountId);
-
     List<Account> test(long accountId);
 
     List<BriefInfo> recommand(BriefInfo briefInfo);
-    BriefInfo getBriefInfo ();
+
+    BriefInfo getBriefInfo();
 }

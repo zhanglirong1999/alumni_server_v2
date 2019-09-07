@@ -11,19 +11,26 @@ import cn.edu.seu.alumni_server.controller.dto.JobDTO;
 import cn.edu.seu.alumni_server.controller.dto.enums.FriendStatus;
 import cn.edu.seu.alumni_server.dao.entity.*;
 import cn.edu.seu.alumni_server.dao.mapper.*;
+import cn.edu.seu.alumni_server.service.CommonService;
+import cn.edu.seu.alumni_server.service.impl.CommonServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import tk.mybatis.mapper.entity.Example;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @SuppressWarnings("ALL")
 @RestController
 @Acl
 public class AccountAllController {
+
+    @Autowired
+    HttpServletRequest request;
+    @Autowired
+    V2ApiMapper v2ApiMapper;
+    @Autowired
+    CommonService commonService;
 
     @Autowired
     AccountMapper accountMapper;
@@ -34,11 +41,7 @@ public class AccountAllController {
     @Autowired
     FriendMapper friendMapper;
     @Autowired
-    V2ApiMapper v2ApiMapper;
-    @Autowired
     MessageMapper messageMapper;
-    @Autowired
-    HttpServletRequest request;
     @Autowired
     FavoriteMapper favoriteMapper;
 
@@ -63,7 +66,6 @@ public class AccountAllController {
         return new WebResponse().success();
     }
 
-
     /**
      * 获取个人信息大对象
      *
@@ -75,9 +77,11 @@ public class AccountAllController {
     public WebResponse<AccountAllDTO> getAccountInfo(@RequestParam Long accountId) {
 
         Long myAccountId = (Long) request.getAttribute(CONST.ACL_ACCOUNTID);
-        AccountAllDTO accountAllDTO = getAccountAllDTOById(accountId);
+
+        AccountAllDTO accountAllDTO = commonService.getAccountAllDTOById(accountId);
         if (!myAccountId.equals(accountId)) {
-            Friend relationShip = v2ApiMapper.getRelationShip(myAccountId, accountId);
+            // 获取两人关系
+            Friend relationShip = friendMapper.getRelationShip(myAccountId, accountId);
             if (relationShip != null) {
                 accountAllDTO.setRelationShip(relationShip.getStatus());
                 if (relationShip.getStatus() != FriendStatus.friend.getStatus()) {
@@ -86,6 +90,7 @@ public class AccountAllController {
                     accountAllDTO.getAccount().setPhone(null);
                 }
             }
+            // 获取收藏状态
             Favorite favorite = new Favorite();
             favorite.setAccountId(myAccountId);
             favorite.setFavoriteAccountId(accountId);
@@ -97,38 +102,6 @@ public class AccountAllController {
 
         return new WebResponse<AccountAllDTO>().success(accountAllDTO);
     }
-
-    public AccountAllDTO getAccountAllDTOById(Long accountId) {
-
-        AccountAllDTO accountAllDTO = new AccountAllDTO();
-        // 查询 account 信息
-        accountAllDTO.setAccount(new AccountDTO(accountMapper.selectByPrimaryKey(accountId)));
-
-        // 查询 education 信息
-//        Education e = new Education();
-//        e.setAccountId(accountId);
-
-        Example example1 = new Example(Education.class);
-        example1.orderBy("endTime").desc();
-        example1.createCriteria().andEqualTo("accountId", accountId);
-        accountAllDTO.setEducations(educationMapper.selectByExample(example1)
-                .stream().map(education -> {
-                    return new EducationDTO(education);
-                }).collect(Collectors.toList()));
-
-        // 查询 job 信息
-//        Job j = new Job();
-//        j.setAccountId(accountId);
-        Example example2 = new Example(Job.class);
-        example2.orderBy("endTime").desc();
-        example2.createCriteria().andEqualTo("accountId", accountId);
-        accountAllDTO.setJobs(jobMapper.selectByExample(example2)
-                .stream().map(job -> {
-                    return new JobDTO(job);
-                }).collect(Collectors.toList()));
-        return accountAllDTO;
-    }
-
 
     @GetMapping("/education")
     public WebResponse getEducation(@RequestParam Long educationId) {
