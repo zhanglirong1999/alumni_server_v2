@@ -1,4 +1,4 @@
-package cn.edu.seu.alumni_server.controller.internalRecommend.dto;
+package cn.edu.seu.alumni_server.controller.dto.internalRecommend;
 
 import cn.edu.seu.alumni_server.dao.entity.Comment;
 import lombok.Data;

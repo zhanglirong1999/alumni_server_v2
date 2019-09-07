@@ -1,9 +1,7 @@
 package cn.edu.seu.alumni_server.service.impl;
 
-import cn.edu.seu.alumni_server.common.dto.WebResponse;
-import cn.edu.seu.alumni_server.controller.internalRecommend.dto.CommentDTO;
-import cn.edu.seu.alumni_server.controller.internalRecommend.dto.TopCommentDTO;
-import cn.edu.seu.alumni_server.dao.entity.Comment;
+import cn.edu.seu.alumni_server.controller.dto.internalRecommend.CommentDTO;
+import cn.edu.seu.alumni_server.controller.dto.internalRecommend.TopCommentDTO;
 import cn.edu.seu.alumni_server.dao.mapper.CommentMapper;
 import cn.edu.seu.alumni_server.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +10,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class CommentServiceImpl implements CommentService {

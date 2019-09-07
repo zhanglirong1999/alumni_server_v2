@@ -2,10 +2,9 @@ package cn.edu.seu.alumni_server.controller.internalRecommend;
 
 import cn.edu.seu.alumni_server.common.Utils;
 import cn.edu.seu.alumni_server.common.dto.WebResponse;
-import cn.edu.seu.alumni_server.controller.internalRecommend.dto.CommentDTO;
-import cn.edu.seu.alumni_server.controller.internalRecommend.dto.TopCommentDTO;
+import cn.edu.seu.alumni_server.controller.dto.internalRecommend.CommentDTO;
+import cn.edu.seu.alumni_server.controller.dto.internalRecommend.TopCommentDTO;
 import cn.edu.seu.alumni_server.service.CommentService;
-import cn.edu.seu.alumni_server.service.impl.CommentServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

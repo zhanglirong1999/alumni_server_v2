@@ -14,7 +14,7 @@
         <result column="valid_status" jdbcType="BIT" property="validStatus"/>
     </resultMap>
 
-    <select id="getCommentList" resultType="cn.edu.seu.alumni_server.controller.internalRecommend.dto.CommentDTO">
+    <select id="getCommentList" resultType="cn.edu.seu.alumni_server.controller.dto.internalRecommend.CommentDTO">
         select t1.comment_id        as commentId,
                t1.post_id           as postId,
                t1.top_comment_id    as topCommentId,

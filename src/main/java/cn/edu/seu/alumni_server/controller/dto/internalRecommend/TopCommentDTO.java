@@ -1,4 +1,4 @@
-package cn.edu.seu.alumni_server.controller.internalRecommend.dto;
+package cn.edu.seu.alumni_server.controller.dto.internalRecommend;
 
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
