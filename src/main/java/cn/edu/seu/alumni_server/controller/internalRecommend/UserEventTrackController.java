@@ -1,4 +1,4 @@
-package cn.edu.seu.alumni_server.controller;
+package cn.edu.seu.alumni_server.controller.internalRecommend;
 
 import cn.edu.seu.alumni_server.common.Utils;
 import cn.edu.seu.alumni_server.common.dto.WebResponse;
