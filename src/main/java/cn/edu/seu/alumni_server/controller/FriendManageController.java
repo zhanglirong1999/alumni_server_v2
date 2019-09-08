@@ -49,13 +49,14 @@ public class FriendManageController {
         f.setAccountId(req.get("A"));
         f.setFriendAccountId(req.get("B"));
         f.setStatus(FriendStatus.apply.getStatus());
-        friendMapper.insertSelective(f);
+
+        friendMapper.insertOnDuplicateKeyUpdate(f);
 
         Friend f2 = new Friend();
         f2.setAccountId(req.get("B"));
         f2.setFriendAccountId(req.get("A"));
         f2.setStatus(FriendStatus.todo.getStatus());
-        friendMapper.insertSelective(f2);
+        friendMapper.insertOnDuplicateKeyUpdate(f2);
 
         //消息通知
         Message message = new Message();

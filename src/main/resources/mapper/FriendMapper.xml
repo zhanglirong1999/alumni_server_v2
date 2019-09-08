@@ -13,6 +13,13 @@
         <result column="valid_status" jdbcType="BIT" property="validStatus"/>
     </resultMap>
 
+    <insert id="insertOnDuplicateKeyUpdate"
+            parameterType="cn.edu.seu.alumni_server.dao.entity.Friend">
+        insert into friend
+            (account_id, friend_account_id, status)
+        values (#{accountId}, #{friendAccountId}, #{status})
+        ON DUPLICATE KEY UPDATE status= #{status}
+    </insert>
 
     <select id="getFriends"
             resultType="cn.edu.seu.alumni_server.controller.dto.FriendDTO">

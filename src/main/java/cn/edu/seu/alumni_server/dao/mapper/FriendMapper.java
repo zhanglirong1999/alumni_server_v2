@@ -10,6 +10,8 @@ import java.util.List;
 @Repository
 public interface FriendMapper extends Mapper<Friend> {
     List<FriendDTO> getFriends(Long accountId);
+
     Friend getRelationShip(long myAccountId, long accountId);
 
+    int insertOnDuplicateKeyUpdate(Friend f);
 }
