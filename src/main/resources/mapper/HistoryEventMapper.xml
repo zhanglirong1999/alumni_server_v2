@@ -8,7 +8,7 @@
         <result column="event_id" jdbcType="BIGINT" property="eventId"/>
         <result column="account_id" jdbcType="BIGINT" property="accountId"/>
         <result column="timestamp" jdbcType="TIMESTAMP" property="timestamp"/>
-        <result column="event_type" jdbcType="String" property="eventType"/>
+        <result column="event_type" jdbcType="VARCHAR" property="eventType"/>
         <result column="post_id" jdbcType="BIGINT" property="postId"/>
     </resultMap>
 </mapper>
