@@ -5,7 +5,8 @@ import lombok.Data;
 import org.springframework.beans.BeanUtils;
 
 @Data
-public class PostDTO {
+public class PostDTO4Create {
+    private Long accountId;
     private Long postId;
     private Integer type;
     private String jobName;
@@ -23,10 +24,10 @@ public class PostDTO {
     private String img5;
     private String img6;
 
-    public PostDTO() {
+    public PostDTO4Create() {
     }
 
-    public PostDTO(Post post) {
+    public PostDTO4Create(Post post) {
         BeanUtils.copyProperties(post, this);
     }
 

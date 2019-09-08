@@ -16,25 +16,28 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/event")
-public class UserEventTrackController {
+public class HistoryEventController {
 
     @Autowired
     HistoryEventMapper historyEventMapper;
     @Autowired
     HttpServletRequest request;
 
-    @PostMapping("/view")
+    @PostMapping("/")
     public WebResponse viewAPost(@RequestParam Long postId,
                                  @RequestParam String eventType) {
         Long accountId = (Long) request.getAttribute("accountId");
 
-        EnumUtils.isValidEnum(EventType.class, eventType);
+        if (!EnumUtils.isValidEnum(EventType.class, eventType)) {
+            return new WebResponse().fail("eventType错误");
+        }
 
         HistoryEvent historyEvent = new HistoryEvent();
         historyEvent.setAccountId(accountId);
+        historyEvent.setPostId(postId);
+
         historyEvent.setEventId(Utils.generateId());
-        historyEvent.setEventId(postId);
-//        historyEvent.setEventType(eventType);
+        historyEvent.setEventType(eventType);
 
         historyEventMapper.insertSelective(historyEvent);
         return new WebResponse();

@@ -72,6 +72,14 @@ public class FriendManageController {
     @Transactional
     public WebResponse friendAction(@RequestBody Map<String, Long> req) {
 
+        Long A = req.get("A");
+        Long B = req.get("B");
+
+        if (A == null || B == null) {
+            return new WebResponse().fail("处理人id A,B 不能为null");
+        }
+
+
         if (req.get("action") == CONST.FRIEND_ACTION_Y) {
             Friend f = new Friend();
             f.setStatus(FriendStatus.friend.getStatus());
@@ -99,14 +107,17 @@ public class FriendManageController {
 
         if (req.get("action") == CONST.FRIEND_ACTION_N) {
             Friend f = new Friend();
-            f.setStatus(FriendStatus.stranger.getStatus());
 
+            // B 查看A的名片，被忽略 状态
+            f.setStatus(FriendStatus.ignored.getStatus());
             Example e1 = new Example(Friend.class);
             e1.createCriteria()
                     .andEqualTo("friendAccountId", req.get("A"))
                     .andEqualTo("accountId", req.get("B"));
             friendMapper.updateByExampleSelective(f, e1);
 
+            // A查看B的名片，正常的陌生人状态
+            f.setStatus(FriendStatus.stranger.getStatus());
             Example e2 = new Example(Friend.class);
             e2.createCriteria()
                     .andEqualTo("friendAccountId", req.get("B"))
@@ -128,6 +139,7 @@ public class FriendManageController {
 
         return new WebResponse();
     }
+
     @Autowired
     HttpServletRequest request;
 

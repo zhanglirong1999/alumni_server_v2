@@ -11,6 +11,9 @@ public class Post implements Serializable {
     @Column(name = "post_id")
     private Long postId;
 
+    @Column(name = "account_id")
+    private Long accountId;
+
     private Integer type;
 
     @Column(name = "job_name")
