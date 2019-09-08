@@ -1,7 +1,6 @@
 package cn.edu.seu.alumni_server.controller;
 
 import cn.edu.seu.alumni_server.common.CONST;
-import cn.edu.seu.alumni_server.common.Utils;
 import cn.edu.seu.alumni_server.common.dto.WebResponse;
 import cn.edu.seu.alumni_server.common.token.Acl;
 import cn.edu.seu.alumni_server.controller.dto.FriendDTO;
@@ -9,10 +8,9 @@ import cn.edu.seu.alumni_server.controller.dto.PageResult;
 import cn.edu.seu.alumni_server.controller.dto.enums.FriendStatus;
 import cn.edu.seu.alumni_server.controller.dto.enums.MessageType;
 import cn.edu.seu.alumni_server.dao.entity.Friend;
-import cn.edu.seu.alumni_server.dao.entity.Message;
 import cn.edu.seu.alumni_server.dao.mapper.FriendMapper;
-import cn.edu.seu.alumni_server.dao.mapper.MessageMapper;
 import cn.edu.seu.alumni_server.dao.mapper.V2ApiMapper;
+import cn.edu.seu.alumni_server.service.MessageService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +34,7 @@ public class FriendManageController {
     FriendMapper friendMapper;
 
     @Autowired
-    MessageMapper messageMapper;
+    MessageService messageService;
 
     @Autowired
     V2ApiMapper v2ApiMapper;
@@ -59,12 +57,15 @@ public class FriendManageController {
         friendMapper.insertOnDuplicateKeyUpdate(f2);
 
         //消息通知
-        Message message = new Message();
-        message.setMessageId(Utils.generateId());
-        message.setFromUser(req.get("A"));
-        message.setToUser(req.get("B"));
-        message.setType(MessageType.APPLY.getValue());
-        messageMapper.insertSelective(message);
+//        Message message = new Message();
+//        message.setMessageId(Utils.generateId());
+//        message.setFromUser(req.get("A"));
+//        message.setToUser(req.get("B"));
+//        message.setType(MessageType.APPLY.getValue());
+//        messageMapper.insertSelective(message);
+
+        messageService.newMessage(req.get("A"), req.get("B"),
+                MessageType.APPLY.getValue());
 
         return new WebResponse();
     }
@@ -98,12 +99,15 @@ public class FriendManageController {
                     .andEqualTo("friendAccountId", req.get("B"));
             friendMapper.updateByExampleSelective(f, e2);
 
-            Message message = new Message();
-            message.setMessageId(Utils.generateId());
-            message.setFromUser(req.get("A"));
-            message.setToUser(req.get("B"));
-            message.setType(MessageType.AGREE.getValue());
-            messageMapper.insertSelective(message);
+//            Message message = new Message();
+//            message.setMessageId(Utils.generateId());
+//            message.setFromUser(req.get("A"));
+//            message.setToUser(req.get("B"));
+//            message.setType(MessageType.AGREE.getValue());
+//            messageMapper.insertSelective(message);
+
+            messageService.newMessage(req.get("A"), req.get("B"),
+                    MessageType.AGREE.getValue());
         }
 
         if (req.get("action") == CONST.FRIEND_ACTION_N) {
