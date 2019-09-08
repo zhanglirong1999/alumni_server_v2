@@ -87,14 +87,14 @@ public class FriendManageController {
             // 更新两个人的好友关系
             Example e1 = new Example(Friend.class);
             e1.createCriteria()
-                    .andEqualTo("friendAccountId", req.get("A"))
-                    .andEqualTo("accountId", req.get("B"));
+                    .andEqualTo("accountId", req.get("B"))
+                    .andEqualTo("friendAccountId", req.get("A"));
             friendMapper.updateByExampleSelective(f, e1);
 
             Example e2 = new Example(Friend.class);
             e2.createCriteria()
-                    .andEqualTo("friendAccountId", req.get("B"))
-                    .andEqualTo("accountId", req.get("A"));
+                    .andEqualTo("accountId", req.get("A"))
+                    .andEqualTo("friendAccountId", req.get("B"));
             friendMapper.updateByExampleSelective(f, e2);
 
             Message message = new Message();
@@ -108,20 +108,20 @@ public class FriendManageController {
         if (req.get("action") == CONST.FRIEND_ACTION_N) {
             Friend f = new Friend();
 
-            // B 查看A的名片，被忽略 状态
-            f.setStatus(FriendStatus.ignored.getStatus());
+            // B 查看A的名片，还是申请中状态
+            f.setStatus(FriendStatus.apply.getStatus());
             Example e1 = new Example(Friend.class);
             e1.createCriteria()
-                    .andEqualTo("friendAccountId", req.get("A"))
-                    .andEqualTo("accountId", req.get("B"));
+                    .andEqualTo("accountId", req.get("B"))
+                    .andEqualTo("friendAccountId", req.get("A"));
             friendMapper.updateByExampleSelective(f, e1);
 
             // A查看B的名片，正常的陌生人状态
             f.setStatus(FriendStatus.stranger.getStatus());
             Example e2 = new Example(Friend.class);
             e2.createCriteria()
-                    .andEqualTo("friendAccountId", req.get("B"))
-                    .andEqualTo("accountId", req.get("A"));
+                    .andEqualTo("accountId", req.get("A"))
+                    .andEqualTo("friendAccountId", req.get("B"));
             friendMapper.updateByExampleSelective(f, e2);
             /**
              * 1、拒绝机制变更
