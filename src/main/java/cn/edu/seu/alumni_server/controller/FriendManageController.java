@@ -69,13 +69,14 @@ public class FriendManageController {
     }
 
     @PostMapping("/friend/manage")
+    @Transactional
     public WebResponse friendAction(@RequestBody Map<String, Long> req) {
 
         if (req.get("action") == CONST.FRIEND_ACTION_Y) {
             Friend f = new Friend();
             f.setStatus(FriendStatus.friend.getStatus());
 
-            // 跟新两个人的好友关系
+            // 更新两个人的好友关系
             Example e1 = new Example(Friend.class);
             e1.createCriteria()
                     .andEqualTo("friendAccountId", req.get("A"))
@@ -106,6 +107,11 @@ public class FriendManageController {
                     .andEqualTo("accountId", req.get("B"));
             friendMapper.updateByExampleSelective(f, e1);
 
+            Example e2 = new Example(Friend.class);
+            e2.createCriteria()
+                    .andEqualTo("friendAccountId", req.get("B"))
+                    .andEqualTo("accountId", req.get("A"));
+            friendMapper.updateByExampleSelective(f, e2);
             /**
              * 1、拒绝机制变更
              * 现象：A拒绝B的好友申请后，B会收到通知（消息模块上线的情况下）

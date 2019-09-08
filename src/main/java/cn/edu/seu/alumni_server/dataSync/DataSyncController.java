@@ -6,10 +6,7 @@ import cn.edu.seu.alumni_server.dao.entity.Account;
 import cn.edu.seu.alumni_server.dao.entity.Job;
 import cn.edu.seu.alumni_server.dao.mapper.AccountMapper;
 import cn.edu.seu.alumni_server.dao.mapper.JobMapper;
-import cn.edu.seu.alumni_server.dataSync.entity.Education;
-import cn.edu.seu.alumni_server.dataSync.entity.Personal;
-import cn.edu.seu.alumni_server.dataSync.entity.Personalinfor;
-import cn.edu.seu.alumni_server.dataSync.entity.Work;
+import cn.edu.seu.alumni_server.dataSync.entity.*;
 import cn.edu.seu.alumni_server.dataSync.mapper.*;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -60,14 +57,99 @@ public class DataSyncController {
     @Autowired
     JobMapper jobMapper;
 
+    @Autowired
+    cn.edu.seu.alumni_server.dao.mapper.FriendMapper friendMapperV2;
+
     @GetMapping("/sync")
     public WebResponse dataSync() {
 //        personal2account();
 //        personalInfor2Account();
 //        educationSync();
-        WorkSync();
+//        workSync();
+
+        friendSync();
 
         return new WebResponse();
+    }
+
+    void friendSync() {
+        PageHelper.startPage(1, 1);
+
+        List<Friend> res = friendMapperV1.selectAll();
+
+        long total = ((Page) res).getTotal();
+        int pageNum = 0;
+        int pageSize = 10;
+
+        while (pageNum * pageSize < total) {
+            pageNum++;
+
+            PageHelper.startPage(pageNum, pageSize);
+            List<Friend> resTemp = friendMapperV1.selectAll();
+
+            resTemp.forEach(friend -> {
+                cn.edu.seu.alumni_server.dao.entity.Friend friendV2 =
+                        new cn.edu.seu.alumni_server.dao.entity.Friend();
+
+                Example example = new Example(Account.class);
+                example.createCriteria().andEqualTo("openid", friend.getOpenid());
+                Account account1 = accountMapper.selectOneByExample(example);
+
+                Example example2 = new Example(Account.class);
+                example2.createCriteria().andEqualTo("openid", friend.getFriendid());
+                Account account2 = accountMapper.selectOneByExample(example2);
+
+                if (account1 != null && account2 != null) {
+
+                    friendV2.setAccountId(account1.getAccountId());
+                    friendV2.setFriendAccountId(account2.getAccountId());
+
+                    Integer status = 0;
+                    switch (friend.getState()) {
+                        case "0":
+                            status = 0;
+                            break;
+                        case "1":
+                            status = 2;
+                            break;
+                        case "2":
+                            status = 1;
+                            break;
+                        case "3":
+                            status = 1;
+                            break;
+                        case "4":
+                            status = 0;
+                            break;
+                        case "5":
+                            status = 2;
+                            break;
+                        default:
+                            status = 0;
+                    }
+
+
+                    friendV2.setStatus(status);
+
+                    try {
+                        friendMapperV2.insertSelective(friendV2);
+
+                        cn.edu.seu.alumni_server.dao.entity.Friend friendV22 =
+                                new cn.edu.seu.alumni_server.dao.entity.Friend();
+
+                        friendV22.setStatus(friendV2.getStatus());
+                        friendV22.setAccountId(account2.getAccountId());
+                        friendV22.setFriendAccountId(account1.getAccountId());
+                        friendMapperV2.insertSelective(friendV22);
+                    } catch (Exception e) {
+                        log.info(friend.toString());
+                        e.printStackTrace();
+                    }
+                }
+
+            });
+        }
+
     }
 
     void educationSync() {
@@ -125,7 +207,7 @@ public class DataSyncController {
 
     }
 
-    void WorkSync() {
+    void workSync() {
 
         PageHelper.startPage(1, 1);
         List<Work> res = workMapper.selectAll();

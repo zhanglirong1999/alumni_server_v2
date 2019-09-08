@@ -23,4 +23,19 @@
         <result column="u_time" jdbcType="TIMESTAMP" property="uTime"/>
         <result column="valid_status" jdbcType="BIT" property="validStatus"/>
     </resultMap>
+
+    <update id="dataSync">
+        update account a
+        set registered = 1
+        where a.name != ''
+          and a.name is not null
+          and a.gender != ''
+          and a.gender is not null
+          and a.openid != ''
+          and a.openid is not null
+          and a.phone != ''
+          and a.phone is not null
+          and a.wechat != ''
+          and a.wechat is not null
+    </update>
 </mapper>

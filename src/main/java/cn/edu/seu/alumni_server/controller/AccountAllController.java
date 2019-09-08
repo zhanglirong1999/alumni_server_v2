@@ -67,7 +67,7 @@ public class AccountAllController {
     }
 
     /**
-     * 获取个人信息大对象
+     * 获取指定accountId的个人信息大对象，根据关系，返回值会不同
      *
      * @param accountId
      * @return
