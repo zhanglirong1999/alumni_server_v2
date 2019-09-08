@@ -42,19 +42,27 @@ public class FriendManageController {
     @PostMapping("/friend/apply")
     @Transactional
     public WebResponse friendApply(@RequestBody Map<String, Long> req) {
-        //
         Friend f = new Friend();
         f.setAccountId(req.get("A"));
         f.setFriendAccountId(req.get("B"));
-        f.setStatus(FriendStatus.apply.getStatus());
 
-        friendMapper.insertOnDuplicateKeyUpdate(f);
+        f = friendMapper.selectOne(f);
+        if (f.getStatus() == FriendStatus.apply.getStatus()) {
+            return new WebResponse().fail("请勿重复申请");
+        }
 
-        Friend f2 = new Friend();
-        f2.setAccountId(req.get("B"));
-        f2.setFriendAccountId(req.get("A"));
-        f2.setStatus(FriendStatus.todo.getStatus());
-        friendMapper.insertOnDuplicateKeyUpdate(f2);
+        Friend A2B = new Friend();
+        A2B.setAccountId(req.get("A"));
+        A2B.setFriendAccountId(req.get("B"));
+        A2B.setStatus(FriendStatus.apply.getStatus());
+
+        friendMapper.insertOnDuplicateKeyUpdate(A2B);
+
+        Friend B2A = new Friend();
+        B2A.setAccountId(req.get("B"));
+        B2A.setFriendAccountId(req.get("A"));
+        B2A.setStatus(FriendStatus.todo.getStatus());
+        friendMapper.insertOnDuplicateKeyUpdate(B2A);
 
         //消息通知
 //        Message message = new Message();
