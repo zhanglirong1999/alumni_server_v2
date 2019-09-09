@@ -46,8 +46,8 @@ public class FriendManageController {
         f.setAccountId(req.get("A"));
         f.setFriendAccountId(req.get("B"));
 
-        f = friendMapper.selectOne(f);
-        if (f.getStatus() == FriendStatus.apply.getStatus()) {
+        Friend fRes = friendMapper.selectOne(f);
+        if (fRes != null && fRes.getStatus() == FriendStatus.apply.getStatus()) {
             return new WebResponse().fail("请勿重复申请");
         }
 
