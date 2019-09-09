@@ -12,7 +12,7 @@
         <result column="u_time" jdbcType="TIMESTAMP" property="uTime"/>
     </resultMap>
 
-    <select id="queryCollenctionByAccount" resultType="cn.edu.seu.alumni_server.dao.entity.MyCollection">
+    <select id="queryCollenctionListByAccount" resultType="cn.edu.seu.alumni_server.dao.entity.MyCollection">
         SELECT *
         FROM my_collection
         WHERE account_id = #{accountId}

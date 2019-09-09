@@ -16,7 +16,7 @@ public class Like implements Serializable {
 
     private Integer type;
 
-    private Integer status;
+    private Boolean status;
 
     private Date cTime;
 
