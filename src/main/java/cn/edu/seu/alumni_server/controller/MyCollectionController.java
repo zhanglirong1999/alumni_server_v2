@@ -1,6 +1,7 @@
 package cn.edu.seu.alumni_server.controller;
 
 import cn.edu.seu.alumni_server.common.dto.WebResponse;
+import cn.edu.seu.alumni_server.common.token.Acl;
 import cn.edu.seu.alumni_server.dao.entity.MyCollection;
 import cn.edu.seu.alumni_server.dao.mapper.MyCollectionMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @RestController
+@Acl
 public class MyCollectionController {
 
     @Autowired
