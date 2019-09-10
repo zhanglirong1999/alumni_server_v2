@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @RestController
-@Acl
+//@Acl
 public class MyCollectionController {
 
     @Autowired
@@ -31,10 +31,10 @@ public class MyCollectionController {
         MyCollection myCollection = new MyCollection();
         myCollection.setAccountId(accountId);
         myCollection.setResourceId(resourceId);
-        myCollection.setType(type);
-        myCollection.setStatus(status);
 
         if(myCollectionMapper.select(myCollection).size() == 0) {
+            myCollection.setType(type);
+            myCollection.setStatus(status);
             myCollectionMapper.insertSelective(myCollection);
         }
         else{
@@ -43,9 +43,15 @@ public class MyCollectionController {
             criteria.andEqualTo("accountId", accountId);
             criteria.andEqualTo("resourceId", resourceId);
 
+            myCollection.setType(type);
+            myCollection.setStatus(status);
+
             myCollectionMapper.updateByExampleSelective(myCollection, example);
         }
         return new WebResponse();
     }
+
+
+
 
 }

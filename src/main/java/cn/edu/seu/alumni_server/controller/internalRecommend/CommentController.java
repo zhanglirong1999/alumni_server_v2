@@ -3,6 +3,7 @@ package cn.edu.seu.alumni_server.controller.internalRecommend;
 import cn.edu.seu.alumni_server.common.CONST;
 import cn.edu.seu.alumni_server.common.Utils;
 import cn.edu.seu.alumni_server.common.dto.WebResponse;
+import cn.edu.seu.alumni_server.common.token.Acl;
 import cn.edu.seu.alumni_server.controller.dto.internalRecommend.CommentDTO;
 import cn.edu.seu.alumni_server.controller.dto.internalRecommend.TopCommentDTO;
 import cn.edu.seu.alumni_server.service.CommentService;

@@ -20,7 +20,7 @@ public class Like implements Serializable {
 
     private Date cTime;
 
-    private Data uTime;
+    private Date uTime;
 
     private static final long serialVersionUID = 1L;
 }

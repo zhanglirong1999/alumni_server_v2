@@ -8,6 +8,6 @@ import java.util.List;
 
 @Repository
 public interface MyCollectionMapper extends Mapper<MyCollection> {
-    List<MyCollection> queryCollenctionListByAccount(Long accountId);
+
 
 }

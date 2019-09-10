@@ -32,51 +32,17 @@ public class LikeController {
         Like like = new Like();
         like.setAccountId(accountId);
         like.setResourceId(resourceId);
+        like.setStatus(status);
+        like.setType(type);
 
-        if(likeMapper.select(like).size() == 0) {
-            like.setStatus(status);
-            like.setType(type);
-            likeMapper.insertSelective(like);
+        if(likeMapper.queryLikeList(like).size() == 0) {
+            likeMapper.insertLike(like);
         }
         else {
-            Example example = new Example(Like.class);
-            Example.Criteria criteria = example.createCriteria();
-            criteria.andEqualTo("accountId", accountId);
-            criteria.andEqualTo("resourceId", resourceId);
-            like.setStatus(status);
-            like.setType(type);
-            likeMapper.updateByExampleSelective(like, example);
+            likeMapper.updateLike(like);
         }
         return new WebResponse();
     }
-
-//    @PostMapping("/likeStatus")
-//    public WebResponse changeLike(@RequestBody Map req){
-//        Long accountId = (Long)req.get("accountId");
-//        Long resourceId = (Long)req.get("resourceId");
-//        Integer type = (Integer)req.get("type");
-//        Boolean status = (Boolean)req.get("status");
-//
-//        Like like = new Like();
-//        like.setAccountId(accountId);
-//        like.setResourceId(resourceId);
-//
-//        if(likeMapper.select(like).size() == 0) {
-//            like.setStatus(status);
-//            like.setType(type);
-//            likeMapper.insertSelective(like);
-//        }
-//        else {
-//            Example example = new Example(Like.class);
-//            Example.Criteria criteria = example.createCriteria();
-//            criteria.andEqualTo("accountId", accountId);
-//            criteria.andEqualTo("resourceId", resourceId);
-//            like.setStatus(status);
-//            like.setType(type);
-//            likeMapper.updateByExampleSelective(like, example);
-//        }
-//        return new WebResponse();
-//    }
 
 
 }
