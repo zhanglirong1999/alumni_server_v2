@@ -19,15 +19,11 @@ public class EducationDTO {
 
     public EducationDTO(Education education) {
         BeanUtils.copyProperties(education, this);
-        this.setStartTime(education.getStartTime());
-        this.setEndTime(education.getEndTime());
     }
 
     public Education toEducation() {
         Education education = new Education();
         BeanUtils.copyProperties(this, education);
-        education.setStartTime(this.getStartTime());
-        education.setEndTime(this.getEndTime());
         return education;
     }
 }

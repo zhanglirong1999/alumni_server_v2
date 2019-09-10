@@ -267,7 +267,7 @@
                where d.account_id = #{accountId}
                  and d.status = 2)
           and a.account_id != #{accountId}
-        order by recommondReason
+        order by recommondReason DESC
     </select>
     <!--  (long myAccountId, long accountId)  -->
 </mapper>
