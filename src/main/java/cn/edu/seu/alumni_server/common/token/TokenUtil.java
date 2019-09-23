@@ -1,9 +1,6 @@
 package cn.edu.seu.alumni_server.common.token;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.util.StringUtils;
 
@@ -13,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class TokenUtil {
     public static final String TOKEN_HEADER = "X-Wx-Token";
-    static final long EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;
+    static final long EXPIRE_TIME = 1000 * 5;
     static final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
     // TODO 换成redis
@@ -35,8 +32,21 @@ public class TokenUtil {
         }
     }
 
-    public static String createToken(String accountId) {
+    public static String createToken(String accountId) throws ExpiredJwtException {
+
         if (tokens.get(accountId) != null) {
+
+            // 解析下，超时会跑异常
+            try {
+                Jwts.parser().setSigningKey(key).parseClaimsJws(tokens.get(accountId));
+            } catch (ExpiredJwtException e) {
+                // 超时，重新生成
+                e.printStackTrace();
+                String token = createJWT(accountId);
+                   tokens.put(accountId, token);
+                return token;
+            }
+
             return tokens.get(accountId);
         }
 
