@@ -67,7 +67,7 @@ public class DataSyncController {
 //        educationSync();
 //        workSync();
 
-        friendSync();
+//        friendSync();
 
         return new WebResponse();
     }
