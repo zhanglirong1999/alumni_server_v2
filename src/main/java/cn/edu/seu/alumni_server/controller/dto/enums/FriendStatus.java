@@ -1,5 +1,22 @@
 package cn.edu.seu.alumni_server.controller.dto.enums;
 
+
+/**
+ * 1. A,B 陌生人
+ * <p>
+ * 2.A向B发起好友请求
+ * db里面会插入两条记录
+ * A - B apply
+ * B - A todo
+ * <p>
+ * 3.B 同意/忽略
+ * - 同意
+ * A - B friend
+ * B - A friend
+ * - 拒绝
+ * A - B ignored
+ * B - A stranger
+ */
 public enum FriendStatus {
 
     /**

@@ -13,10 +13,12 @@ import cn.edu.seu.alumni_server.dao.entity.*;
 import cn.edu.seu.alumni_server.dao.mapper.*;
 import cn.edu.seu.alumni_server.service.CommonService;
 import cn.edu.seu.alumni_server.service.impl.CommonServiceImpl;
+import org.apache.http.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 
@@ -44,6 +46,9 @@ public class AccountAllController {
     MessageMapper messageMapper;
     @Autowired
     FavoriteMapper favoriteMapper;
+
+    @Autowired
+    HttpServletResponse httpServletResponse;
 
     @GetMapping("/account")
     public WebResponse getAccount() {

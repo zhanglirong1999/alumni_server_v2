@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * 系统测试用
@@ -36,7 +37,10 @@ public class TestController {
     ConstMajorMapper constMajorMapper;
 
     @RequestMapping("/")
-    String demo() {
+    String demo(@RequestParam String a,
+                @RequestBody Map b) {
+        System.out.println(a);
+        System.out.println(b.toString());
         return "ok";
     }
     @Autowired

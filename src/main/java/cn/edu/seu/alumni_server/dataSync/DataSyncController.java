@@ -24,6 +24,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+
+/**
+ * 数据库同步代码，v2版本做了数据库表的大调整
+ * 主要是把v1版本db数据（cAuth），同步到新的db(alumnidb_dev)
+ */
 @RestController
 @RequestMapping("/data")
 @Slf4j
