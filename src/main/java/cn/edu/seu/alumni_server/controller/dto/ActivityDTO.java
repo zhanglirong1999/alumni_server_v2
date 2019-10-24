@@ -1,16 +1,18 @@
-package cn.edu.seu.alumni_server.dao.entity;
+package cn.edu.seu.alumni_server.controller.dto;
 
-
+import cn.edu.seu.alumni_server.dao.entity.Activity;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.beans.BeanUtils;
 
-import javax.persistence.Column;
-import java.io.Serializable;
 import java.util.Date;
 
-
 @Data
-public class Activity implements Serializable {
+@AllArgsConstructor
+@NoArgsConstructor
+public class ActivityDTO {
     private Long activityId;
 
     private Long alumniCircleId;
@@ -39,13 +41,13 @@ public class Activity implements Serializable {
 
     private String img6;
 
-    private Boolean visibleStatus;
+    public ActivityDTO(Activity activity) {
+        BeanUtils.copyProperties(activity, this);
+    }
 
-    private Boolean validStatus;
-
-    private Date cTime;  // 创建时间
-
-    private Date uTime;  // 更新时间
-
-    private static final long serialVersionUID = 1L;
+    public Activity toActivity() {
+        Activity activity = new Activity();
+        BeanUtils.copyProperties(this, activity);
+        return activity;
+    }
 }
