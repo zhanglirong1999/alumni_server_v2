@@ -32,7 +32,6 @@ public class WebResponse<T> {
     }
 
     /* 快捷方式 */
-
     public WebResponse() {
         this.status = CONST.SUCCESS_CODE;
         this.message = CONST.SUCCESS_MESSAGE_DEFAULT;
