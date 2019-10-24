@@ -62,7 +62,7 @@ public class AccountAllController {
         if (accountDTO.getAccountId() != null &&
                 !accountDTO.getAccountId().equals("")) {
             accountMapper.
-                    updateByPrimaryKeySelective(accountDTO.toAccount());
+                updateByPrimaryKeySelective(accountDTO.toAccount());
         } else {
             Account account = accountDTO.toAccount();
             account.setAccountId(Utils.generateId());
