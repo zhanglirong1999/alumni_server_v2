@@ -5,12 +5,14 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import javax.persistence.Column;
+import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.Date;
 
 
 @Data
 public class Activity implements Serializable {
+    @Id
     private Long activityId;
 
     private Long alumniCircleId;
@@ -39,9 +41,9 @@ public class Activity implements Serializable {
 
     private String img6;
 
-    private Boolean visibleStatus;
+    private Boolean visibleStatus;  // 是否全网可见
 
-    private Boolean validStatus;
+    private Boolean validStatus;  // 判断是否有效, 暂且认为超过活动时间就无效
 
     private Date cTime;  // 创建时间
 

@@ -7,8 +7,8 @@
         <result column="account_id" jdbcType="BIGINT" property="accountId"/>
         <result column="activity_name" jdbcType="VARCHAR" property="activityName"/>
         <result column="activity_desc" jdbcType="VARCHAR" property="activityDesc"/>
-        <result column="activity_time" jdbcType="TIMESTAMP" property="activityTime"/>
-        <result column="expiration_time" jdbcType="TIMESTAMP" property="expirationTime"/>
+        <result column="activity_time" jdbcType="DATE" property="activityTime"/>
+        <result column="expiration_time" jdbcType="DATE" property="expirationTime"/>
         <result column="img1" jdbcType="VARCHAR" property="img1"/>
         <result column="img2" jdbcType="VARCHAR" property="img2"/>
         <result column="img3" jdbcType="VARCHAR" property="img3"/>
@@ -20,5 +20,10 @@
         <result column="c_time" jdbcType="TIMESTAMP" property="cTime"/>
         <result column="u_time" jdbcType="TIMESTAMP" property="uTime"/>
     </resultMap>
-
+    <select id="getBasicInfos" resultType="java.util.HashMap">
+        SELECT ACT.activity_id, ACT.activity_name, ACC.name, ACT.activity_desc, ACT.expiration_time, ACT.activity_time,
+        ACT.img1, ACT.img2, ACT.img3, ACT.img4, ACT.img5, ACT.img6, COUNT(ACT_MEM.account_id) AS activity_members_num
+        FROM activity AS ACT, account AS ACC, activity_member AS ACT_MEM
+        WHERE ACT.account_id = ACC.account_id AND ACT.activity_id = ACT_MEM.activity_id AND ACT.activity_id = #{activityId};
+    </select>
 </mapper>

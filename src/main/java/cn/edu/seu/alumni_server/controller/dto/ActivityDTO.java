@@ -41,6 +41,11 @@ public class ActivityDTO {
 
     private String img6;
 
+    private Boolean visibleStatus;  // 是否全网可见
+
+    // 注意是否有效前端不需要传入, 有后端计算得出.
+    private Boolean validStatus;  // 判断是否有效, 暂且认为超过活动时间就无效
+
     public ActivityDTO(Activity activity) {
         BeanUtils.copyProperties(activity, this);
     }
