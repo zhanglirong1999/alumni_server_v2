@@ -4,4 +4,14 @@
     <resultMap id="BaseResultMap" type="cn.edu.seu.alumni_server.dao.entity.ActivityMember">
     </resultMap>
 
+    <select id="getActivityMemberInfosByActivityId" resultType="cn.edu.seu.alumni_server.dao.entity.Account">
+        SELECT AC.*
+        FROM activity_member AS AM, account AS AC
+        WHERE AM.account_id = AC.account_id AND AM.activity_id = #{activityId};
+    </select>
+    <update id="updateAllActivityMembersReadStatusByActivityId">
+        UPDATE activity_member AS A
+        SET A.read_status = #{readStatus}
+        WHERE A.activity_id = #{activityId};
+    </update>
 </mapper>
