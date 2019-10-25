@@ -6,6 +6,8 @@ import org.springframework.stereotype.Repository;
 import tk.mybatis.mapper.common.Mapper;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 @Repository
 public interface ActivityMapper extends Mapper<Activity> {
@@ -15,5 +17,20 @@ public interface ActivityMapper extends Mapper<Activity> {
      * @param activityId 活动 id.
      * @return 查询的结果 json 对象.
      */
-    HashMap<String, Object> getBasicInfos(Long activityId);
+    HashMap<String, Object> getBasicInfosByActivityId(Long activityId);
+
+    /**
+     * 根据输入的发起成员的 id, 获取到所有发起的活动的基本信息.
+     * @param accountId 发起成员 id.
+     * @return 该成员所有发起的活动.
+     */
+    List<HashMap<String, Object>> getBasicInfosByStarterAccountId(Long accountId);
+
+    /**
+     * 获取该用户所有参与的活动的基本信息.
+     * @param accountId 参与活动的 id.
+     * @return list
+     */
+    List<HashMap<String, Object>> getBasicInfosByEnrolledAccountId(Long accountId);
+
 }

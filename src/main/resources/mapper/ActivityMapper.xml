@@ -20,10 +20,32 @@
         <result column="c_time" jdbcType="TIMESTAMP" property="cTime"/>
         <result column="u_time" jdbcType="TIMESTAMP" property="uTime"/>
     </resultMap>
-    <select id="getBasicInfos" resultType="java.util.HashMap">
+    <select id="getBasicInfosByActivityId" resultType="java.util.HashMap">
         SELECT ACT.activity_id, ACT.activity_name, ACC.name, ACT.activity_desc, ACT.expiration_time, ACT.activity_time,
         ACT.img1, ACT.img2, ACT.img3, ACT.img4, ACT.img5, ACT.img6, COUNT(ACT_MEM.account_id) AS activity_members_num
         FROM activity AS ACT, account AS ACC, activity_member AS ACT_MEM
         WHERE ACT.account_id = ACC.account_id AND ACT.activity_id = ACT_MEM.activity_id AND ACT.activity_id = #{activityId};
+    </select>
+    <select id="getBasicInfosByStarterAccountId" resultType="java.util.HashMap">
+        SELECT ACT.activity_id, ACT.activity_name, ACC.name, ACT.activity_desc, ACT.expiration_time, ACT.activity_time,
+        ACT.img1, ACT.img2, ACT.img3, ACT.img4, ACT.img5, ACT.img6, COUNT(ACT_MEM.account_id) AS activity_members_num
+        FROM activity AS ACT, account AS ACC, activity_member AS ACT_MEM
+        WHERE ACT.account_id = ACC.account_id AND ACT.activity_id = ACT_MEM.activity_id AND ACT.activity_id IN (
+            SELECT ACT1.activity_id
+            FROM activity AS ACT1
+            WHERE ACT1.account_id = #{accountId}
+        )
+        GROUP BY ACT.activity_id;
+    </select>
+    <select id="getBasicInfosByEnrolledAccountId" resultType="java.util.HashMap">
+        SELECT ACT.activity_id, ACT.activity_name, ACC.name, ACT.activity_desc, ACT.expiration_time, ACT.activity_time,
+        ACT.img1, ACT.img2, ACT.img3, ACT.img4, ACT.img5, ACT.img6, COUNT(ACT_MEM.account_id) AS activity_members_num
+        FROM activity AS ACT, account AS ACC, activity_member AS ACT_MEM
+        WHERE ACT.account_id = ACC.account_id AND ACT.activity_id = ACT_MEM.activity_id AND ACT.activity_id IN (
+            SELECT AM1.activity_id
+            FROM activity_member AS AM1
+            WHERE AM1.account_id = #{accountId}
+        )
+        GROUP BY ACT.activity_id;
     </select>
 </mapper>

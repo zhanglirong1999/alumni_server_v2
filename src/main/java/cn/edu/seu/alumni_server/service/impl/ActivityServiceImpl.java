@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 @Service
 @SuppressWarnings("ALL")
@@ -98,9 +99,28 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
-    public HashMap<String, Object> queryBasicInfoOfActivity(Long activityId) throws ActivityServiceException {
+    public HashMap<String, Object> queryBasicInfoOfActivityByActivityId(Long activityId)
+        throws ActivityServiceException {
         if (activityId == null)
             throw new ActivityServiceException("Activity id is null.");
-        return this.activityMapper.getBasicInfos(activityId);
+        return this.activityMapper.getBasicInfosByActivityId(activityId);
+    }
+
+    @Override
+    public List<HashMap<String, Object>> queryBasicInfoOfActivityByStarterAccountId(
+        Long accountId
+    ) throws ActivityServiceException {
+        if (accountId == null)
+            throw new ActivityServiceException("The account id is null");
+        return this.activityMapper.getBasicInfosByStarterAccountId(accountId);
+    }
+
+    @Override
+    public List<HashMap<String, Object>> queryBasicInfosOfActivityByEnrolledAccountId(
+        Long accountId
+    ) throws ActivityServiceException {
+        if (accountId == null)
+            throw new ActivityServiceException("The account id is null");
+        return this.activityMapper.getBasicInfosByEnrolledAccountId(accountId);
     }
 }

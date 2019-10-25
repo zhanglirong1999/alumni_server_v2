@@ -5,6 +5,7 @@ import cn.edu.seu.alumni_server.controller.dto.ActivityDTO;
 import cn.edu.seu.alumni_server.dao.entity.Activity;
 
 import java.util.HashMap;
+import java.util.List;
 
 public interface ActivityService {
 
@@ -83,11 +84,30 @@ public interface ActivityService {
     public void deleteActivity(Activity activity);
 
     /**
-     * 向数据库查询基本关于某个活动的基本信息的基本信息.
+     * 通过活动 id, 向数据库查询基本关于某个活动的基本信息.
      * @param activityId 活动的 id.
      * @return 对应的一个 Map.
      * @throws ActivityServiceException 活动服务异常.
      */
-    public HashMap<String, Object> queryBasicInfoOfActivity(Long activityId)
+    public HashMap<String, Object> queryBasicInfoOfActivityByActivityId(Long activityId)
         throws ActivityServiceException;
+
+    /**
+     * 通过发起者账户 id, 向数据库查询其发起的活动的基本信息.
+     * @param accountId 发起者账户
+     * @return 所有发起活动的基本信息.
+     */
+    public List<HashMap<String, Object>> queryBasicInfoOfActivityByStarterAccountId(
+        Long accountId
+    ) throws ActivityServiceException;
+
+    /**
+     * 通过参与者的账户 id, 向数据库查询其参与的活动的基本信息.
+     * @param accountId 参与者的账户 id.
+     * @return 活动的基本信息.
+     * @throws ActivityServiceException 可能出现的账号 null 异常.
+     */
+    public List<HashMap<String, Object>> queryBasicInfosOfActivityByEnrolledAccountId(
+        Long accountId
+    ) throws ActivityServiceException;
 }
