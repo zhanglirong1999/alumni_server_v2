@@ -52,12 +52,21 @@ public class ActivityMemberServiceImpl implements ActivityMemberService {
     }
 
     @Override
-    public void updateAllActivityMembersReadStatusUnread(Long activityId)
+    public void updateAllActivityMembersReadStatus(Long activityId, Boolean readStatus)
         throws ActivityMemberServiceException {
         if (activityId == null)
             throw new ActivityMemberServiceException("The activity id is null");
-        this.activityMemberMapper.updateAllActivityMembersReadStatusByActivityId(
-            activityId, false  // 设置全体状态为未读.
+        this.activityMemberMapper.updateAllActivityMembersExceptStarterReadStatusByActivityId(
+            activityId, readStatus  // 设置全体状态为未读.
         );
+    }
+
+    @Override
+    public void updateOneActivityMemberReadStatus(
+        Long activityId, Long accountId, Boolean readStatus
+    ) throws ActivityMemberServiceException {
+        if (accountId == null)
+            throw new ActivityMemberServiceException("The account id is null or empty.");
+        this.activityMemberMapper.updateByPrimaryKey(new ActivityMemberDTO(activityId, accountId, readStatus).toActivityMember());
     }
 }

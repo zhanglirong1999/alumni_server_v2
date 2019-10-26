@@ -21,13 +21,16 @@ public class ActivityMemberController {
     @Autowired
     private ActivityMemberService activityMemberService;
 
-    @PostMapping("/activities/{activityId}/members")
+    @PostMapping("/activities/members")
     public WebResponse addAccount2Activity(
-        @PathVariable(name="activityId")
+        @RequestParam(value="activityId", required=true)
         Long activityId,
-        @RequestBody ActivityMemberDTO activityMemberDTO
+        @RequestParam(value="accountId", required=true)
+        Long accountId
     ) {
+        ActivityMemberDTO activityMemberDTO = new ActivityMemberDTO();
         activityMemberDTO.setActivityId(activityId);
+        activityMemberDTO.setAccountId(accountId);
         try {
             ActivityMember activityMember =
                 this.activityMemberService.addMember2ActivityDAO(activityMemberDTO);
@@ -42,9 +45,9 @@ public class ActivityMemberController {
         }
     }
 
-    @GetMapping("/activities/{activityId}/members")
+    @GetMapping("/activities/members")
     public WebResponse getMembersOfActivityByActivityId(
-        @PathVariable(name="activityId") Long activityId
+        @RequestParam(value="activityId") Long activityId
     ) {
         try {
             List<Account> accountDAOs =
@@ -66,25 +69,46 @@ public class ActivityMemberController {
         }
     }
 
-    @PutMapping("/activities/{activityId}/members")
-    public WebResponse informAllMembersOfActivity(
-        @PathVariable(name="activityId")
-        Long activityId
+    @PutMapping("/activities/members")
+    public WebResponse updateActivityMemberReadStatus(
+        @RequestParam(value="activityId", required=true) Long activityId,
+        @RequestParam(value="accountId", required=false) Long accountId,
+        @RequestParam(value="readStatus", required=true) Boolean readStatus
     ) {
-        try {
-            this.activityMemberService.updateAllActivityMembersReadStatusUnread(
-                activityId
-            );
-            return new WebResponse().success();
-        } catch (ActivityMemberServiceException e) {
-            return new WebResponse().fail(e.getMessage());
-        } catch (Exception e) {
-            return new WebResponse().fail(
-                String.format(
-                    "Severe exception may be caused by sql query when using a wrong activity id %d.",
-                    activityId
-                )
-            );
+        if (null == accountId) {  // 通知全体
+            try {
+                this.activityMemberService.updateAllActivityMembersReadStatus(
+                    activityId,
+                    readStatus
+                );
+                return new WebResponse().success();
+            } catch (ActivityMemberServiceException e) {
+                return new WebResponse().fail(e.getMessage());
+            } catch (Exception e) {
+                return new WebResponse().fail(
+                    String.format(
+                        "Severe exception may be caused by sql query when using a wrong activity id %d.",
+                        activityId
+                    )
+                );
+            }
+        }
+        else {  // 修改一位成员的某一个读取状态
+            try {
+                this.activityMemberService.updateOneActivityMemberReadStatus(
+                    activityId, accountId, readStatus
+                );
+                return new WebResponse().success();
+            } catch (ActivityMemberServiceException e) {
+                return new WebResponse().fail(e.getMessage());
+            } catch (Exception e) {
+                return new WebResponse().fail(
+                    String.format(
+                        "Severe exception may be caused by sql query when using a wrong activity id %d or a wrong account id %d.",
+                        activityId, accountId
+                    )
+                );
+            }
         }
     }
 }

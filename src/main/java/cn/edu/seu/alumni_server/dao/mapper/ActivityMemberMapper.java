@@ -21,5 +21,7 @@ public interface ActivityMemberMapper extends Mapper<ActivityMember> {
      * @param activityId 活动 id.
      * @param readStatus 已读状态.
      */
-    public void updateAllActivityMembersReadStatusByActivityId(Long activityId, Boolean readStatus);
+    public void updateAllActivityMembersExceptStarterReadStatusByActivityId(
+        Long activityId, Boolean readStatus
+    );
 }

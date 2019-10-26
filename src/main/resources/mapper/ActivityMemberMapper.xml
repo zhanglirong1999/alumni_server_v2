@@ -9,9 +9,13 @@
         FROM activity_member AS AM, account AS AC
         WHERE AM.account_id = AC.account_id AND AM.activity_id = #{activityId};
     </select>
-    <update id="updateAllActivityMembersReadStatusByActivityId">
+    <update id="updateAllActivityMembersExceptStarterReadStatusByActivityId">
         UPDATE activity_member AS A
         SET A.read_status = #{readStatus}
-        WHERE A.activity_id = #{activityId};
+        WHERE A.activity_id = #{activityId} AND A.account_id != (
+            SELECT AC.account_id
+            FROM activity AS AC
+            WHERE AC.activity_id = #{activityId}
+        );
     </update>
 </mapper>

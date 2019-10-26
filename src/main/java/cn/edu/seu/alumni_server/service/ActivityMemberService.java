@@ -42,6 +42,15 @@ public interface ActivityMemberService {
      * 根据活动的 id 来设置所有这个活动的成员的状态为未读.
      * @param activityId 活动 id.
      */
-    public void updateAllActivityMembersReadStatusUnread(Long activityId)
+    public void updateAllActivityMembersReadStatus(Long activityId, Boolean readStatus)
         throws ActivityMemberServiceException;
+
+    /**
+     * 根据活动 id 以及账户 id 来设置一个活动中一个成员的读取状态.
+     * @param activityId 活动
+     * @param accountId 成员
+     * @param readStatus 状态
+     */
+    public void updateOneActivityMemberReadStatus(Long activityId, Long accountId, Boolean readStatus) throws ActivityMemberServiceException;
+
 }
