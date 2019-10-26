@@ -1,5 +1,6 @@
 package cn.edu.seu.alumni_server.common.exceptions;
 
+// FINISHED
 public class ActivityMemberServiceException extends ServiceException {
 
     public ActivityMemberServiceException() {
