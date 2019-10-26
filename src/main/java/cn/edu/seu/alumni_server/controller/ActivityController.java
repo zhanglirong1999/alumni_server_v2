@@ -10,7 +10,6 @@ import cn.edu.seu.alumni_server.service.ActivityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.websocket.server.PathParam;
 import java.util.HashMap;
 import java.util.List;
 
@@ -58,8 +57,38 @@ public class ActivityController {
      * @return
      */
     @PutMapping("/activities")
-    public WebResponse updateActivity(@RequestBody ActivityDTO activityDTO) {
+    public WebResponse updateActivity(
+        @RequestParam(value="activityId", required=true)
+            Long activityId,
+        @RequestParam(value="activityName", required=false)
+            String activityName,
+        @RequestParam(value="activityDesc", required=false)
+            String activityDesc,
+        @RequestParam(value="activityTime", required=false)
+            String activityTime,
+        @RequestParam(value="expirationTime", required=false)
+            String expirationTime,
+        @RequestParam(value="img1", required=false)
+            String img1,
+        @RequestParam(value="img2", required=false)
+            String img2,
+        @RequestParam(value="img3", required=false)
+            String img3,
+        @RequestParam(value="img4", required=false)
+            String img4,
+        @RequestParam(value="img5", required=false)
+            String img5,
+        @RequestParam(value="img6", required=false)
+            String img6,
+        @RequestParam(value="visibleStatus", required=false)
+            Boolean visibleStatus
+    ) {
         try {
+            ActivityDTO activityDTO = this.activityService.parseParams2ActivityDTO(
+                activityId,
+                activityName, activityDesc, activityTime, expirationTime,
+                img1, img2, img3, img4, img5, img6, visibleStatus
+            );
             Activity activity = this.activityService.updateActivityDAO(activityDTO);
             this.activityService.updateActivity(activity);
             return new WebResponse().success(new ActivityDTO(activity));
@@ -109,13 +138,13 @@ public class ActivityController {
      * @param accountId 发起者的账户 id
      * @return 响应.
      */
-    @GetMapping("/accounts/{accountId}/activities/startedActivities")
-    public WebResponse getBasicInfosOfActivitiesByStarterAccountId(
-        @PathVariable(name="accountId") Long accountId
+    @GetMapping("/activities/startedActivities")
+    public WebResponse getBasicInfosOfActivitiesByStartedAccountId(
+        @RequestParam Long accountId
     ) {
         try {
             List<HashMap<String, Object>> infos =
-                this.activityService.queryBasicInfoOfActivityByStarterAccountId(
+                this.activityService.queryBasicInfoOfActivityByStartedAccountId(
                     accountId
                 );
             return new WebResponse().success(infos);
@@ -136,9 +165,9 @@ public class ActivityController {
      * @param accountId 账户的账号.
      * @return 参与的活动的基本信息.
      */
-    @GetMapping("/accounts/{accountId}/activities/enrolledActivities")
+    @GetMapping("/activities/enrolledActivities")
     public WebResponse getBasicInfosOfActivitiesByEnrolledAccountId(
-        @PathVariable(name="accountId") Long accountId
+        @RequestParam Long accountId
     ) {
         try {
             List<HashMap<String, Object>> infos =

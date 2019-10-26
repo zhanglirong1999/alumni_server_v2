@@ -97,7 +97,7 @@ public interface ActivityService {
      * @param accountId 发起者账户
      * @return 所有发起活动的基本信息.
      */
-    public List<HashMap<String, Object>> queryBasicInfoOfActivityByStarterAccountId(
+    public List<HashMap<String, Object>> queryBasicInfoOfActivityByStartedAccountId(
         Long accountId
     ) throws ActivityServiceException;
 
@@ -110,4 +110,35 @@ public interface ActivityService {
     public List<HashMap<String, Object>> queryBasicInfosOfActivityByEnrolledAccountId(
         Long accountId
     ) throws ActivityServiceException;
+
+    /**
+     * 将 put 的可变参数根据是否有值解析为活动的 dto
+     * @param activityId id
+     * @param activityName name
+     * @param activityDesc desc
+     * @param activityTime 活动时间
+     * @param expirationTime 截止时间
+     * @param img1 1
+     * @param img2 2
+     * @param img3 3
+     * @param img4 4
+     * @param img5 5
+     * @param img6 6
+     * @return ActivityDTO
+     */
+    public ActivityDTO parseParams2ActivityDTO(
+        Long activityId,
+        String activityName,
+        String activityDesc,
+        String activityTime,
+        String expirationTime,
+        String img1,
+        String img2,
+        String img3,
+        String img4,
+        String img5,
+        String img6,
+        Boolean visibleStatus
+    ) throws ActivityServiceException;
+
 }

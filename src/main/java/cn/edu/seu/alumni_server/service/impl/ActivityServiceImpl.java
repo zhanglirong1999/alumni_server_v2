@@ -9,9 +9,12 @@ import cn.edu.seu.alumni_server.service.ActivityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TimeZone;
 
 @Service
 @SuppressWarnings("ALL")
@@ -107,12 +110,12 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
-    public List<HashMap<String, Object>> queryBasicInfoOfActivityByStarterAccountId(
+    public List<HashMap<String, Object>> queryBasicInfoOfActivityByStartedAccountId(
         Long accountId
     ) throws ActivityServiceException {
         if (accountId == null)
             throw new ActivityServiceException("The account id is null");
-        return this.activityMapper.getBasicInfosByStarterAccountId(accountId);
+        return this.activityMapper.getBasicInfosByStartedAccountId(accountId);
     }
 
     @Override
@@ -122,5 +125,40 @@ public class ActivityServiceImpl implements ActivityService {
         if (accountId == null)
             throw new ActivityServiceException("The account id is null");
         return this.activityMapper.getBasicInfosByEnrolledAccountId(accountId);
+    }
+
+    @Override
+    public ActivityDTO parseParams2ActivityDTO(
+        Long activityId,
+        String activityName, String activityDesc,
+        String activityTime, String expirationTime,
+        String img1, String img2, String img3,
+        String img4, String img5, String img6,
+        Boolean visibleStatus
+    ) throws ActivityServiceException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
+        Date expirationDatetime = null;
+        Date activityDatetime = null;
+        try {
+            expirationDatetime =
+                (null == expirationTime ? null : sdf.parse(expirationTime));
+            activityDatetime =
+                (null == activityTime ? null : sdf.parse(activityTime));
+        } catch (ParseException e) {
+            throw new ActivityServiceException("The date time format is not yyyy-MM-dd HH:mm:ss");
+        }
+        // 加上 8 个小时
+        expirationDatetime.setTime(expirationDatetime.getTime() + 8 * 3600 * 1000);
+        activityDatetime.setTime(activityDatetime.getTime() + 8 * 3600 * 1000);
+        ActivityDTO activityDTO = new ActivityDTO(
+            activityId, null, null,
+            activityName, activityDesc,
+            activityDatetime, expirationDatetime,
+            img1, img2, img3,
+            img4, img5, img6,
+            visibleStatus, false
+        );
+        return activityDTO;
     }
 }

@@ -10,8 +10,8 @@ import org.springframework.beans.BeanUtils;
 import java.util.Date;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class ActivityDTO {
     private Long activityId;
 

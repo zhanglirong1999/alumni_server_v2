@@ -24,7 +24,7 @@ public interface ActivityMapper extends Mapper<Activity> {
      * @param accountId 发起成员 id.
      * @return 该成员所有发起的活动.
      */
-    List<HashMap<String, Object>> getBasicInfosByStarterAccountId(Long accountId);
+    List<HashMap<String, Object>> getBasicInfosByStartedAccountId(Long accountId);
 
     /**
      * 获取该用户所有参与的活动的基本信息.
