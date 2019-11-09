@@ -4,7 +4,7 @@ import cn.edu.seu.alumni_server.common.exceptions.AlumniCircleServiceException;
 import cn.edu.seu.alumni_server.controller.dto.AlumniCircleDTO;
 import cn.edu.seu.alumni_server.dao.entity.AlumniCircle;
 
-import java.util.LinkedList;
+import java.util.HashMap;
 import java.util.List;
 
 @SuppressWarnings("ALL")
@@ -29,5 +29,24 @@ public interface AlumniCircleService {
      * @param accountId 用户 id
      * @return 返回一个参与群组信息的列表.
      */
-    public List<AlumniCircleDTO> queryAlumniCircleById(Long accountId) throws AlumniCircleServiceException;
+    public List<HashMap<String, Object>> queryAlumniCircleById(Long accountId) throws AlumniCircleServiceException;
+
+    /**
+     * 根据输入的校友圈的名字来严格查询.
+     * @param aluCirName 查询名.
+     * @return 返回查询的匹配的多个结果.
+     */
+    public List<HashMap<String, Object> > queryAlumniCircleInfosByAlumniCircleName(
+        String aluCirName
+    ) throws AlumniCircleServiceException;
+
+    /**
+     * 根据输入的校友圈的名字来模糊匹配.
+     * @param aluCirName 校友圈的匹配关键字.
+     * @return 匹配到合适的结果.
+     */
+    public List<HashMap<String, Object> > queryAlumniCircleInfosFuzzilyByAluCirName(
+        String aluCirName
+    ) throws AlumniCircleServiceException;
+
 }

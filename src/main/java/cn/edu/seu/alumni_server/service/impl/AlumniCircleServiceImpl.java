@@ -8,7 +8,7 @@ import cn.edu.seu.alumni_server.service.AlumniCircleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -36,11 +36,25 @@ public class AlumniCircleServiceImpl implements AlumniCircleService {
     }
 
     @Override
-    public List<AlumniCircleDTO> queryAlumniCircleById(
+    public List<HashMap<String, Object>> queryAlumniCircleById(
         Long accountId
     ) throws AlumniCircleServiceException {
         if (accountId == null || accountId.equals(""))
             throw new AlumniCircleServiceException("The user id is none or empty.");
         return this.alumniCircleMapper.queryAlumniCircleInfosByAccountId(accountId);
+    }
+
+    @Override
+    public List<HashMap<String, Object>> queryAlumniCircleInfosByAlumniCircleName(String aluCirName) throws AlumniCircleServiceException {
+        if (aluCirName == null || aluCirName.compareTo("") == 0 || aluCirName.equals(""))
+            throw new AlumniCircleServiceException("The query word is none or empty.");
+        return this.alumniCircleMapper.queryAlumniCircleInfosByAluCirName(aluCirName);
+    }
+
+    @Override
+    public List<HashMap<String, Object>> queryAlumniCircleInfosFuzzilyByAluCirName(String aluCirName) throws AlumniCircleServiceException {
+        if (aluCirName == null || aluCirName.compareTo("") == 0 || aluCirName.equals(""))
+            throw new AlumniCircleServiceException("The query word is none or empty.");
+        return this.alumniCircleMapper.queryAlumniCircleInfosFuzzilyByAluCirName(aluCirName);
     }
 }

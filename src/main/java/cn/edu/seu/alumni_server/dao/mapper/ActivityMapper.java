@@ -1,6 +1,7 @@
 package cn.edu.seu.alumni_server.dao.mapper;
 
 
+import cn.edu.seu.alumni_server.controller.dto.ActivityDTO;
 import cn.edu.seu.alumni_server.dao.entity.Activity;
 import org.springframework.stereotype.Repository;
 import tk.mybatis.mapper.common.Mapper;
@@ -33,4 +34,17 @@ public interface ActivityMapper extends Mapper<Activity> {
      */
     List<HashMap<String, Object>> getBasicInfosByEnrolledAccountId(Long accountId);
 
+    /**
+     * 向数据库模糊查询索要的活动的名字.
+     * @param nameKeyWord 活动名关键字.
+     * @return 被查到的所有的活动的信息.
+     */
+    List<HashMap<String, Object> > getActivitiesFuzzilyByActivityNameKeyWord(String nameKeyWord);
+
+    /**
+     * 向数据库严格匹配查询活动名.
+     * @param activityName 活动名.
+     * @return 查询出的所有活动的基本信息.
+     */
+    List<HashMap<String, Object> > getActivitiesByActivityNameKeyWord(String activityName);
 }

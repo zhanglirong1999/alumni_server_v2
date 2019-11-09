@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
 
 @SuppressWarnings("ALL")
@@ -36,11 +37,29 @@ public class AlumniCircleController {
         @RequestParam(value="accountId", required=true) Long accountId
     ) {
         try {
-            List<AlumniCircleDTO> alumniCircleDTOList =
+            List<HashMap<String, Object>> alumniCircleDTOList =
                 this.alumniCircleService.queryAlumniCircleById(accountId);
             return new WebResponse().success(alumniCircleDTOList);
         } catch (AlumniCircleServiceException|Exception e) {
             return new WebResponse().fail(e.getMessage());
         }
     }
+
+    @GetMapping("/search/alumniCircles")
+    public WebResponse searchByActivityName(
+        @RequestParam(value="alumniCircleName", required=true) String alumniCircleName,
+        @RequestParam(value="fuzzy", required=false, defaultValue="true") Boolean fuzzy
+    ) {
+        try {
+            List<HashMap<String, Object>> ans = (
+                fuzzy ?
+                    this.alumniCircleService.queryAlumniCircleInfosFuzzilyByAluCirName(alumniCircleName) :
+                    this.alumniCircleService.queryAlumniCircleInfosByAlumniCircleName(alumniCircleName)
+            );
+            return new WebResponse().success(ans);
+        } catch (AlumniCircleServiceException e) {
+            return new WebResponse().fail(e.getMessage());
+        }
+    }
+
 }

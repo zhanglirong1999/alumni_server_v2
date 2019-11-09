@@ -161,4 +161,26 @@ public class ActivityServiceImpl implements ActivityService {
         );
         return activityDTO;
     }
+
+    @Override
+    public List<HashMap<String, Object>> queryActivitiesFuzzilyByActivityNameKeyWord(
+        String activityNameKeyWord
+    ) throws ActivityServiceException {
+        if (activityNameKeyWord == null || activityNameKeyWord.equals("") || activityNameKeyWord.compareTo("") == 0)
+            throw new ActivityServiceException("The fuzzily search key word is none or empty.");
+        return this.activityMapper.getActivitiesFuzzilyByActivityNameKeyWord(
+            activityNameKeyWord
+        );
+    }
+
+    @Override
+    public List<HashMap<String, Object>> queryActivitiesByActivityNameKeyWord(
+        String activityNameKeyWord
+    ) throws ActivityServiceException {
+        if (activityNameKeyWord == null || activityNameKeyWord.equals("") || activityNameKeyWord.compareTo("") == 0)
+            throw new ActivityServiceException("The fuzzily search key word is none or empty.");
+        return this.activityMapper.getActivitiesByActivityNameKeyWord(
+            activityNameKeyWord
+        );
+    }
 }

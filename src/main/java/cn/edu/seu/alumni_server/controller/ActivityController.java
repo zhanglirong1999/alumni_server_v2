@@ -186,4 +186,21 @@ public class ActivityController {
             );
         }
     }
+
+    @GetMapping("/search/activities")
+    public WebResponse searchByActivityName(
+        @RequestParam(value="activityName", required=true) String activityName,
+        @RequestParam(value="fuzzy", required=false, defaultValue="true") Boolean fuzzy
+    ) {
+        try {
+            List<HashMap<String, Object>> ans = (
+                fuzzy ?
+                    this.activityService.queryActivitiesFuzzilyByActivityNameKeyWord(activityName) :
+                    this.activityService.queryActivitiesByActivityNameKeyWord(activityName)
+            );
+            return new WebResponse().success(ans);
+        } catch (ActivityServiceException|Exception e) {
+            return new WebResponse().fail(e.getMessage());
+        }
+    }
 }

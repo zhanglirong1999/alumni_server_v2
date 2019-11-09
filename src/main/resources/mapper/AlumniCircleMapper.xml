@@ -3,10 +3,35 @@
 <mapper namespace="cn.edu.seu.alumni_server.dao.mapper.AlumniCircleMapper">
     <resultMap id="BaseResultMap" type="cn.edu.seu.alumni_server.dao.entity.AlumniCircle">
     </resultMap>
-    <select id="queryAlumniCircleInfosByAccountId" resultType="cn.edu.seu.alumni_server.controller.dto.AlumniCircleDTO">
-        SELECT ALC.alumni_circle_id, ALC.creator_id, ALC.alumni_circle_type, ALC.alumni_circle_name,
-        ALC.alumni_circle_desc, ALC.avatar, ALC.authorization_status
-        FROM alumni_circle AS ALC, alumni_circle_member AS ALCM
-        WHERE ALC.alumni_circle_id = ALCM.alumni_circle_id AND ALCM.account_id = #{accountId};
+    <select id="queryAlumniCircleInfosByAccountId" resultType="java.util.HashMap">
+        SELECT T.cnum AS alumni_circle_members_num, ALC.*, ACT.name AS creator_name
+        FROM (
+            SELECT ALCM1.alumni_circle_id AS cid, COUNT(ALCM1.account_id) AS cnum
+            FROM alumni_circle_member AS ALCM1
+            GROUP BY ALCM1.alumni_circle_id
+        ) AS T, alumni_circle AS ALC, account AS ACT
+        WHERE T.cid = ALC.alumni_circle_id AND ACT.account_id = ALC.creator_id AND T.cid IN (
+            SELECT ALCM2.alumni_circle_id
+            FROM alumni_circle_member AS ALCM2
+            WHERE ALCM2.account_id = #{accountId}
+        )
+    </select>
+    <select id="queryAlumniCircleInfosFuzzilyByAluCirName" resultType="java.util.HashMap">
+        SELECT T.cnum AS alumni_circle_members_num, ALC.*, ACT.name AS creator_name
+        FROM (
+            SELECT ALCM1.alumni_circle_id AS cid, COUNT(ALCM1.account_id) AS cnum
+            FROM alumni_circle_member AS ALCM1
+            GROUP BY ALCM1.alumni_circle_id
+        ) AS T, alumni_circle AS ALC, account AS ACT
+        WHERE T.cid = ALC.alumni_circle_id AND ACT.account_id = ALC.creator_id AND INSTR(ALC.alumni_circle_name, #{name}) > 0;
+    </select>
+    <select id="queryAlumniCircleInfosByAluCirName" resultType="java.util.HashMap">
+        SELECT T.cnum AS alumni_circle_members_num, ALC.*, ACT.name AS creator_name
+        FROM (
+            SELECT ALCM1.alumni_circle_id AS cid, COUNT(ALCM1.account_id) AS cnum
+            FROM alumni_circle_member AS ALCM1
+            GROUP BY ALCM1.alumni_circle_id
+        ) AS T, alumni_circle AS ALC, account AS ACT
+        WHERE T.cid = ALC.alumni_circle_id AND ACT.account_id = ALC.creator_id AND ALC.alumni_circle_name = #{name};
     </select>
 </mapper>

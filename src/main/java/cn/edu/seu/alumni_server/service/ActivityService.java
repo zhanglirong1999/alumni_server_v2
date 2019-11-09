@@ -141,4 +141,22 @@ public interface ActivityService {
         Boolean visibleStatus
     ) throws ActivityServiceException;
 
+    /**
+     * 根据关键词进行模糊查询.
+     * @param activityNameKeyWord 关键词.
+     * @return activities
+     */
+    public List<HashMap<String, Object>> queryActivitiesFuzzilyByActivityNameKeyWord(
+        String activityNameKeyWord
+    ) throws ActivityServiceException;
+
+    /**
+     * 严格匹配活动名称的查询.
+     * @param activityNameKeyWord 活动的名称.
+     * @return 查询到的活动结果列表.
+     * @throws ActivityServiceException 异常处理.
+     */
+    public List<HashMap<String, Object>> queryActivitiesByActivityNameKeyWord(
+        String activityNameKeyWord
+    ) throws ActivityServiceException;
 }

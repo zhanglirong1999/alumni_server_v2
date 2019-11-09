@@ -48,4 +48,18 @@
         )
         GROUP BY ACT.activity_id;
     </select>
+    <select id="getActivitiesFuzzilyByActivityNameKeyWord" resultType="java.util.HashMap">
+        SELECT ACT.activity_id, ACT.activity_name, ACC.name, ACT.activity_desc, ACT.expiration_time, ACT.activity_time,
+        ACT.img1, ACT.img2, ACT.img3, ACT.img4, ACT.img5, ACT.img6, COUNT(ACT_MEM.account_id) AS activity_members_num
+        FROM activity AS ACT, account AS ACC, activity_member AS ACT_MEM
+        WHERE ACT.account_id = ACC.account_id AND ACT.activity_id = ACT_MEM.activity_id AND INSTR(ACT.activity_name, #{nameKeyWord}) > 0
+        GROUP BY ACT.activity_id;
+    </select>
+    <select id="getActivitiesByActivityNameKeyWord" resultType="java.util.HashMap">
+        SELECT ACT.activity_id, ACT.activity_name, ACC.name, ACT.activity_desc, ACT.expiration_time, ACT.activity_time,
+        ACT.img1, ACT.img2, ACT.img3, ACT.img4, ACT.img5, ACT.img6, COUNT(ACT_MEM.account_id) AS activity_members_num
+        FROM activity AS ACT, account AS ACC, activity_member AS ACT_MEM
+        WHERE ACT.account_id = ACC.account_id AND ACT.activity_id = ACT_MEM.activity_id AND ACT.activity_name = #{activityName}
+        GROUP BY ACT.activity_id;
+    </select>
 </mapper>
