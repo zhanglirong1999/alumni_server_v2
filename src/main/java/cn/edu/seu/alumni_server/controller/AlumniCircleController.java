@@ -61,5 +61,4 @@ public class AlumniCircleController {
             return new WebResponse().fail(e.getMessage());
         }
     }
-
 }
