@@ -1,6 +1,7 @@
 package cn.edu.seu.alumni_server.dao.mapper;
 
 
+import cn.edu.seu.alumni_server.controller.dto.ActivityBasicInfoDTO;
 import cn.edu.seu.alumni_server.dao.entity.Activity;
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +17,7 @@ public interface ActivityMapper extends Mapper<Activity> {
 	 * @param activityId 活动 id.
 	 * @return 查询的结果 json 对象.
 	 */
-	HashMap<String, Object> getBasicInfosByActivityId(Long activityId);
+	ActivityBasicInfoDTO getBasicInfosByActivityId(Long activityId);
 
 	/**
 	 * 根据输入的发起成员的 id, 获取到所有发起的活动的基本信息.
@@ -24,7 +25,7 @@ public interface ActivityMapper extends Mapper<Activity> {
 	 * @param accountId 发起成员 id.
 	 * @return 该成员所有发起的活动.
 	 */
-	List<HashMap<String, Object>> getBasicInfosByStartedAccountId(Long accountId);
+	List<ActivityBasicInfoDTO> getBasicInfosByStartedAccountId(Long accountId);
 
 	/**
 	 * 获取该用户所有参与的活动的基本信息.
@@ -32,7 +33,7 @@ public interface ActivityMapper extends Mapper<Activity> {
 	 * @param accountId 参与活动的 id.
 	 * @return list
 	 */
-	List<HashMap<String, Object>> getBasicInfosByEnrolledAccountId(Long accountId);
+	List<ActivityBasicInfoDTO> getBasicInfosByEnrolledAccountId(Long accountId);
 
 	/**
 	 * 向数据库模糊查询索要的活动的名字.
@@ -40,7 +41,7 @@ public interface ActivityMapper extends Mapper<Activity> {
 	 * @param nameKeyWord 活动名关键字.
 	 * @return 被查到的所有的活动的信息.
 	 */
-	List<HashMap<String, Object>> getActivitiesFuzzilyByActivityNameKeyWord(String nameKeyWord);
+	List<ActivityBasicInfoDTO> getActivitiesFuzzilyByActivityNameKeyWord(String nameKeyWord);
 
 	/**
 	 * 向数据库严格匹配查询活动名.
@@ -48,7 +49,7 @@ public interface ActivityMapper extends Mapper<Activity> {
 	 * @param activityName 活动名.
 	 * @return 查询出的所有活动的基本信息.
 	 */
-	List<HashMap<String, Object>> getActivitiesByActivityNameKeyWord(String activityName);
+	List<ActivityBasicInfoDTO> getActivitiesByActivityNameKeyWord(String activityName);
 
 	// 判断是不是有一个
 	Long hasAvailableActivity(Long activityId);

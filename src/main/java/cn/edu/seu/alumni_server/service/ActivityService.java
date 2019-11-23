@@ -1,9 +1,9 @@
 package cn.edu.seu.alumni_server.service;
 
 import cn.edu.seu.alumni_server.common.exceptions.ActivityServiceException;
+import cn.edu.seu.alumni_server.controller.dto.ActivityBasicInfoDTO;
 import cn.edu.seu.alumni_server.controller.dto.ActivityDTO;
 import cn.edu.seu.alumni_server.dao.entity.Activity;
-import java.util.HashMap;
 import java.util.List;
 
 public interface ActivityService {
@@ -93,7 +93,7 @@ public interface ActivityService {
 	 * @return 对应的一个 Map.
 	 * @throws ActivityServiceException 活动服务异常.
 	 */
-	public HashMap<String, Object> queryBasicInfoOfActivityByActivityId(Long activityId)
+	public ActivityBasicInfoDTO queryBasicInfoOfActivityByActivityId(Long activityId)
 		throws ActivityServiceException;
 
 	/**
@@ -102,7 +102,7 @@ public interface ActivityService {
 	 * @param accountId 发起者账户
 	 * @return 所有发起活动的基本信息.
 	 */
-	public List<HashMap<String, Object>> queryBasicInfoOfActivityByStartedAccountId(
+	public List<ActivityBasicInfoDTO> queryBasicInfoOfActivityByStartedAccountId(
 		Long accountId
 	) throws ActivityServiceException;
 
@@ -113,7 +113,7 @@ public interface ActivityService {
 	 * @return 活动的基本信息.
 	 * @throws ActivityServiceException 可能出现的账号 null 异常.
 	 */
-	public List<HashMap<String, Object>> queryBasicInfosOfActivityByEnrolledAccountId(
+	public List<ActivityBasicInfoDTO> queryBasicInfosOfActivityByEnrolledAccountId(
 		Long accountId
 	) throws ActivityServiceException;
 
@@ -154,7 +154,7 @@ public interface ActivityService {
 	 * @param activityNameKeyWord 关键词.
 	 * @return activities
 	 */
-	public List<HashMap<String, Object>> queryActivitiesFuzzilyByActivityNameKeyWord(
+	public List<ActivityBasicInfoDTO> queryActivitiesFuzzilyByActivityNameKeyWord(
 		String activityNameKeyWord
 	) throws ActivityServiceException;
 
@@ -165,7 +165,7 @@ public interface ActivityService {
 	 * @return 查询到的活动结果列表.
 	 * @throws ActivityServiceException 异常处理.
 	 */
-	public List<HashMap<String, Object>> queryActivitiesByActivityNameKeyWord(
+	public List<ActivityBasicInfoDTO> queryActivitiesByActivityNameKeyWord(
 		String activityNameKeyWord
 	) throws ActivityServiceException;
 

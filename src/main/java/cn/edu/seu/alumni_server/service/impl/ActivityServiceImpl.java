@@ -2,6 +2,7 @@ package cn.edu.seu.alumni_server.service.impl;
 
 import cn.edu.seu.alumni_server.common.Utils;
 import cn.edu.seu.alumni_server.common.exceptions.ActivityServiceException;
+import cn.edu.seu.alumni_server.controller.dto.ActivityBasicInfoDTO;
 import cn.edu.seu.alumni_server.controller.dto.ActivityDTO;
 import cn.edu.seu.alumni_server.dao.entity.Activity;
 import cn.edu.seu.alumni_server.dao.mapper.ActivityMapper;
@@ -9,7 +10,6 @@ import cn.edu.seu.alumni_server.service.ActivityService;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.TimeZone;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,34 +113,30 @@ public class ActivityServiceImpl implements ActivityService {
 	}
 
 	@Override
-	public HashMap<String, Object> queryBasicInfoOfActivityByActivityId(Long activityId)
+	public ActivityBasicInfoDTO queryBasicInfoOfActivityByActivityId(Long activityId)
 		throws ActivityServiceException {
 		if (activityId == null) {
 			throw new ActivityServiceException("Activity id is null.");
 		}
-		HashMap<String, Object> ans =
+		ActivityBasicInfoDTO ans =
 			this.activityMapper.getBasicInfosByActivityId(activityId);
-		if ((Integer) ans.get("activity_members_num") == 0) {
-			throw new ActivityServiceException("The result of this query is empty.");
-		} else {
-			return ans;
-		}
+		return ans;
 	}
 
 	@Override
-	public List<HashMap<String, Object>> queryBasicInfoOfActivityByStartedAccountId(
+	public List<ActivityBasicInfoDTO> queryBasicInfoOfActivityByStartedAccountId(
 		Long accountId
 	) throws ActivityServiceException {
 		if (accountId == null) {
 			throw new ActivityServiceException("The account id is null");
 		}
-		List<HashMap<String, Object>> ans =
+		List<ActivityBasicInfoDTO> ans =
 			this.activityMapper.getBasicInfosByStartedAccountId(accountId);
 		return ans;
 	}
 
 	@Override
-	public List<HashMap<String, Object>> queryBasicInfosOfActivityByEnrolledAccountId(
+	public List<ActivityBasicInfoDTO> queryBasicInfosOfActivityByEnrolledAccountId(
 		Long accountId
 	) throws ActivityServiceException {
 		if (accountId == null) {
@@ -189,7 +185,7 @@ public class ActivityServiceImpl implements ActivityService {
 	}
 
 	@Override
-	public List<HashMap<String, Object>> queryActivitiesFuzzilyByActivityNameKeyWord(
+	public List<ActivityBasicInfoDTO> queryActivitiesFuzzilyByActivityNameKeyWord(
 		String activityNameKeyWord
 	) throws ActivityServiceException {
 		if (activityNameKeyWord == null || activityNameKeyWord.equals("")
@@ -202,7 +198,7 @@ public class ActivityServiceImpl implements ActivityService {
 	}
 
 	@Override
-	public List<HashMap<String, Object>> queryActivitiesByActivityNameKeyWord(
+	public List<ActivityBasicInfoDTO> queryActivitiesByActivityNameKeyWord(
 		String activityNameKeyWord
 	) throws ActivityServiceException {
 		if (activityNameKeyWord == null || activityNameKeyWord.equals("")

@@ -2,6 +2,7 @@ package cn.edu.seu.alumni_server.controller;
 
 import cn.edu.seu.alumni_server.common.dto.WebResponse;
 import cn.edu.seu.alumni_server.common.exceptions.ActivityServiceException;
+import cn.edu.seu.alumni_server.controller.dto.ActivityBasicInfoDTO;
 import cn.edu.seu.alumni_server.controller.dto.ActivityDTO;
 import cn.edu.seu.alumni_server.controller.dto.PageResult;
 import cn.edu.seu.alumni_server.dao.entity.Activity;
@@ -10,7 +11,6 @@ import cn.edu.seu.alumni_server.service.ActivityMemberService;
 import cn.edu.seu.alumni_server.service.ActivityService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import java.util.HashMap;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -133,7 +133,7 @@ public class ActivityController {
 		@RequestParam Long activityId
 	) {
 		try {
-			HashMap<String, Object> basicInfos =
+			ActivityBasicInfoDTO basicInfos =
 				this.activityService.queryBasicInfoOfActivityByActivityId(activityId);
 			return new WebResponse().success(basicInfos);
 		} catch (ActivityServiceException | Exception e) {
@@ -155,7 +155,7 @@ public class ActivityController {
 	) {
 		try {
 			PageHelper.startPage(pageIndex, pageSize);
-			List<HashMap<String, Object>> infos =
+			List<ActivityBasicInfoDTO> infos =
 				this.activityService.queryBasicInfoOfActivityByStartedAccountId(
 					accountId
 				);
@@ -189,7 +189,7 @@ public class ActivityController {
 	) {
 		try {
 			PageHelper.startPage(pageIndex, pageSize);
-			List<HashMap<String, Object>> infos =
+			List<ActivityBasicInfoDTO> infos =
 				this.activityService.queryBasicInfosOfActivityByEnrolledAccountId(
 					accountId
 				);
@@ -217,7 +217,7 @@ public class ActivityController {
 	) {
 		try {
 			PageHelper.startPage(pageIndex, pageSize);
-			List<HashMap<String, Object>> ans = (
+			List<ActivityBasicInfoDTO> ans = (
 				fuzzy ?
 					this.activityService.queryActivitiesFuzzilyByActivityNameKeyWord(activityName) :
 					this.activityService.queryActivitiesByActivityNameKeyWord(activityName)

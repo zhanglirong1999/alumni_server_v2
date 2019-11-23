@@ -20,14 +20,15 @@
     <result column="valid_status" jdbcType="TINYINT" property="validStatus"/>
     <result column="c_time" jdbcType="TIMESTAMP" property="cTime"/>
     <result column="u_time" jdbcType="TIMESTAMP" property="uTime"/>
+    <result column="activity_members_num" jdbcType="BIGINT" property="activityMembersNum"/>
   </resultMap>
-  <select id="getBasicInfosByActivityId" resultType="java.util.HashMap">
+  <select id="getBasicInfosByActivityId" resultType="cn.edu.seu.alumni_server.controller.dto.ActivityBasicInfoDTO">
         SELECT ACT.activity_id, ACT.activity_name, ACC.name, ACT.activity_desc, ACT.expiration_time, ACT.activity_time,
         ACT.img1, ACT.img2, ACT.img3, ACT.img4, ACT.img5, ACT.img6, COUNT(ACT_MEM.account_id) AS activity_members_num
         FROM activity AS ACT, account AS ACC, activity_member AS ACT_MEM
         WHERE ACT.is_available = 1 AND ACT.account_id = ACC.account_id AND ACT.activity_id = ACT_MEM.activity_id AND ACT_MEM.is_available = 1 AND ACT.activity_id = #{activityId};
     </select>
-  <select id="getBasicInfosByStartedAccountId" resultType="java.util.HashMap">
+  <select id="getBasicInfosByStartedAccountId" resultType="cn.edu.seu.alumni_server.controller.dto.ActivityBasicInfoDTO">
         SELECT ACT.activity_id, ACT.activity_name, ACC.name, ACT.activity_desc, ACT.expiration_time, ACT.activity_time,
         ACT.img1, ACT.img2, ACT.img3, ACT.img4, ACT.img5, ACT.img6, COUNT(ACT_MEM.account_id) AS activity_members_num
         FROM activity AS ACT, account AS ACC, activity_member AS ACT_MEM
@@ -38,7 +39,7 @@
         )
         GROUP BY ACT.activity_id
     </select>
-  <select id="getBasicInfosByEnrolledAccountId" resultType="java.util.HashMap">
+  <select id="getBasicInfosByEnrolledAccountId" resultType="cn.edu.seu.alumni_server.controller.dto.ActivityBasicInfoDTO">
         SELECT ACT.activity_id, ACT.activity_name, ACC.name, ACT.activity_desc, ACT.expiration_time, ACT.activity_time,
         ACT.img1, ACT.img2, ACT.img3, ACT.img4, ACT.img5, ACT.img6, COUNT(ACT_MEM.account_id) AS activity_members_num
         FROM activity AS ACT, account AS ACC, activity_member AS ACT_MEM
@@ -49,14 +50,14 @@
         )
         GROUP BY ACT.activity_id
     </select>
-  <select id="getActivitiesFuzzilyByActivityNameKeyWord" resultType="java.util.HashMap">
+  <select id="getActivitiesFuzzilyByActivityNameKeyWord" resultType="cn.edu.seu.alumni_server.controller.dto.ActivityBasicInfoDTO">
         SELECT ACT.activity_id, ACT.activity_name, ACC.name, ACT.activity_desc, ACT.expiration_time, ACT.activity_time,
         ACT.img1, ACT.img2, ACT.img3, ACT.img4, ACT.img5, ACT.img6, COUNT(ACT_MEM.account_id) AS activity_members_num
         FROM activity AS ACT, account AS ACC, activity_member AS ACT_MEM
         WHERE ACT.is_available = 1 AND ACT_MEM.is_available = 1 AND ACC.valid_status = 1 AND ACT.account_id = ACC.account_id AND ACT.activity_id = ACT_MEM.activity_id AND INSTR(ACT.activity_name, #{nameKeyWord}) > 0
         GROUP BY ACT.activity_id
     </select>
-  <select id="getActivitiesByActivityNameKeyWord" resultType="java.util.HashMap">
+  <select id="getActivitiesByActivityNameKeyWord" resultType="cn.edu.seu.alumni_server.controller.dto.ActivityBasicInfoDTO">
         SELECT ACT.activity_id, ACT.activity_name, ACC.name, ACT.activity_desc, ACT.expiration_time, ACT.activity_time,
         ACT.img1, ACT.img2, ACT.img3, ACT.img4, ACT.img5, ACT.img6, COUNT(ACT_MEM.account_id) AS activity_members_num
         FROM activity AS ACT, account AS ACC, activity_member AS ACT_MEM
