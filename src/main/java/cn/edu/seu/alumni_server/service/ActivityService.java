@@ -3,8 +3,12 @@ package cn.edu.seu.alumni_server.service;
 import cn.edu.seu.alumni_server.common.exceptions.ActivityServiceException;
 import cn.edu.seu.alumni_server.controller.dto.ActivityBasicInfoDTO;
 import cn.edu.seu.alumni_server.controller.dto.ActivityDTO;
+import cn.edu.seu.alumni_server.controller.dto.ActivityWithMultipartFileDTO;
 import cn.edu.seu.alumni_server.dao.entity.Activity;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface ActivityService {
 
@@ -40,33 +44,38 @@ public interface ActivityService {
 	 * @return 合法的 Activity 对象.
 	 * @throws ActivityServiceException 输入数据异常.
 	 */
-	public Activity createActivityDAO(ActivityDTO activityDTO)
+	public ActivityWithMultipartFileDTO checkInputtedActivityWithMultipartFileDTO(
+		ActivityWithMultipartFileDTO activityDTO)
 		throws NullPointerException, ActivityServiceException;
 
 	/**
 	 * 向数据库插入一个活动对象.
 	 *
-	 * @param activity 活动.
+	 * @param activityWithMultipartFileDTO 活动.
 	 */
+	public Activity insertActivityDAO(
+		ActivityWithMultipartFileDTO activityWithMultipartFileDTO)
+		throws IllegalAccessException, NoSuchMethodException, InvocationTargetException, IOException, ActivityServiceException;
+
 	public void insertActivity(Activity activity);
 
 	/**
 	 * 根据前端的输入判断生成一个合法的 Activity 对象, 用于修改记录. 1. 注意若要修改就在那个字段设置为 null 2. 若不为 null, 则即为需要修改的字段, 校友圈 id
 	 * 以及 创建 id 除外. 3. 暂时不允许对校友圈以及创建者进行修改, 必须要对其传入值. 4. 注意对于报名时间以及开始时间, 要两个都被请求过来.
 	 *
-	 * @param activityDTO 需要修改的信息.
+	 * @param activityWMPFDTO 需要修改的信息.
 	 * @return 修改后的结果.
 	 * @throws ActivityServiceException 自定义异常信息.
 	 */
-	public Activity updateActivityDAO(ActivityDTO activityDTO)
-		throws NullPointerException, ActivityServiceException;
+	public Activity updateActivityDAO(ActivityWithMultipartFileDTO activityWMPFDTO)
+		throws NullPointerException, ActivityServiceException, IOException, InvocationTargetException, IllegalAccessException;
 
 	/**
 	 * 向数据修改活动的信息.
 	 *
 	 * @param activity 活动.
 	 */
-	public void updateActivity(Activity activity) throws ActivityServiceException;
+	public void updateActivity(Activity activity);
 
 	/**
 	 * 根据前端的输入判断生成一个合法的 Activity 对象, 用于删除记录. 注意: 这里的删除逻辑是彻底删除一条活动的记录.
@@ -118,37 +127,6 @@ public interface ActivityService {
 	) throws ActivityServiceException;
 
 	/**
-	 * 将 put 的可变参数根据是否有值解析为活动的 dto
-	 *
-	 * @param activityId id
-	 * @param activityName name
-	 * @param activityDesc desc
-	 * @param activityTime 活动时间
-	 * @param expirationTime 截止时间
-	 * @param img1 1
-	 * @param img2 2
-	 * @param img3 3
-	 * @param img4 4
-	 * @param img5 5
-	 * @param img6 6
-	 * @return ActivityDTO
-	 */
-	public ActivityDTO parseParams2ActivityDTO(
-		Long activityId,
-		String activityName,
-		String activityDesc,
-		String activityTime,
-		String expirationTime,
-		String img1,
-		String img2,
-		String img3,
-		String img4,
-		String img5,
-		String img6,
-		Boolean visibleStatus
-	) throws ActivityServiceException;
-
-	/**
 	 * 根据关键词进行模糊查询.
 	 *
 	 * @param activityNameKeyWord 关键词.
@@ -171,4 +149,15 @@ public interface ActivityService {
 
 	// 查询是否有一个指定的活动下的活动是否存在
 	public boolean hasActivity(Activity activity);
+
+	// 一个群组下的一个活动的一张图片进行关键字编码
+	public String encodeForActivityImg(Long activityId, Integer imgIndex);
+
+	// 获取一个活动下的一个图片的解码
+	public Long[] decodeForActivityImg(String keyString);
+
+	// 完成图片的上传
+	public String[] uploadActivityImgs(
+		Long activityId, MultipartFile... multipartFiles
+	) throws ActivityServiceException, IOException;
 }

@@ -54,6 +54,6 @@ public interface ActivityMapper extends Mapper<Activity> {
 	// 判断是不是有一个
 	Long hasAvailableActivity(Long activityId);
 
-	// 逻辑删除
+	// 逻辑删除一个活动
 	void deleteActivityLogically(Long activityId);
 }
