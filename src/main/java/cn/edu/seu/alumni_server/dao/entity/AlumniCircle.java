@@ -29,6 +29,8 @@ public class AlumniCircle implements Serializable {
 
     private Date uTime;
 
+    private Boolean isAvailable;
+
     private static final long serialVersionUID = 1L;
 
 }

@@ -6,16 +6,31 @@
 
     <select id="getActivityMemberInfosByActivityId" resultType="cn.edu.seu.alumni_server.dao.entity.Account">
         SELECT AC.*
-        FROM activity_member AS AM, account AS AC
-        WHERE AM.account_id = AC.account_id AND AM.activity_id = #{activityId};
+        FROM activity_member AS AM, account AS AC, activity AS ACT
+        WHERE AM.account_id = AC.account_id AND AM.activity_id = #{activityId} AND AM.is_available = 1 AND AC.valid_status = 1 AND ACT.activity_id = AM.activity_id AND ACT.is_available = 1
     </select>
     <update id="updateAllActivityMembersExceptStarterReadStatusByActivityId">
         UPDATE activity_member AS A
         SET A.read_status = #{readStatus}
-        WHERE A.activity_id = #{activityId} AND A.account_id != (
+        WHERE A.activity_id = #{activityId} AND A.is_available = 1 AND A.account_id != (
             SELECT AC.account_id
             FROM activity AS AC
             WHERE AC.activity_id = #{activityId}
-        );
+        )
     </update>
+    <update id="updateAllActivityMembersReadStatus">
+        UPDATE activity_member AS A
+        SET A.read_status = #{readStatus}
+        WHERE A.activity_id = #{activityId} AND A.is_available = 1
+    </update>
+    <update id="updateOneActivityMemberReadStatus">
+        UPDATE activity_member AS A
+        SET A.read_status = #{readStatus}
+        WHERE A.activity_id = #{activityId} AND A.is_available = 1 AND A.account_id = #{accountId}
+    </update>
+    <select id="getAvailableCreatorIdOfActivity" resultType="java.lang.Long">
+        SELECT A.account_id
+        FROM activity AS A
+        WHERE A.activity_id = #{activityId} AND A.is_available = 1
+    </select>
 </mapper>
