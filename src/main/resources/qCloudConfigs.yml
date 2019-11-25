@@ -1,9 +1,0 @@
-qCloud:
-    cos:
-        activities:
-            appId: 1258701411
-            secretId: AKIDjJertgvgqHXbQ0GSIwOcbKo44oMlP8zb
-            secretKey: WnoZ7SXMwHMBpHbgV6RXN1UlmcDYfXDg
-            bucketName: root-test-bucket-1258701411
-            regionString: ap-shanghai
-            path: https://root-test-bucket-1258701411.cos.ap-shanghai.myqcloud.com

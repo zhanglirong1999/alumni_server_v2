@@ -6,8 +6,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
-//@PropertySource("classpath:qCloudConfigs.yml")
 @Configuration
+@PropertySource({"classpath:config/qcloud-config.properties"})
 public class QCloudCOSConfig {
 
 	@Value("${qCloud.cos.appId}")
