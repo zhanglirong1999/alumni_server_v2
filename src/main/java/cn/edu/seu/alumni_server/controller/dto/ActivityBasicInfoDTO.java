@@ -31,4 +31,6 @@ public class ActivityBasicInfoDTO {
 
 	private String img6;
 	private Long activityMembersNum = null;
+	// 群组的头像
+	private String alumniCircleAvatar;
 }

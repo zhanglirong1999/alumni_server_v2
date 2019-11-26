@@ -72,21 +72,27 @@ public class ActivityServiceImpl implements ActivityService {
 
 	@Override
 	public Activity insertActivityDAO(ActivityWithMultipartFileDTO x)
-		throws IOException, ActivityServiceException,
-		InvocationTargetException, IllegalAccessException {
-		Activity activity = x.toActivityDTO().toActivity();
+		throws ActivityServiceException,
+		InvocationTargetException, IllegalAccessException, IOException {
+		ActivityDTO activityDTO = x.toActivityDTO();
 		// 首先发送图片获取需要的地址
-		String[] imgUrls = this.uploadActivityImgs(
-			activity.getActivityId(),
+		String[] imgUrlSuffixes = this.makeAndSetSuffixUrls(
+			x, activityDTO
+		);
+		this.sendActivityImgsBySuffixes(x, imgUrlSuffixes);
+		// 返回结果
+		return activityDTO.toActivity();
+	}
+
+	@Override
+	public void sendActivityImgsBySuffixes(ActivityWithMultipartFileDTO x,
+		String[] imgUrlSuffixes) throws ActivityServiceException, IOException {
+		// TODO 应该使用单独的线程池来实现
+		this.uploadActivityImgsBySuffixes(
+			imgUrlSuffixes,
 			x.getImg1(), x.getImg2(), x.getImg3(),
 			x.getImg4(), x.getImg5(), x.getImg6()
 		);
-		// 然后设置六个地址
-		for (int i = 0; i < 6; ++i) {
-			BeanUtils.setProperty(activity, "img" + (i + 1), imgUrls[i]);
-		}
-//		this.activityMapper.insertSelective(activity);
-		return activity;
 	}
 
 	@Override
@@ -130,22 +136,34 @@ public class ActivityServiceImpl implements ActivityService {
 			// 需要重新计算活动是否有效
 			activityDTO.setValidStatus(this.isValidStatus(activityDTO));
 		}
-		// 然后确定文件的改变, 这里没有确定直接再次上传
-		String[] ansUrls = this.uploadActivityImgs(
-			activityDTO.getActivityId(),
-			activityWMPFDTO.getImg1(),
-			activityWMPFDTO.getImg2(),
-			activityWMPFDTO.getImg3(),
-			activityWMPFDTO.getImg4(),
-			activityWMPFDTO.getImg5(),
-			activityWMPFDTO.getImg6()
-		);
-		// 然后设置六个地址
-		for (int i = 0; i < 6; ++i) {
-			BeanUtils.setProperty(activityDTO, "img" + (i + 1), ansUrls[i]);
-		}
+		// 构建出最终的
+		String[] imgUrlSuffixes = this.makeAndSetSuffixUrls(activityWMPFDTO, activityDTO);
+		// 发送结果
+		this.sendActivityImgsBySuffixes(activityWMPFDTO, imgUrlSuffixes);
 		// 返回结果
 		return activityDTO.toActivity();
+	}
+
+	@Override
+	public String[] makeAndSetSuffixUrls(ActivityWithMultipartFileDTO originalMPFActivityDTO,
+		ActivityDTO resultActivityDTO)
+		throws ActivityServiceException, IllegalAccessException, InvocationTargetException {
+		// 然后确定文件的改变, 这里没有确定直接再次上传
+		String[] suffixes = this.makeUrlSuffixesForActivityImgs(
+			resultActivityDTO.getActivityId(),
+			originalMPFActivityDTO.getImg1(),
+			originalMPFActivityDTO.getImg2(),
+			originalMPFActivityDTO.getImg3(),
+			originalMPFActivityDTO.getImg4(),
+			originalMPFActivityDTO.getImg5(),
+			originalMPFActivityDTO.getImg6()
+		);
+		String[] ansUrls = this.makeUrlsForActivityImgs(suffixes);
+		// 然后设置六个地址
+		for (int i = 0; i < 6; ++i) {
+			BeanUtils.setProperty(resultActivityDTO, "img" + (i + 1), ansUrls[i]);
+		}
+		return suffixes;
 	}
 
 	@Override
@@ -259,33 +277,71 @@ public class ActivityServiceImpl implements ActivityService {
 	}
 
 	@Override
-	public String[] uploadActivityImgs(Long activityId, MultipartFile... multipartFiles)
-		throws ActivityServiceException, IOException {
-		// 所有的结果码
-		String[] ansStrings = new String[multipartFiles.length];
+	public void uploadActivityImgsBySuffixes(
+		String[] suffixes,
+		MultipartFile... multipartFiles
+	) throws ActivityServiceException, IOException {
+		// 根据输入的尾缀来上传图片
+		if (suffixes.length != multipartFiles.length) {
+			throw new ActivityServiceException(
+				"The suffixes number is not equal to files number."
+			);
+		}
+		for (int i = 0; i < suffixes.length; ++i) {
+			if (multipartFiles[i] == null || suffixes[i] == null) {
+				continue;
+			}
+			File file = this.qCloudFileManager.convertMultipartFileToFile(
+				multipartFiles[i], suffixes[i].substring(suffixes[i].lastIndexOf("/"))
+			);
+			// TODO 注意这里以后要删除 new 的图片.
+			this.qCloudFileManager.uploadFileToQCloudBySuffixes(file, suffixes[i]);
+		}
+	}
+
+	@Override
+	public String[] makeUrlSuffixesForActivityImgs(
+		Long activityId, MultipartFile... multipartFiles
+	) throws ActivityServiceException {
 		// 判断是否有异常.
-		if (multipartFiles.length <= 0) {
+		if (multipartFiles == null || multipartFiles.length <= 0) {
 			throw new ActivityServiceException("The imgs are empty.");
 		}
+		if (multipartFiles.length != 6) {
+			throw new ActivityServiceException("The activity imgs number should be 6.");
+		}
+		// 在这个部分完成对于 qcloud 上图片存储位置的保存
+		String[] ansStrings = new String[multipartFiles.length];
 		// url base
 		String urlBaseString = "/activities/imgs/";
-		// 遍历所有的图片, 如果是不合法的, 那么就把他结果路径设置为 null
+		// 循环判断
 		for (int i = 0; i < multipartFiles.length; ++i) {
 			if (!this.qCloudFileManager.isLegalMultipartFile(multipartFiles[i])) {
 				ansStrings[i] = null;
 			} else {
-				// 转换文件格式并且重命名
-				String newName = this.createNewName(activityId, i + 1, multipartFiles[i]);
-				File ans =
-					this.qCloudFileManager.convertMultipartFileToFile(
-						multipartFiles[i], newName
-					);
 				// 获取新的文件的新编码.
-				String keyString = this.encodeForActivityImg(activityId, i + 1);
 				ansStrings[i] =
-					this.qCloudFileManager.uploadFileToQCloud(ans, urlBaseString + keyString);
+					urlBaseString +
+						this.createNewName(activityId, i + 1, multipartFiles[i]);
 			}
 		}
 		return ansStrings;
+	}
+
+	@Override
+	public String[] makeUrlsForActivityImgs(
+		String[] suffixes
+	) throws ActivityServiceException {
+		if (suffixes == null || suffixes.length <= 0) {
+			throw new ActivityServiceException("The activities suffixes are empty or null");
+		}
+		String[] ans = new String[suffixes.length];
+		for (int i = 0; i < ans.length; ++i) {
+			if (suffixes[i] == null)
+				ans[i] = null;
+			else
+				ans[i] = this.qCloudFileManager.makeUrlString(suffixes[i]);
+		}
+		return ans;
 	}
 }

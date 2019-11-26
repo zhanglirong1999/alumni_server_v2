@@ -1,6 +1,5 @@
 package cn.edu.seu.alumni_server.controller;
 
-import cn.edu.seu.alumni_server.common.Utils;
 import cn.edu.seu.alumni_server.common.dto.WebResponse;
 import cn.edu.seu.alumni_server.common.exceptions.ActivityServiceException;
 import cn.edu.seu.alumni_server.controller.dto.ActivityBasicInfoDTO;
@@ -13,10 +12,6 @@ import cn.edu.seu.alumni_server.service.ActivityMemberService;
 import cn.edu.seu.alumni_server.service.ActivityService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,7 +21,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 // TODO 之后需要加上 Acl 注解用来判断 token
 //@Acl

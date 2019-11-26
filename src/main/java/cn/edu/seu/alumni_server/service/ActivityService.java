@@ -157,7 +157,25 @@ public interface ActivityService {
 	public Long[] decodeForActivityImg(String keyString);
 
 	// 完成图片的上传
-	public String[] uploadActivityImgs(
-		Long activityId, MultipartFile... multipartFiles
+	public void uploadActivityImgsBySuffixes(
+		String[] suffixes, MultipartFile... multipartFiles
 	) throws ActivityServiceException, IOException;
+
+	// 根据输入的图片获取他们的数据库 url 尾部信息.
+	public String[] makeUrlSuffixesForActivityImgs(
+		Long activityId, MultipartFile...multipartFiles
+	) throws ActivityServiceException;
+
+	// 根据输入的尾缀输出对应的 urls
+	public String[] makeUrlsForActivityImgs(
+		String[] suffixes
+	) throws ActivityServiceException;
+
+	public void sendActivityImgsBySuffixes(ActivityWithMultipartFileDTO x,
+		String[] imgUrlSuffixes) throws ActivityServiceException, IOException;
+
+	public String[] makeAndSetSuffixUrls(
+		ActivityWithMultipartFileDTO originalMPFActivityDTO,
+		ActivityDTO resultActivityDTO) throws ActivityServiceException,
+		IllegalAccessException, InvocationTargetException;
 }

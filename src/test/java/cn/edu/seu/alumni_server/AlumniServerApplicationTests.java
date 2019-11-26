@@ -17,7 +17,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {AlumniServerApplication.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = {
+	AlumniServerApplication.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class AlumniServerApplicationTests {
 
 	@Autowired
@@ -29,13 +30,13 @@ public class AlumniServerApplicationTests {
 	public void testPostImgs() {
 		// 获取图片
 		File file = new File(
-			"F:\\71118123\\照片\\ParanoidRoot.jpg"
+			"F:\\71118123\\照片\\coma.jpg"
 		);
 		try {
 			MultipartFile multipartFile = Utils.fileToMultipartFile(file);
 			ActivityWithMultipartFileDTO x = new ActivityWithMultipartFileDTO(
 				7647332456448L, null, null, null, null, null, null,
-				multipartFile, null, null, null, null, null, null, null
+				null, multipartFile, null, null, null, null, null, null
 			);
 			// 首先判断是否有效, 并且发送不为 null 的图片.
 			Activity ans = this.activityService.updateActivityDAO(x);

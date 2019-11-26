@@ -5,7 +5,6 @@ import cn.edu.seu.alumni_server.common.exceptions.ActivityServiceException;
 import cn.edu.seu.alumni_server.service.QCloudFileManager;
 import com.qcloud.cos.COSClient;
 import com.qcloud.cos.model.PutObjectRequest;
-import com.qcloud.cos.model.PutObjectResult;
 import java.io.File;
 import java.io.IOException;
 import lombok.Getter;
@@ -43,18 +42,23 @@ public class ActivityFileManagerImpl implements QCloudFileManager {
 	}
 
 	@Override
-	public String uploadFileToQCloud(File file, String key) {
+	public String uploadFileToQCloudBySuffixes(File file, String suffixKey) {
 		// 创建客户端
 		COSClient cosClient = this.qCloudCOSClientHolder.newCOSClient();
 		// 上传图片文件到指定的桶中
 		PutObjectRequest putObjectRequest = new PutObjectRequest(
 			this.qCloudCOSClientHolder.getBucketName(),
-			key,
+			suffixKey,
 			file
 		);
 		cosClient.putObject(putObjectRequest);
 		// 关闭.
 		this.qCloudCOSClientHolder.closeCOSClient(cosClient);
-		return key;
+		return putObjectRequest.getKey();
+	}
+
+	@Override
+	public String makeUrlString(String suffixKey) {
+		return this.qCloudCOSClientHolder.getPath() + suffixKey;
 	}
 }
