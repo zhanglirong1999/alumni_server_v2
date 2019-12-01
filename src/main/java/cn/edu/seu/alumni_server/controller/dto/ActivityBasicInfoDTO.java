@@ -13,7 +13,6 @@ public class ActivityBasicInfoDTO {
 
 	private Long activityId = null;
 	private String activityName = null;
-	private String accountName = null;
 	private String activityDesc = null;
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date activityTime = null;
@@ -33,4 +32,11 @@ public class ActivityBasicInfoDTO {
 	private Long activityMembersNum = null;
 	// 群组的头像
 	private String alumniCircleAvatar;
+
+	// 额外的信息
+	private String starterName = null;
+	private Long starterId = null;
+	private String starterSelfDesc = null;
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	private Date activityCreatedDateTime = null;
 }

@@ -1,36 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.edu.seu.alumni_server.dao.mapper.ActivityMapper">
-  <resultMap id="BaseResultMap" type="cn.edu.seu.alumni_server.dao.entity.Activity">
-    <result column="activity_id" jdbcType="BIGINT" property="activityId"/>
-    <result column="alumni_circle_id" jdbcType="BIGINT" property="alumniCircleId"/>
-    <result column="account_id" jdbcType="BIGINT" property="accountId"/>
-    <result column="activity_name" jdbcType="VARCHAR" property="activityName"/>
-    <result column="activity_desc" jdbcType="VARCHAR" property="activityDesc"/>
-    <result column="activity_time" jdbcType="DATE" property="activityTime"/>
-    <result column="expiration_time" jdbcType="DATE" property="expirationTime"/>
-    <result column="img1" jdbcType="VARCHAR" property="img1"/>
-    <result column="img2" jdbcType="VARCHAR" property="img2"/>
-    <result column="img3" jdbcType="VARCHAR" property="img3"/>
-    <result column="img4" jdbcType="VARCHAR" property="img4"/>
-    <result column="img5" jdbcType="VARCHAR" property="img5"/>
-    <result column="img6" jdbcType="VARCHAR" property="img6"/>
-    <result column="visible_status" jdbcType="TINYINT" property="visibleStatus"/>
-    <result column="valid_status" jdbcType="TINYINT" property="validStatus"/>
-    <result column="c_time" jdbcType="TIMESTAMP" property="cTime"/>
-    <result column="u_time" jdbcType="TIMESTAMP" property="uTime"/>
-    <result column="activity_members_num" jdbcType="BIGINT" property="activityMembersNum"/>
-  </resultMap>
-  <select id="getBasicInfosByActivityId" resultType="cn.edu.seu.alumni_server.controller.dto.ActivityBasicInfoDTO">
-        SELECT ACT.activity_id, ACT.activity_name, ACC.name, ACT.activity_desc, ACT.expiration_time, ACT.activity_time,
-        ACT.img1, ACT.img2, ACT.img3, ACT.img4, ACT.img5, ACT.img6, COUNT(ACT_MEM.account_id) AS activity_members_num, ALU.avatar AS alumni_circle_avatar
+    <resultMap id="BaseResultMap" type="cn.edu.seu.alumni_server.dao.entity.Activity">
+        <result column="activity_id" jdbcType="BIGINT" property="activityId"/>
+        <result column="alumni_circle_id" jdbcType="BIGINT" property="alumniCircleId"/>
+        <result column="account_id" jdbcType="BIGINT" property="accountId"/>
+        <result column="activity_name" jdbcType="VARCHAR" property="activityName"/>
+        <result column="activity_desc" jdbcType="VARCHAR" property="activityDesc"/>
+        <result column="activity_time" jdbcType="DATE" property="activityTime"/>
+        <result column="expiration_time" jdbcType="DATE" property="expirationTime"/>
+        <result column="img1" jdbcType="VARCHAR" property="img1"/>
+        <result column="img2" jdbcType="VARCHAR" property="img2"/>
+        <result column="img3" jdbcType="VARCHAR" property="img3"/>
+        <result column="img4" jdbcType="VARCHAR" property="img4"/>
+        <result column="img5" jdbcType="VARCHAR" property="img5"/>
+        <result column="img6" jdbcType="VARCHAR" property="img6"/>
+        <result column="visible_status" jdbcType="TINYINT" property="visibleStatus"/>
+        <result column="valid_status" jdbcType="TINYINT" property="validStatus"/>
+        <result column="c_time" jdbcType="TIMESTAMP" property="cTime"/>
+        <result column="u_time" jdbcType="TIMESTAMP" property="uTime"/>
+    </resultMap>
+    <select id="getBasicInfosByActivityId"
+        resultType="cn.edu.seu.alumni_server.controller.dto.ActivityBasicInfoDTO">
+        SELECT ACT.activity_id, ACT.activity_name, ACT.activity_desc, ACT.expiration_time, ACT.activity_time,
+        ACT.img1, ACT.img2, ACT.img3, ACT.img4, ACT.img5, ACT.img6, COUNT(ACT_MEM.account_id) AS activity_members_num, ALU.avatar AS alumni_circle_avatar,
+        ACC.name AS starter_name, ACC.account_id AS starter_id, ACC.self_desc AS starter_self_desc, ACT.c_time AS activity_created_date_time
         FROM activity AS ACT, account AS ACC, activity_member AS ACT_MEM, alumni_circle AS ALU
-        WHERE ALU.is_available = 1 AND ALU.alumni_circle_id = ACT.alumni_circle_id AND ACT.is_available = 1 AND ACT.account_id = ACC.account_id AND ACT.activity_id = ACT_MEM.activity_id AND ACT_MEM.is_available = 1 AND ACT.activity_id = #{activityId};
+        WHERE ALU.is_available = 1 AND ALU.alumni_circle_id = ACT.alumni_circle_id AND ACT.is_available = 1 AND ACT.account_id = ACC.account_id AND ACT.activity_id = ACT_MEM.activity_id AND ACT_MEM.is_available = 1 AND ACT.activity_id = #{activityId}
     </select>
-  <select id="getBasicInfosByStartedAccountId" resultType="cn.edu.seu.alumni_server.controller.dto.ActivityBasicInfoDTO">
-        SELECT ACT.activity_id, ACT.activity_name, ACC.name, ACT.activity_desc, ACT.expiration_time, ACT.activity_time,
-        ACT.img1, ACT.img2, ACT.img3, ACT.img4, ACT.img5, ACT.img6, COUNT(ACT_MEM.account_id) AS activity_members_num, ALU.avatar AS alumni_circle_avatar
+    <select id="getBasicInfosByStartedAccountId"
+        resultType="cn.edu.seu.alumni_server.controller.dto.ActivityBasicInfoDTO">
+        SELECT ACT.activity_id, ACT.activity_name, ACT.activity_desc, ACT.expiration_time, ACT.activity_time,
+        ACT.img1, ACT.img2, ACT.img3, ACT.img4, ACT.img5, ACT.img6, COUNT(ACT_MEM.account_id) AS activity_members_num, ALU.avatar AS alumni_circle_avatar,
+        ACC.name AS starter_name, ACC.account_id AS starter_id, ACC.self_desc AS starter_self_desc, ACT.c_time AS activity_created_date_time
         FROM activity AS ACT, account AS ACC, activity_member AS ACT_MEM, alumni_circle AS ALU
         WHERE ALU.is_available = 1 AND ALU.alumni_circle_id = ACT.alumni_circle_id AND ACT.is_available = 1 AND ACT.account_id = ACC.account_id AND ACT.activity_id = ACT_MEM.activity_id AND ACT_MEM.is_available = 1 AND ACT.activity_id IN (
             SELECT ACT1.activity_id
@@ -39,9 +42,11 @@
         )
         GROUP BY ACT.activity_id
     </select>
-  <select id="getBasicInfosByEnrolledAccountId" resultType="cn.edu.seu.alumni_server.controller.dto.ActivityBasicInfoDTO">
-        SELECT ACT.activity_id, ACT.activity_name, ACC.name, ACT.activity_desc, ACT.expiration_time, ACT.activity_time,
-        ACT.img1, ACT.img2, ACT.img3, ACT.img4, ACT.img5, ACT.img6, COUNT(ACT_MEM.account_id) AS activity_members_num, ALU.avatar AS alumni_circle_avatar
+    <select id="getBasicInfosByEnrolledAccountId"
+        resultType="cn.edu.seu.alumni_server.controller.dto.ActivityBasicInfoDTO">
+        SELECT ACT.activity_id, ACT.activity_name, ACT.activity_desc, ACT.expiration_time, ACT.activity_time,
+        ACT.img1, ACT.img2, ACT.img3, ACT.img4, ACT.img5, ACT.img6, COUNT(ACT_MEM.account_id) AS activity_members_num, ALU.avatar AS alumni_circle_avatar,
+        ACC.name AS starter_name, ACC.account_id AS starter_id, ACC.self_desc AS starter_self_desc, ACT.c_time AS activity_created_date_time
         FROM activity AS ACT, account AS ACC, activity_member AS ACT_MEM, alumni_circle AS ALU
         WHERE ALU.is_available = 1 AND ALU.alumni_circle_id = ACT.alumni_circle_id AND ACT.is_available = 1 AND ACT.account_id = ACC.account_id AND ACT.activity_id = ACT_MEM.activity_id AND ACT_MEM.is_available = 1 AND ACT.activity_id IN (
             SELECT AM1.activity_id
@@ -50,28 +55,32 @@
         )
         GROUP BY ACT.activity_id
     </select>
-  <select id="getActivitiesFuzzilyByActivityNameKeyWord" resultType="cn.edu.seu.alumni_server.controller.dto.ActivityBasicInfoDTO">
-        SELECT ACT.activity_id, ACT.activity_name, ACC.name, ACT.activity_desc, ACT.expiration_time, ACT.activity_time,
-        ACT.img1, ACT.img2, ACT.img3, ACT.img4, ACT.img5, ACT.img6, COUNT(ACT_MEM.account_id) AS activity_members_num, ALU.avatar AS alumni_circle_avatar
+    <select id="getActivitiesFuzzilyByActivityNameKeyWord"
+        resultType="cn.edu.seu.alumni_server.controller.dto.ActivityBasicInfoDTO">
+        SELECT ACT.activity_id, ACT.activity_name, ACT.activity_desc, ACT.expiration_time, ACT.activity_time,
+        ACT.img1, ACT.img2, ACT.img3, ACT.img4, ACT.img5, ACT.img6, COUNT(ACT_MEM.account_id) AS activity_members_num, ALU.avatar AS alumni_circle_avatar,
+        ACC.name AS starter_name, ACC.account_id AS starter_id, ACC.self_desc AS starter_self_desc, ACT.c_time AS activity_created_date_time
         FROM activity AS ACT, account AS ACC, activity_member AS ACT_MEM, alumni_circle AS ALU
         WHERE ALU.is_available = 1 AND ALU.alumni_circle_id = ACT.alumni_circle_id AND ACT.is_available = 1 AND ACT_MEM.is_available = 1 AND ACC.valid_status = 1 AND ACT.account_id = ACC.account_id AND ACT.activity_id = ACT_MEM.activity_id AND INSTR(ACT.activity_name, #{nameKeyWord}) > 0
         GROUP BY ACT.activity_id
     </select>
-  <select id="getActivitiesByActivityNameKeyWord" resultType="cn.edu.seu.alumni_server.controller.dto.ActivityBasicInfoDTO">
-        SELECT ACT.activity_id, ACT.activity_name, ACC.name, ACT.activity_desc, ACT.expiration_time, ACT.activity_time,
-        ACT.img1, ACT.img2, ACT.img3, ACT.img4, ACT.img5, ACT.img6, COUNT(ACT_MEM.account_id) AS activity_members_num, ALU.avatar AS alumni_circle_avatar
+    <select id="getActivitiesByActivityNameKeyWord"
+        resultType="cn.edu.seu.alumni_server.controller.dto.ActivityBasicInfoDTO">
+        SELECT ACT.activity_id, ACC.name, ACT.activity_desc, ACT.expiration_time, ACT.activity_time,
+        ACT.img1, ACT.img2, ACT.img3, ACT.img4, ACT.img5, ACT.img6, COUNT(ACT_MEM.account_id) AS activity_members_num, ALU.avatar AS alumni_circle_avatar,
+        ACC.name AS starter_name, ACC.account_id AS starter_id, ACC.self_desc AS starter_self_desc, ACT.c_time AS activity_created_date_time
         FROM activity AS ACT, account AS ACC, activity_member AS ACT_MEM, alumni_circle AS ALU
         WHERE ALU.is_available = 1 AND ALU.alumni_circle_id = ACT.alumni_circle_id AND ACT.is_available = 1 AND ACT_MEM.is_available = 1 AND ACC.valid_status = 1 AND ACT.account_id = ACC.account_id AND ACT.activity_id = ACT_MEM.activity_id AND ACT.activity_name = #{activityName}
         GROUP BY ACT.activity_id
     </select>
-  <select id="hasAvailableActivity" resultType="java.lang.Long">
+    <select id="hasAvailableActivity" resultType="java.lang.Long">
         SELECT ACT.activity_id
         FROM activity AS ACT
-        WHERE ACT.activity_id = #{activityId} AND ACT.is_available = 1;
+        WHERE ACT.activity_id = #{activityId} AND ACT.is_available = 1
     </select>
-  <update id="deleteActivityLogically">
+    <update id="deleteActivityLogically">
         UPDATE activity AS ACT
         SET ACT.is_available = 0
-        WHERE ACT.activity_id = #{activityId};
+        WHERE ACT.activity_id = #{activityId}
     </update>
 </mapper>
