@@ -4,11 +4,13 @@ package cn.edu.seu.alumni_server.controller;
 import cn.edu.seu.alumni_server.common.dto.WebResponse;
 import cn.edu.seu.alumni_server.common.exceptions.AlumniCircleServiceException;
 import cn.edu.seu.alumni_server.controller.dto.AlumniCircleBasicInfoDTO;
+import cn.edu.seu.alumni_server.controller.dto.MyAlumniCircleInfoDTO;
 import cn.edu.seu.alumni_server.controller.dto.PageResult;
 import cn.edu.seu.alumni_server.service.AlumniCircleService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,8 +45,11 @@ public class AlumniCircleController {
 			PageHelper.startPage(pageIndex, pageSize);
 			List<AlumniCircleBasicInfoDTO> alumniCircleDTOList =
 				this.alumniCircleService.queryEnrolledAlumniCircleByAccountId(accountId);
+			List<MyAlumniCircleInfoDTO> ans = new LinkedList<>();
+			for (AlumniCircleBasicInfoDTO t : alumniCircleDTOList)
+				ans.add(t.toMyAlumniCircleInfoDTO());
 			return new WebResponse().success(
-				new PageResult<>(((Page) alumniCircleDTOList).getTotal(), alumniCircleDTOList)
+				new PageResult<>(((Page) alumniCircleDTOList).getTotal(), ans)
 			);
 		} catch (AlumniCircleServiceException | Exception e) {
 			return new WebResponse().fail(e.getMessage());
@@ -67,8 +72,11 @@ public class AlumniCircleController {
 					this.alumniCircleService
 						.queryAlumniCircleInfosByAlumniCircleName(alumniCircleName)
 			);
+			List<MyAlumniCircleInfoDTO> finalAns = new LinkedList<>();
+			for (AlumniCircleBasicInfoDTO t : ans)
+				finalAns.add(t.toMyAlumniCircleInfoDTO());
 			return new WebResponse().success(
-				new PageResult<>(((Page) ans).getTotal(), ans)
+				new PageResult<>(((Page) ans).getTotal(), finalAns)
 			);
 		} catch (AlumniCircleServiceException e) {
 			return new WebResponse().fail(e.getMessage());

@@ -41,7 +41,9 @@ public class AlumniCircleServiceImpl implements AlumniCircleService {
     ) throws AlumniCircleServiceException {
         if (accountId == null || accountId.equals(""))
             throw new AlumniCircleServiceException("The user id is none or empty.");
-        return this.alumniCircleMapper.queryEnrolledAlumniCircleInfosByAccountId(accountId);
+        List<AlumniCircleBasicInfoDTO> ans =
+            this.alumniCircleMapper.queryEnrolledAlumniCircleInfosByAccountId(accountId);
+        return ans;
     }
 
     @Override
