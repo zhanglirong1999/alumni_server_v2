@@ -5,6 +5,8 @@ import cn.edu.seu.alumni_server.common.exceptions.ActivityServiceException;
 import cn.edu.seu.alumni_server.controller.dto.ActivityBasicInfoDTO;
 import cn.edu.seu.alumni_server.controller.dto.ActivityDTO;
 import cn.edu.seu.alumni_server.controller.dto.ActivityWithMultipartFileDTO;
+import cn.edu.seu.alumni_server.controller.dto.SearchedActivityInfoDTO;
+import cn.edu.seu.alumni_server.controller.dto.StartedOrEnrolledActivityInfoDTO;
 import cn.edu.seu.alumni_server.dao.entity.Activity;
 import cn.edu.seu.alumni_server.dao.mapper.ActivityMapper;
 import cn.edu.seu.alumni_server.service.ActivityService;
@@ -193,55 +195,72 @@ public class ActivityServiceImpl implements ActivityService {
 		}
 		ActivityBasicInfoDTO ans =
 			this.activityMapper.getBasicInfosByActivityId(activityId);
+		ans.calculateStarterEducationGrade();
 		return ans;
 	}
 
 	@Override
-	public List<ActivityBasicInfoDTO> queryBasicInfoOfActivityByStartedAccountId(
+	public List<StartedOrEnrolledActivityInfoDTO> queryBasicInfoOfActivityByStartedAccountId(
 		Long accountId
 	) throws ActivityServiceException {
 		if (accountId == null) {
 			throw new ActivityServiceException("The account id is null");
 		}
-		List<ActivityBasicInfoDTO> ans =
+		List<StartedOrEnrolledActivityInfoDTO> ans =
 			this.activityMapper.getBasicInfosByStartedAccountId(accountId);
+		for (StartedOrEnrolledActivityInfoDTO t : ans) {
+			t.calculateActivityState();
+		}
 		return ans;
 	}
 
 	@Override
-	public List<ActivityBasicInfoDTO> queryBasicInfosOfActivityByEnrolledAccountId(
+	public List<StartedOrEnrolledActivityInfoDTO> queryBasicInfosOfActivityByEnrolledAccountId(
 		Long accountId
 	) throws ActivityServiceException {
 		if (accountId == null) {
 			throw new ActivityServiceException("The account id is null");
 		}
-		return this.activityMapper.getBasicInfosByEnrolledAccountId(accountId);
+		List<StartedOrEnrolledActivityInfoDTO> ans =
+			this.activityMapper.getBasicInfosByEnrolledAccountId(accountId);
+		for (StartedOrEnrolledActivityInfoDTO t : ans) {
+			t.calculateActivityState();
+		}
+		return ans;
 	}
 
 	@Override
-	public List<ActivityBasicInfoDTO> queryActivitiesFuzzilyByActivityNameKeyWord(
+	public List<SearchedActivityInfoDTO> queryActivitiesFuzzilyByActivityNameKeyWord(
 		String activityNameKeyWord
 	) throws ActivityServiceException {
 		if (activityNameKeyWord == null || activityNameKeyWord.equals("")
 			|| activityNameKeyWord.compareTo("") == 0) {
 			throw new ActivityServiceException("The fuzzily search key word is none or empty.");
 		}
-		return this.activityMapper.getActivitiesFuzzilyByActivityNameKeyWord(
-			activityNameKeyWord
-		);
+		List<SearchedActivityInfoDTO> ans =
+			this.activityMapper.getActivitiesFuzzilyByActivityNameKeyWord(
+				activityNameKeyWord
+			);
+		for (SearchedActivityInfoDTO t : ans)
+			t.calculateActivityState();
+		return ans;
 	}
 
 	@Override
-	public List<ActivityBasicInfoDTO> queryActivitiesByActivityNameKeyWord(
+	public List<SearchedActivityInfoDTO> queryActivitiesByActivityNameKeyWord(
 		String activityNameKeyWord
 	) throws ActivityServiceException {
 		if (activityNameKeyWord == null || activityNameKeyWord.equals("")
 			|| activityNameKeyWord.compareTo("") == 0) {
 			throw new ActivityServiceException("The fuzzily search key word is none or empty.");
 		}
-		return this.activityMapper.getActivitiesByActivityNameKeyWord(
-			activityNameKeyWord
-		);
+		List<SearchedActivityInfoDTO> ans =
+			this.activityMapper.getActivitiesByActivityNameKeyWord(
+				activityNameKeyWord
+			);
+		for (SearchedActivityInfoDTO t : ans)
+			t.calculateActivityState();
+		return ans;
 	}
 
 	@Override

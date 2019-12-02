@@ -2,8 +2,9 @@ package cn.edu.seu.alumni_server.dao.mapper;
 
 
 import cn.edu.seu.alumni_server.controller.dto.ActivityBasicInfoDTO;
+import cn.edu.seu.alumni_server.controller.dto.SearchedActivityInfoDTO;
+import cn.edu.seu.alumni_server.controller.dto.StartedOrEnrolledActivityInfoDTO;
 import cn.edu.seu.alumni_server.dao.entity.Activity;
-import java.util.HashMap;
 import java.util.List;
 import org.springframework.stereotype.Repository;
 import tk.mybatis.mapper.common.Mapper;
@@ -25,7 +26,7 @@ public interface ActivityMapper extends Mapper<Activity> {
 	 * @param accountId 发起成员 id.
 	 * @return 该成员所有发起的活动.
 	 */
-	List<ActivityBasicInfoDTO> getBasicInfosByStartedAccountId(Long accountId);
+	List<StartedOrEnrolledActivityInfoDTO> getBasicInfosByStartedAccountId(Long accountId);
 
 	/**
 	 * 获取该用户所有参与的活动的基本信息.
@@ -33,7 +34,7 @@ public interface ActivityMapper extends Mapper<Activity> {
 	 * @param accountId 参与活动的 id.
 	 * @return list
 	 */
-	List<ActivityBasicInfoDTO> getBasicInfosByEnrolledAccountId(Long accountId);
+	List<StartedOrEnrolledActivityInfoDTO> getBasicInfosByEnrolledAccountId(Long accountId);
 
 	/**
 	 * 向数据库模糊查询索要的活动的名字.
@@ -41,7 +42,7 @@ public interface ActivityMapper extends Mapper<Activity> {
 	 * @param nameKeyWord 活动名关键字.
 	 * @return 被查到的所有的活动的信息.
 	 */
-	List<ActivityBasicInfoDTO> getActivitiesFuzzilyByActivityNameKeyWord(String nameKeyWord);
+	List<SearchedActivityInfoDTO> getActivitiesFuzzilyByActivityNameKeyWord(String nameKeyWord);
 
 	/**
 	 * 向数据库严格匹配查询活动名.
@@ -49,7 +50,7 @@ public interface ActivityMapper extends Mapper<Activity> {
 	 * @param activityName 活动名.
 	 * @return 查询出的所有活动的基本信息.
 	 */
-	List<ActivityBasicInfoDTO> getActivitiesByActivityNameKeyWord(String activityName);
+	List<SearchedActivityInfoDTO> getActivitiesByActivityNameKeyWord(String activityName);
 
 	// 判断是不是有一个
 	Long hasAvailableActivity(Long activityId);

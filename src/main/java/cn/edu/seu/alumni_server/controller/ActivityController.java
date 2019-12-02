@@ -6,6 +6,8 @@ import cn.edu.seu.alumni_server.controller.dto.ActivityBasicInfoDTO;
 import cn.edu.seu.alumni_server.controller.dto.ActivityDTO;
 import cn.edu.seu.alumni_server.controller.dto.ActivityWithMultipartFileDTO;
 import cn.edu.seu.alumni_server.controller.dto.PageResult;
+import cn.edu.seu.alumni_server.controller.dto.SearchedActivityInfoDTO;
+import cn.edu.seu.alumni_server.controller.dto.StartedOrEnrolledActivityInfoDTO;
 import cn.edu.seu.alumni_server.dao.entity.Activity;
 import cn.edu.seu.alumni_server.dao.entity.ActivityMember;
 import cn.edu.seu.alumni_server.service.ActivityMemberService;
@@ -141,7 +143,7 @@ public class ActivityController {
 	) {
 		try {
 			PageHelper.startPage(pageIndex, pageSize);
-			List<ActivityBasicInfoDTO> infos =
+			List<StartedOrEnrolledActivityInfoDTO> infos =
 				this.activityService.queryBasicInfoOfActivityByStartedAccountId(
 					accountId
 				);
@@ -175,7 +177,7 @@ public class ActivityController {
 	) {
 		try {
 			PageHelper.startPage(pageIndex, pageSize);
-			List<ActivityBasicInfoDTO> infos =
+			List<StartedOrEnrolledActivityInfoDTO> infos =
 				this.activityService.queryBasicInfosOfActivityByEnrolledAccountId(
 					accountId
 				);
@@ -203,7 +205,7 @@ public class ActivityController {
 	) {
 		try {
 			PageHelper.startPage(pageIndex, pageSize);
-			List<ActivityBasicInfoDTO> ans = (
+			List<SearchedActivityInfoDTO> ans = (
 				fuzzy ?
 					this.activityService.queryActivitiesFuzzilyByActivityNameKeyWord(activityName) :
 					this.activityService.queryActivitiesByActivityNameKeyWord(activityName)
