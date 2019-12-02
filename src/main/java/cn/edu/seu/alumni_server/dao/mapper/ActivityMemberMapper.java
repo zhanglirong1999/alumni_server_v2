@@ -1,5 +1,6 @@
 package cn.edu.seu.alumni_server.dao.mapper;
 
+import cn.edu.seu.alumni_server.controller.dto.ActivityMemberBasicInfoDTO;
 import cn.edu.seu.alumni_server.dao.entity.Account;
 import cn.edu.seu.alumni_server.dao.entity.ActivityMember;
 import java.util.List;
@@ -13,7 +14,7 @@ public interface ActivityMemberMapper extends Mapper<ActivityMember> {
 	 * @param activityId 活动 id.
 	 * @return 参与人员的信息列表.
 	 */
-	public List<Account> getActivityMemberInfosByActivityId(Long activityId);
+	public List<ActivityMemberBasicInfoDTO> getActivityMemberInfosByActivityId(Long activityId);
 
 	/**
 	 * 跟新一个活动所有成员的已读状态.

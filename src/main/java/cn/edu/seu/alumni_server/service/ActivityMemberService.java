@@ -1,11 +1,8 @@
 package cn.edu.seu.alumni_server.service;
 
 import cn.edu.seu.alumni_server.common.exceptions.ActivityMemberServiceException;
-import cn.edu.seu.alumni_server.common.exceptions.ActivityServiceException;
-import cn.edu.seu.alumni_server.controller.dto.ActivityDTO;
+import cn.edu.seu.alumni_server.controller.dto.ActivityMemberBasicInfoDTO;
 import cn.edu.seu.alumni_server.controller.dto.ActivityMemberDTO;
-import cn.edu.seu.alumni_server.dao.entity.Account;
-import cn.edu.seu.alumni_server.dao.entity.Activity;
 import cn.edu.seu.alumni_server.dao.entity.ActivityMember;
 import java.util.List;
 
@@ -41,7 +38,7 @@ public interface ActivityMemberService {
 	 * @param activityId 活动 id.
 	 * @return 参加活动成员
 	 */
-	public List<Account> queryActivityMemberAccountInfosByAccountId(Long activityId)
+	public List<ActivityMemberBasicInfoDTO> queryActivityMemberAccountInfosByAccountId(Long activityId)
 		throws ActivityMemberServiceException;
 
 	/**

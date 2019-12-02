@@ -3,6 +3,7 @@ package cn.edu.seu.alumni_server.controller;
 import cn.edu.seu.alumni_server.common.dto.WebResponse;
 import cn.edu.seu.alumni_server.common.exceptions.ActivityMemberServiceException;
 import cn.edu.seu.alumni_server.controller.dto.AccountDTO;
+import cn.edu.seu.alumni_server.controller.dto.ActivityMemberBasicInfoDTO;
 import cn.edu.seu.alumni_server.controller.dto.ActivityMemberDTO;
 import cn.edu.seu.alumni_server.controller.dto.PageResult;
 import cn.edu.seu.alumni_server.dao.entity.Account;
@@ -61,14 +62,10 @@ public class ActivityMemberController {
 	) {
 		try {
 			PageHelper.startPage(pageIndex, pageSize);
-			List<Account> accountDAOs =
+			List<ActivityMemberBasicInfoDTO> accountDAOs =
 				this.activityMemberService.queryActivityMemberAccountInfosByAccountId(activityId);
-			List<AccountDTO> accountDTOS = new ArrayList<>();
-			for (Account accountDAO : accountDAOs) {
-				accountDTOS.add(new AccountDTO(accountDAO));
-			}
 			return new WebResponse().success(
-				new PageResult<>(((Page) accountDAOs).getTotal(), accountDTOS)
+				new PageResult<>(((Page) accountDAOs).getTotal(), accountDAOs)
 			);
 		} catch (ActivityMemberServiceException e) {
 			return new WebResponse().fail(e.getMessage());
