@@ -6,11 +6,11 @@ import cn.edu.seu.alumni_server.common.dto.WebResponse;
 import cn.edu.seu.alumni_server.common.token.Acl;
 import cn.edu.seu.alumni_server.common.token.TokenUtil;
 import cn.edu.seu.alumni_server.controller.dto.*;
-import cn.edu.seu.alumni_server.controller.dto.enums.FriendStatus;
 import cn.edu.seu.alumni_server.controller.dto.enums.SearchType;
-import cn.edu.seu.alumni_server.dao.entity.*;
+import cn.edu.seu.alumni_server.dao.entity.Account;
 import cn.edu.seu.alumni_server.dao.mapper.*;
-import cn.edu.seu.alumni_server.service.AccountService;
+import cn.edu.seu.alumni_server.service.CommonService;
+import cn.edu.seu.alumni_server.service.impl.CommonServiceImpl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.google.gson.Gson;
@@ -29,14 +29,10 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @SuppressWarnings("ALL")
 @RestController
 public class V2ApiController {
-
-    @Autowired
-    AccountService accountService;
 
     @Autowired
     AccountMapper accountMapper;
@@ -50,11 +46,16 @@ public class V2ApiController {
     FriendMapper friendMapper;
     @Autowired
     V2ApiMapper v2ApiMapper;
+    @Autowired
+    FavoriteMapper favoriteMapper;
 
     @Autowired
     RestTemplate restTemplate;
     @Autowired
-    FavoriteMapper favoriteMapper;
+    CommonService commonService;
+    @Autowired
+    HttpServletRequest request;
+
 
     /**
      * @param js_code
@@ -125,7 +126,7 @@ public class V2ApiController {
         // account
         AccountDTO accountDTO = accountAllDTO.getAccount();
 
-        accountService.checkAccountInfo(accountDTO);
+//        accountService.checkAccountInfo(accountDTO);
 
         // education
         List<EducationDTO> educationDTOS = accountAllDTO.getEducations();
@@ -172,73 +173,6 @@ public class V2ApiController {
         return new WebResponse();
     }
 
-    @Autowired
-    HttpServletRequest request;
-
-    /**
-     * 获取个人信息大对象
-     *
-     * @param accountId
-     * @return
-     */
-    @Acl
-    @RequestMapping("/accountAll")
-    public WebResponse<AccountAllDTO> getAccountInfo(@RequestParam Long accountId) {
-
-        Long myAccountId = (Long) request.getAttribute("accountId");
-        AccountAllDTO accountAllDTO = getAccountAllDTOById(accountId);
-        if (!myAccountId.equals(accountId)) {
-            Friend relationShip = v2ApiMapper.getRelationShip(myAccountId, accountId);
-            if (relationShip != null) {
-                accountAllDTO.setRelationShip(relationShip.getStatus());
-                if (relationShip.getStatus() != FriendStatus.friend.getStatus()) {
-                    accountAllDTO.getAccount().setBirthday(null);
-                    accountAllDTO.getAccount().setWechat(null);
-                    accountAllDTO.getAccount().setPhone(null);
-                }
-            }
-            Favorite favorite = new Favorite();
-            favorite.setAccountId(myAccountId);
-            favorite.setFavoriteAccountId(accountId);
-            List<Favorite> temp = favoriteMapper.select(favorite);
-            if (temp.size() > 0) {
-                accountAllDTO.setFavorite(temp.get(0).getStatus());
-            }
-        }
-
-        return new WebResponse<AccountAllDTO>().success(accountAllDTO);
-    }
-
-    public AccountAllDTO getAccountAllDTOById(Long accountId) {
-
-        AccountAllDTO accountAllDTO = new AccountAllDTO();
-        // 查询 account 信息
-        accountAllDTO.setAccount(new AccountDTO(accountMapper.selectByPrimaryKey(accountId)));
-
-        // 查询 education 信息
-//        Education e = new Education();
-//        e.setAccountId(accountId);
-
-        Example example1 = new Example(Education.class);
-        example1.orderBy("endTime").desc();
-        example1.createCriteria().andEqualTo("accountId", accountId);
-        accountAllDTO.setEducations(educationMapper.selectByExample(example1)
-                .stream().map(education -> {
-                    return new EducationDTO(education);
-                }).collect(Collectors.toList()));
-
-        // 查询 job 信息
-//        Job j = new Job();
-//        j.setAccountId(accountId);
-        Example example2 = new Example(Job.class);
-        example2.orderBy("endTime").desc();
-        example2.createCriteria().andEqualTo("accountId", accountId);
-        accountAllDTO.setJobs(jobMapper.selectByExample(example2)
-                .stream().map(job -> {
-                    return new JobDTO(job);
-                }).collect(Collectors.toList()));
-        return accountAllDTO;
-    }
 
     @Acl
     @RequestMapping("/query")
@@ -311,12 +245,12 @@ public class V2ApiController {
     @Acl
     @RequestMapping("/recommand")
     public WebResponse recommand(HttpServletRequest request,
-            @RequestParam int pageSize,
+                                 @RequestParam int pageSize,
                                  @RequestParam int pageIndex) {
         Long accountId = (Long) request.getAttribute("accountId");
 
         BriefInfo briefInfo = new BriefInfo();
-        AccountAllDTO accountAllDTO = getAccountAllDTOById(accountId);
+        AccountAllDTO accountAllDTO = commonService.getAccountAllDTOById(accountId);
         briefInfo.setAccountId(accountId);
         briefInfo.setCity(accountAllDTO.getAccount().getCity());
         if (accountAllDTO.getEducations() != null &&

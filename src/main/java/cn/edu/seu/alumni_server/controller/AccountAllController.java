@@ -1,25 +1,38 @@
 package cn.edu.seu.alumni_server.controller;
 
+import cn.edu.seu.alumni_server.common.CONST;
 import cn.edu.seu.alumni_server.common.Utils;
 import cn.edu.seu.alumni_server.common.dto.WebResponse;
 import cn.edu.seu.alumni_server.common.token.Acl;
+import cn.edu.seu.alumni_server.controller.dto.AccountAllDTO;
 import cn.edu.seu.alumni_server.controller.dto.AccountDTO;
 import cn.edu.seu.alumni_server.controller.dto.EducationDTO;
 import cn.edu.seu.alumni_server.controller.dto.JobDTO;
-import cn.edu.seu.alumni_server.dao.entity.Account;
-import cn.edu.seu.alumni_server.dao.entity.Education;
-import cn.edu.seu.alumni_server.dao.entity.Job;
+import cn.edu.seu.alumni_server.controller.dto.enums.FriendStatus;
+import cn.edu.seu.alumni_server.dao.entity.*;
 import cn.edu.seu.alumni_server.dao.mapper.*;
+import cn.edu.seu.alumni_server.service.CommonService;
+import cn.edu.seu.alumni_server.service.impl.CommonServiceImpl;
+import org.apache.http.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 
 @SuppressWarnings("ALL")
 @RestController
 @Acl
 public class AccountAllController {
+
+    @Autowired
+    HttpServletRequest request;
+    @Autowired
+    V2ApiMapper v2ApiMapper;
+    @Autowired
+    CommonService commonService;
 
     @Autowired
     AccountMapper accountMapper;
@@ -30,15 +43,16 @@ public class AccountAllController {
     @Autowired
     FriendMapper friendMapper;
     @Autowired
-    V2ApiMapper v2ApiMapper;
-    @Autowired
     MessageMapper messageMapper;
     @Autowired
-    HttpServletRequest request;
+    FavoriteMapper favoriteMapper;
+
+    @Autowired
+    HttpServletResponse httpServletResponse;
 
     @GetMapping("/account")
     public WebResponse getAccount() {
-        Long accountId = (Long) request.getAttribute("accountId");
+        Long accountId = (Long) request.getAttribute(CONST.ACL_ACCOUNTID);
         Account account = accountMapper.selectByPrimaryKey(accountId);
         return new WebResponse().success(new AccountDTO(account));
     }
@@ -48,13 +62,50 @@ public class AccountAllController {
         if (accountDTO.getAccountId() != null &&
                 !accountDTO.getAccountId().equals("")) {
             accountMapper.
-                    updateByPrimaryKeySelective(accountDTO.toAccount());
+                updateByPrimaryKeySelective(accountDTO.toAccount());
         } else {
             Account account = accountDTO.toAccount();
             account.setAccountId(Utils.generateId());
             accountMapper.insert(account);
         }
         return new WebResponse().success();
+    }
+
+    /**
+     * 获取指定accountId的个人信息大对象，根据关系，返回值会不同
+     *
+     * @param accountId
+     * @return
+     */
+    @Acl
+    @RequestMapping("/accountAll")
+    public WebResponse<AccountAllDTO> getAccountInfo(@RequestParam Long accountId) {
+
+        Long myAccountId = (Long) request.getAttribute(CONST.ACL_ACCOUNTID);
+
+        AccountAllDTO accountAllDTO = commonService.getAccountAllDTOById(accountId);
+        if (!myAccountId.equals(accountId)) {
+            // 获取两人关系
+            Friend relationShip = friendMapper.getRelationShip(myAccountId, accountId);
+            if (relationShip != null) {
+                accountAllDTO.setRelationShip(relationShip.getStatus());
+                if (relationShip.getStatus() != FriendStatus.friend.getStatus()) {
+                    accountAllDTO.getAccount().setBirthday(null);
+                    accountAllDTO.getAccount().setWechat(null);
+                    accountAllDTO.getAccount().setPhone(null);
+                }
+            }
+            // 获取收藏状态
+            Favorite favorite = new Favorite();
+            favorite.setAccountId(myAccountId);
+            favorite.setFavoriteAccountId(accountId);
+            List<Favorite> temp = favoriteMapper.select(favorite);
+            if (temp.size() > 0) {
+                accountAllDTO.setFavorite(temp.get(0).getStatus());
+            }
+        }
+
+        return new WebResponse<AccountAllDTO>().success(accountAllDTO);
     }
 
     @GetMapping("/education")

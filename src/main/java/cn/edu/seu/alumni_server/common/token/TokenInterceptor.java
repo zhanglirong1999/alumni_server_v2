@@ -1,5 +1,6 @@
 package cn.edu.seu.alumni_server.common.token;
 
+import cn.edu.seu.alumni_server.common.CONST;
 import cn.edu.seu.alumni_server.common.dto.WebResponse;
 import cn.edu.seu.alumni_server.common.dto.WebResponseEnum;
 import com.google.gson.Gson;
@@ -10,6 +11,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 
+/**
+ * token拦截器，做token校验用
+ *
+ */
 public class TokenInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -50,7 +55,7 @@ public class TokenInterceptor extends HandlerInterceptorAdapter {
 //            response.sendError(401);
             return false;
         } else {
-            request.setAttribute("accountId", TokenUtil.getAccountId(token));
+            request.setAttribute(CONST.ACL_ACCOUNTID, TokenUtil.getAccountId(token));
         }
         return true;
     }

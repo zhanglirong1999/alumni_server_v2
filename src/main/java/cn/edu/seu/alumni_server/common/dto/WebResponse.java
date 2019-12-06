@@ -3,6 +3,10 @@ package cn.edu.seu.alumni_server.common.dto;
 import cn.edu.seu.alumni_server.common.CONST;
 import lombok.Data;
 
+/**
+ * controller 统一返回，包装对象.
+ * @param <T>
+ */
 @Data
 public class WebResponse<T> {
     Integer status;
@@ -28,7 +32,6 @@ public class WebResponse<T> {
     }
 
     /* 快捷方式 */
-
     public WebResponse() {
         this.status = CONST.SUCCESS_CODE;
         this.message = CONST.SUCCESS_MESSAGE_DEFAULT;
