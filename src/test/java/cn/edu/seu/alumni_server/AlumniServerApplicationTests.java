@@ -30,7 +30,7 @@ public class AlumniServerApplicationTests {
 	public void testPostImgs() {
 		// 获取图片
 		File file = new File(
-			"F:\\71118123\\照片\\coma.jpg"
+			"/Users/wangqing/IdeaProjects/alumni_server/doc/demo.png"
 		);
 		try {
 			MultipartFile multipartFile = Utils.fileToMultipartFile(file);

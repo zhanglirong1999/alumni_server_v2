@@ -1,5 +1,6 @@
 package cn.edu.seu.alumni_server.controller.dto.alumnicircle;
 
+import cn.edu.seu.alumni_server.controller.dto.MyAlumniCircleInfoDTO;
 import cn.edu.seu.alumni_server.controller.dto.enums.AlumniCircleAuthorizationState;
 import cn.edu.seu.alumni_server.controller.dto.enums.AlumniCircleType;
 import lombok.AllArgsConstructor;

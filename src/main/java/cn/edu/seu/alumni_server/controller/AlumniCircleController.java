@@ -3,9 +3,9 @@ package cn.edu.seu.alumni_server.controller;
 
 import cn.edu.seu.alumni_server.common.dto.WebResponse;
 import cn.edu.seu.alumni_server.common.exceptions.AlumniCircleServiceException;
-import cn.edu.seu.alumni_server.controller.dto.AlumniCircleBasicInfoDTO;
 import cn.edu.seu.alumni_server.controller.dto.MyAlumniCircleInfoDTO;
 import cn.edu.seu.alumni_server.controller.dto.PageResult;
+import cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleBasicInfoDTO;
 import cn.edu.seu.alumni_server.service.AlumniCircleService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
