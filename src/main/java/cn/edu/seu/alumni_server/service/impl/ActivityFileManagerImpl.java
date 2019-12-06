@@ -31,7 +31,7 @@ public class ActivityFileManagerImpl implements QCloudFileManager {
 	public File convertMultipartFileToFile(MultipartFile multipartFile, String newName)
 		throws IOException, ActivityServiceException {
 		// 获取到文件源路径
-		String originalFilename = multipartFile.getOriginalFilename();
+		String originalFilename = multipartFile.getOriginalFilename()	;
 		if (originalFilename == null)
 			throw new ActivityServiceException("The img original name is null.");
 		// 配置结果.

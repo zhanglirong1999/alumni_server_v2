@@ -3,7 +3,7 @@
 <mapper namespace="cn.edu.seu.alumni_server.dao.mapper.AlumniCircleMapper">
     <resultMap id="BaseResultMap" type="cn.edu.seu.alumni_server.dao.entity.AlumniCircle">
     </resultMap>
-     <select id="queryEnrolledAlumniCircleInfosByAccountId" resultType="cn.edu.seu.alumni_server.controller.dto.AlumniCircleBasicInfoDTO">
+     <select id="queryEnrolledAlumniCircleInfosByAccountId" resultType="cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleBasicInfoDTO">
         SELECT T.cnum AS alumni_circle_members_num, ALC.*, ACT.name AS creator_name
         FROM (
             SELECT ALCM1.alumni_circle_id AS cid, COUNT(ALCM1.account_id) AS cnum
@@ -17,7 +17,7 @@
             WHERE ALCM2.account_id = #{accountId} AND ALCM2.valid_status = 1
         )
     </select>
-    <select id="queryAlumniCircleInfosFuzzilyByAluCirName" resultType="cn.edu.seu.alumni_server.controller.dto.AlumniCircleBasicInfoDTO">
+    <select id="queryAlumniCircleInfosFuzzilyByAluCirName" resultType="cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleBasicInfoDTO">
         SELECT T.cnum AS alumni_circle_members_num, ALC.*, ACT.name AS creator_name
         FROM (
             SELECT ALCM1.alumni_circle_id AS cid, COUNT(ALCM1.account_id) AS cnum
@@ -27,7 +27,7 @@
         ) AS T, alumni_circle AS ALC, account AS ACT
         WHERE ACT.valid_status = 1 AND ALC.is_available = 1 AND T.cid = ALC.alumni_circle_id AND ACT.account_id = ALC.creator_id AND INSTR(ALC.alumni_circle_name, #{name}) > 0
     </select>
-    <select id="queryAlumniCircleInfosByAluCirName" resultType="cn.edu.seu.alumni_server.controller.dto.AlumniCircleBasicInfoDTO">
+    <select id="queryAlumniCircleInfosByAluCirName" resultType="cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleBasicInfoDTO">
         SELECT T.cnum AS alumni_circle_members_num, ALC.*, ACT.name AS creator_name
         FROM (
             SELECT ALCM1.alumni_circle_id AS cid, COUNT(ALCM1.account_id) AS cnum

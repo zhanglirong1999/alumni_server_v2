@@ -1,4 +1,4 @@
-package cn.edu.seu.alumni_server.controller.dto;
+package cn.edu.seu.alumni_server.controller.dto.alumnicircle;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

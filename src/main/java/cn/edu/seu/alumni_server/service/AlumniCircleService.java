@@ -1,8 +1,8 @@
 package cn.edu.seu.alumni_server.service;
 
 import cn.edu.seu.alumni_server.common.exceptions.AlumniCircleServiceException;
-import cn.edu.seu.alumni_server.controller.dto.AlumniCircleBasicInfoDTO;
-import cn.edu.seu.alumni_server.controller.dto.AlumniCircleDTO;
+import cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleBasicInfoDTO;
+import cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleDTO;
 import cn.edu.seu.alumni_server.dao.entity.AlumniCircle;
 import java.util.List;
 
