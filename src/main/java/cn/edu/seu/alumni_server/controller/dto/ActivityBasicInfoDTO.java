@@ -1,6 +1,7 @@
 package cn.edu.seu.alumni_server.controller.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import java.util.Calendar;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,9 +16,11 @@ public class ActivityBasicInfoDTO {
 	private String activityName = null;
 	private String activityDesc = null;
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	private Date activityTime = null;
+	private Date activityDateTime = null;
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	private Date expirationTime = null;
+	private Date expirationDateTime = null;
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	private Date activityCreatedDateTime = null;
 	private String img1;
 
 	private String img2;
@@ -29,14 +32,36 @@ public class ActivityBasicInfoDTO {
 	private String img5;
 
 	private String img6;
-	private Long activityMembersNum = null;
-	// 群组的头像
-	private String alumniCircleAvatar;
+	// 参与的人数
+	private Long enrolledNumber = null;
+
+	// 群组的信息
+	private Long alumniCircleId = null;
+	private String alumniCircleAvatar = null;
 
 	// 额外的信息
-	private String starterName = null;
-	private Long starterId = null;
-	private String starterSelfDesc = null;
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	private Date activityCreatedDateTime = null;
+	private Long starterId = null;  // 发起者 id
+	private String starterName = null;  // 发起者姓名
+	private String starterAvatar = null;  // 发起者头像
+	// 教育信息
+	private Long starterEducationId = null;
+	private String starterEducationLevel = null;
+	private String starterEducationSchool = null;
+	private String starterEducationCollege = null;
+	private Long starterStartEducationYear = null;  // 几几 级
+	private String starterEducationGrade = null;  // 需要计算
+
+	public void calculateStarterEducationGrade() {
+		Date date = new Date(starterStartEducationYear);
+		if (date.getTime() <= 0)
+			this.starterEducationGrade = null;
+		else {
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(date);
+			Integer y = calendar.get(Calendar.YEAR);
+			String sy = String.valueOf(y);
+			if (sy.length() != 4) starterEducationGrade = sy;
+			else starterEducationGrade = sy.substring(2) + "级";
+		}
+	}
 }

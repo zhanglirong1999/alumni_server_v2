@@ -4,6 +4,8 @@ import cn.edu.seu.alumni_server.common.exceptions.ActivityServiceException;
 import cn.edu.seu.alumni_server.controller.dto.ActivityBasicInfoDTO;
 import cn.edu.seu.alumni_server.controller.dto.ActivityDTO;
 import cn.edu.seu.alumni_server.controller.dto.ActivityWithMultipartFileDTO;
+import cn.edu.seu.alumni_server.controller.dto.SearchedActivityInfoDTO;
+import cn.edu.seu.alumni_server.controller.dto.StartedOrEnrolledActivityInfoDTO;
 import cn.edu.seu.alumni_server.dao.entity.Activity;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -111,7 +113,7 @@ public interface ActivityService {
 	 * @param accountId 发起者账户
 	 * @return 所有发起活动的基本信息.
 	 */
-	public List<ActivityBasicInfoDTO> queryBasicInfoOfActivityByStartedAccountId(
+	public List<StartedOrEnrolledActivityInfoDTO> queryBasicInfoOfActivityByStartedAccountId(
 		Long accountId
 	) throws ActivityServiceException;
 
@@ -122,7 +124,7 @@ public interface ActivityService {
 	 * @return 活动的基本信息.
 	 * @throws ActivityServiceException 可能出现的账号 null 异常.
 	 */
-	public List<ActivityBasicInfoDTO> queryBasicInfosOfActivityByEnrolledAccountId(
+	public List<StartedOrEnrolledActivityInfoDTO> queryBasicInfosOfActivityByEnrolledAccountId(
 		Long accountId
 	) throws ActivityServiceException;
 
@@ -132,7 +134,7 @@ public interface ActivityService {
 	 * @param activityNameKeyWord 关键词.
 	 * @return activities
 	 */
-	public List<ActivityBasicInfoDTO> queryActivitiesFuzzilyByActivityNameKeyWord(
+	public List<SearchedActivityInfoDTO> queryActivitiesFuzzilyByActivityNameKeyWord(
 		String activityNameKeyWord
 	) throws ActivityServiceException;
 
@@ -143,7 +145,7 @@ public interface ActivityService {
 	 * @return 查询到的活动结果列表.
 	 * @throws ActivityServiceException 异常处理.
 	 */
-	public List<ActivityBasicInfoDTO> queryActivitiesByActivityNameKeyWord(
+	public List<SearchedActivityInfoDTO> queryActivitiesByActivityNameKeyWord(
 		String activityNameKeyWord
 	) throws ActivityServiceException;
 

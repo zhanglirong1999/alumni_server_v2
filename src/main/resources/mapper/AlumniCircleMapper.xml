@@ -1,40 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.edu.seu.alumni_server.dao.mapper.AlumniCircleMapper">
     <resultMap id="BaseResultMap" type="cn.edu.seu.alumni_server.dao.entity.AlumniCircle">
     </resultMap>
-     <select id="queryEnrolledAlumniCircleInfosByAccountId" resultType="cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleBasicInfoDTO">
-        SELECT T.cnum AS alumni_circle_members_num, ALC.*, ACT.name AS creator_name
-        FROM (
-            SELECT ALCM1.alumni_circle_id AS cid, COUNT(ALCM1.account_id) AS cnum
+    <select id="queryEnrolledAlumniCircleInfosByAccountId"
+        resultType="cn.edu.seu.alumni_server.controller.dto.AlumniCircleBasicInfoDTO">
+        SELECT ALC.*
+        FROM alumni_circle AS ALC, alumni_circle_member AS ALCM
+        WHERE ALC.is_available = 1 AND
+        ALCM.valid_status = 1 AND
+        ALC.alumni_circle_id = ALCM.alumni_circle_id AND
+        ALCM.alumni_circle_id IN (
+            SELECT ALCM1.alumni_circle_id
             FROM alumni_circle_member AS ALCM1
-            WHERE ALCM1.valid_status = 1
-            GROUP BY ALCM1.alumni_circle_id
-        ) AS T, alumni_circle AS ALC, account AS ACT
-        WHERE ACT.valid_status = 1 AND ALC.is_available = 1 AND T.cid = ALC.alumni_circle_id AND ACT.account_id = ALC.creator_id AND T.cid IN (
-            SELECT ALCM2.alumni_circle_id
-            FROM alumni_circle_member AS ALCM2
-            WHERE ALCM2.account_id = #{accountId} AND ALCM2.valid_status = 1
+            WHERE ALCM1.valid_status = 1 AND
+            ALCM1.account_id = #{accountId}
         )
     </select>
-    <select id="queryAlumniCircleInfosFuzzilyByAluCirName" resultType="cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleBasicInfoDTO">
-        SELECT T.cnum AS alumni_circle_members_num, ALC.*, ACT.name AS creator_name
-        FROM (
-            SELECT ALCM1.alumni_circle_id AS cid, COUNT(ALCM1.account_id) AS cnum
-            FROM alumni_circle_member AS ALCM1
-            WHERE ALCM1.valid_status = 1
-            GROUP BY ALCM1.alumni_circle_id
-        ) AS T, alumni_circle AS ALC, account AS ACT
-        WHERE ACT.valid_status = 1 AND ALC.is_available = 1 AND T.cid = ALC.alumni_circle_id AND ACT.account_id = ALC.creator_id AND INSTR(ALC.alumni_circle_name, #{name}) > 0
+    <select id="queryAlumniCircleInfosFuzzilyByAluCirName"
+        resultType="cn.edu.seu.alumni_server.controller.dto.AlumniCircleBasicInfoDTO">
+        SELECT ALC.*
+        FROM alumni_circle AS ALC, alumni_circle_member AS ALCM
+        WHERE ALC.is_available = 1 AND
+        ALCM.valid_status = 1 AND
+        ALC.alumni_circle_id = ALCM.alumni_circle_id AND
+        INSTR(ALC.alumni_circle_name, #{name}) > 0
     </select>
-    <select id="queryAlumniCircleInfosByAluCirName" resultType="cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleBasicInfoDTO">
-        SELECT T.cnum AS alumni_circle_members_num, ALC.*, ACT.name AS creator_name
-        FROM (
-            SELECT ALCM1.alumni_circle_id AS cid, COUNT(ALCM1.account_id) AS cnum
-            FROM alumni_circle_member AS ALCM1
-            WHERE ALCM1.valid_status = 1
-            GROUP BY ALCM1.alumni_circle_id
-        ) AS T, alumni_circle AS ALC, account AS ACT
-        WHERE ACT.valid_status = 1 AND ALC.is_available = 1 AND T.cid = ALC.alumni_circle_id AND ACT.account_id = ALC.creator_id AND ALC.alumni_circle_name = #{name}
+    <select id="queryAlumniCircleInfosByAluCirName"
+        resultType="cn.edu.seu.alumni_server.controller.dto.AlumniCircleBasicInfoDTO">
+        SELECT ALC.*
+        FROM alumni_circle AS ALC, alumni_circle_member AS ALCM
+        WHERE ALC.is_available = 1 AND
+        ALCM.valid_status = 1 AND
+        ALC.alumni_circle_id = ALCM.alumni_circle_id AND
+        ALC.alumni_circle_name = #{name}
     </select>
 </mapper>

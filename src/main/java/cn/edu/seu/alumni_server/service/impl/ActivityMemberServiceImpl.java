@@ -1,10 +1,8 @@
 package cn.edu.seu.alumni_server.service.impl;
 
 import cn.edu.seu.alumni_server.common.exceptions.ActivityMemberServiceException;
-import cn.edu.seu.alumni_server.common.exceptions.ActivityServiceException;
+import cn.edu.seu.alumni_server.controller.dto.ActivityMemberBasicInfoDTO;
 import cn.edu.seu.alumni_server.controller.dto.ActivityMemberDTO;
-import cn.edu.seu.alumni_server.dao.entity.Account;
-import cn.edu.seu.alumni_server.dao.entity.Activity;
 import cn.edu.seu.alumni_server.dao.entity.ActivityMember;
 import cn.edu.seu.alumni_server.dao.mapper.ActivityMapper;
 import cn.edu.seu.alumni_server.dao.mapper.ActivityMemberMapper;
@@ -53,12 +51,16 @@ public class ActivityMemberServiceImpl implements ActivityMemberService {
 	}
 
 	@Override
-	public List<Account> queryActivityMemberAccountInfosByAccountId(Long activityId)
+	public List<ActivityMemberBasicInfoDTO> queryActivityMemberAccountInfosByAccountId(Long activityId)
 		throws ActivityMemberServiceException {
 		if (activityId == null) {
 			throw new ActivityMemberServiceException("The activity id is null");
 		}
-		return this.activityMemberMapper.getActivityMemberInfosByActivityId(activityId);
+		List<ActivityMemberBasicInfoDTO> ans =
+			this.activityMemberMapper.getActivityMemberInfosByActivityId(activityId);
+		for (ActivityMemberBasicInfoDTO t : ans)
+			t.calculateStarterEducationGrade();
+		return ans;
 	}
 
 	@Override

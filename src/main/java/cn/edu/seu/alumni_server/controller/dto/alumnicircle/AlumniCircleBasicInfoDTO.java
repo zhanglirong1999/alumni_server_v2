@@ -1,16 +1,17 @@
 package cn.edu.seu.alumni_server.controller.dto.alumnicircle;
 
+import cn.edu.seu.alumni_server.controller.dto.enums.AlumniCircleAuthorizationState;
+import cn.edu.seu.alumni_server.controller.dto.enums.AlumniCircleType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.beanutils.BeanUtils;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class AlumniCircleBasicInfoDTO {
-	private Integer alumniCircleMembersNum = null;
 	private Long alumniCircleId = null;
-	private Long creatorId = null;
 	// 群组的类型
 	private Integer alumniCircleType = null;
 	private String alumniCircleName = null;
@@ -19,5 +20,19 @@ public class AlumniCircleBasicInfoDTO {
 	private String avatar = null;
 	// 群组的验证状态
 	private Boolean authorizationStatus = null;
-	private String creatorName = null;
+
+	public MyAlumniCircleInfoDTO toMyAlumniCircleInfoDTO() {
+		MyAlumniCircleInfoDTO ans = new MyAlumniCircleInfoDTO();
+		ans.setAlumniCircleId(alumniCircleId);
+		ans.setAlumniCircleType(AlumniCircleType.getAlumniCircleTypeBy(alumniCircleType));
+		ans.setAlumniCircleName(alumniCircleName);
+		ans.setAlumniCircleDesc(alumniCircleDesc);
+		ans.setAvatar(avatar);
+		ans.setAuthorizationStatus(
+			AlumniCircleAuthorizationState.getAlumniCircleAuthorizationStateBy(
+				authorizationStatus
+			)
+		);
+		return ans;
+	}
 }

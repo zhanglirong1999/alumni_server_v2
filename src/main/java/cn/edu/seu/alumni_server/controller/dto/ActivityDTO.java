@@ -13,13 +13,14 @@ import org.springframework.beans.BeanUtils;
 @AllArgsConstructor
 public class ActivityDTO {
 
+	private String activityName;
+
 	private Long activityId;
 
 	private Long alumniCircleId;
 
 	private Long accountId;
 
-	private String activityName;
 
 	private String activityDesc;
 
