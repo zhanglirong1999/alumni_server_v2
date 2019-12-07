@@ -5,7 +5,7 @@
     <resultMap id="BaseResultMap" type="cn.edu.seu.alumni_server.dao.entity.AlumniCircle">
     </resultMap>
     <select id="queryEnrolledAlumniCircleInfosByAccountId"
-        resultType="cn.edu.seu.alumni_server.controller.dto.AlumniCircleBasicInfoDTO">
+        resultType="cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleBasicInfoDTO">
         SELECT ALC.*
         FROM alumni_circle AS ALC, alumni_circle_member AS ALCM
         WHERE ALC.is_available = 1 AND
@@ -19,7 +19,7 @@
         )
     </select>
     <select id="queryAlumniCircleInfosFuzzilyByAluCirName"
-        resultType="cn.edu.seu.alumni_server.controller.dto.AlumniCircleBasicInfoDTO">
+        resultType="cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleBasicInfoDTO">
         SELECT ALC.*
         FROM alumni_circle AS ALC, alumni_circle_member AS ALCM
         WHERE ALC.is_available = 1 AND
@@ -28,7 +28,7 @@
         INSTR(ALC.alumni_circle_name, #{name}) > 0
     </select>
     <select id="queryAlumniCircleInfosByAluCirName"
-        resultType="cn.edu.seu.alumni_server.controller.dto.AlumniCircleBasicInfoDTO">
+        resultType="cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleBasicInfoDTO">
         SELECT ALC.*
         FROM alumni_circle AS ALC, alumni_circle_member AS ALCM
         WHERE ALC.is_available = 1 AND

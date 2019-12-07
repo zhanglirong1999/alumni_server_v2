@@ -26,15 +26,8 @@ vim /etc/nginx/conf.d/weapp.conf
 
 服务器域名：https://www.seuclab.cn
 
-### 代码交接
+#项目资料
 
-```
-@RequestMapping("/test")
-
-
-
-```
-- 好友处理的逻辑
-
-
+UI：https://lanhuapp.com/url/hdUEK-VtbqL
+接口文档：https://nei.netease.com/dashboard/
 
