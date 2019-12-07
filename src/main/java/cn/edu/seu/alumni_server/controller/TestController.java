@@ -36,9 +36,9 @@ public class TestController {
     @Autowired
     ConstMajorMapper constMajorMapper;
 
-    @RequestMapping("/")
-    String demo(@RequestParam String a,
-                @RequestBody Map b) {
+    @RequestMapping("")
+    String demo(@RequestParam(required = false) String a,
+                @RequestBody(required = false) Map b) {
         System.out.println(a);
         System.out.println(b.toString());
         return "ok";
