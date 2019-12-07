@@ -50,12 +50,12 @@ public class ActivityController {
             @RequestParam String activityDesc,
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date activityTime,
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date expirationTime,
-            @RequestParam MultipartFile img1,
-            @RequestParam MultipartFile img2,
-            @RequestParam MultipartFile img3,
-            @RequestParam MultipartFile img4,
-            @RequestParam MultipartFile img5,
-            @RequestParam MultipartFile img6
+            @RequestParam(required = false) MultipartFile img1,
+            @RequestParam(required = false) MultipartFile img2,
+            @RequestParam(required = false) MultipartFile img3,
+            @RequestParam(required = false) MultipartFile img4,
+            @RequestParam(required = false) MultipartFile img5,
+            @RequestParam(required = false) MultipartFile img6
     ) {
         ActivityWithMultipartFileDTO t = new ActivityWithMultipartFileDTO();
         t.setAlumniCircleId(alumniCircleId);
