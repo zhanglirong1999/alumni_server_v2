@@ -13,6 +13,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import java.util.ArrayList;
 import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 // TODO 之后要加上 acl 注解来实现 token 的检验
 @RestController
-@SuppressWarnings("ALL")
 //@Acl
 public class ActivityMemberController {
 
@@ -32,25 +32,29 @@ public class ActivityMemberController {
 
 	@PostMapping("/activities/members")
 	public WebResponse addAccount2Activity(
-		@RequestParam(value = "activityId", required = true)
-			Long activityId,
-		@RequestParam(value = "accountId", required = true)
-			Long accountId
+		HttpServletRequest request,
+		@RequestParam(value = "accountId", required = false)
+			Long _accountId,
+		@RequestParam(value = "activityId")
+			Long activityId
 	) {
+		Long accountId = (
+			(_accountId == null || _accountId.equals("")) ?
+				(Long) request.getAttribute("accountId") :
+				_accountId
+		);
 		ActivityMemberDTO activityMemberDTO = new ActivityMemberDTO();
 		activityMemberDTO.setActivityId(activityId);
 		activityMemberDTO.setAccountId(accountId);
 		try {
+			// 输入参数条件检验
 			ActivityMember activityMember =
 				this.activityMemberService.addMember2ActivityDAO(activityMemberDTO);
+			// 执行插入
 			this.activityMemberService.insertActivityMember(activityMember);
 			return new WebResponse().success(activityMember);
-		} catch (ActivityMemberServiceException e) {
+		} catch (ActivityMemberServiceException | Exception e) {
 			return new WebResponse().fail(e.getMessage());
-		} catch (Exception e) {
-			return new WebResponse().fail(
-				"Severe exception may be caused by sql query when add member to an activity."
-			);
 		}
 	}
 
@@ -63,28 +67,22 @@ public class ActivityMemberController {
 		try {
 			PageHelper.startPage(pageIndex, pageSize);
 			List<ActivityMemberBasicInfoDTO> accountDAOs =
-				this.activityMemberService.queryActivityMemberAccountInfosByAccountId(activityId);
+				this.activityMemberService.queryActivityMemberAccountInfosByAccountId(
+					activityId
+				);
 			return new WebResponse().success(
 				new PageResult<>(((Page) accountDAOs).getTotal(), accountDAOs)
 			);
-		} catch (ActivityMemberServiceException e) {
+		} catch (ActivityMemberServiceException | Exception e) {
 			return new WebResponse().fail(e.getMessage());
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new WebResponse().fail(
-				String.format(
-					"Severe exception may be caused by sql query when using a wrong activity id %d.",
-					activityId
-				)
-			);
 		}
 	}
 
 	@PutMapping("/activities/members")
 	public WebResponse updateActivityMemberReadStatus(
-		@RequestParam(value = "activityId", required = true) Long activityId,
+		@RequestParam(value = "activityId") Long activityId,
 		@RequestParam(value = "accountId", required = false) Long accountId,
-		@RequestParam(value = "readStatus", required = true) Boolean readStatus
+		@RequestParam(value = "readStatus") Boolean readStatus
 	) {
 		if (null == accountId || accountId.equals("")) {  // 通知全体
 			try {
@@ -93,51 +91,40 @@ public class ActivityMemberController {
 					readStatus
 				);
 				return new WebResponse().success();
-			} catch (ActivityMemberServiceException e) {
+			} catch (ActivityMemberServiceException | Exception e) {
 				return new WebResponse().fail(e.getMessage());
-			} catch (Exception e) {
-				return new WebResponse().fail(
-					String.format(
-						"Severe exception may be caused by sql query when using a wrong activity id %d.",
-						activityId
-					)
-				);
 			}
-		} else {  // 修改一位成员的某一个读取状态
+		} else {  // 修改一位成员的读取通知状态
 			try {
 				this.activityMemberService.updateOneActivityMemberReadStatus(
 					activityId, accountId, readStatus
 				);
 				return new WebResponse().success();
-			} catch (ActivityMemberServiceException e) {
+			} catch (ActivityMemberServiceException | Exception e) {
 				return new WebResponse().fail(e.getMessage());
-			} catch (Exception e) {
-				return new WebResponse().fail(
-					String.format(
-						"Severe exception may be caused by sql query when using a wrong activity id %d or a wrong account id %d.",
-						activityId, accountId
-					)
-				);
 			}
 		}
 	}
 
 	@DeleteMapping("/activities/members")
 	public WebResponse deleteOneActivityMemberFromActivity(
-		@RequestParam(value = "activityId", required = true) Long activityId,
-		@RequestParam(value = "accountId", required = true) Long accountId
+		HttpServletRequest request,
+		@RequestParam(value = "accountId", required = false)
+			Long _accountId,
+		@RequestParam(value = "activityId") Long activityId
 	) {
+		Long accountId = (
+			(_accountId == null || _accountId.equals("")) ?
+				(Long) request.getAttribute("accountId") :
+				_accountId
+		);
 		try {
 			ActivityMember activityMember =
 				this.activityMemberService.removeOneActivityMemberDAO(activityId, accountId);
 			this.activityMemberService.removeOneActivityMember(activityMember);
 			return new WebResponse().success();
 		} catch (ActivityMemberServiceException e) {
-			if (e.getMessage().startsWith("___")) {
-				return new WebResponse().fail("___CREATOR_QUIT_ERROR___");
-			} else {
-				return new WebResponse().fail(e.getMessage());
-			}
+			return new WebResponse().fail(e.getMessage());
 		}
 	}
 }

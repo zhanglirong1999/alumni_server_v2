@@ -4,8 +4,10 @@ import cn.edu.seu.alumni_server.controller.dto.ActivityMemberBasicInfoDTO;
 import cn.edu.seu.alumni_server.dao.entity.Account;
 import cn.edu.seu.alumni_server.dao.entity.ActivityMember;
 import java.util.List;
+import org.springframework.stereotype.Repository;
 import tk.mybatis.mapper.common.Mapper;
 
+@Repository
 public interface ActivityMemberMapper extends Mapper<ActivityMember> {
 
 	/**
@@ -36,4 +38,6 @@ public interface ActivityMemberMapper extends Mapper<ActivityMember> {
 	// 获取一条存在的活动的发起人的 id
 	public Long getAvailableCreatorIdOfActivity(Long activityId);
 
+	// 选出存在的一个注册信息
+	public ActivityMember getExistedEnrolledMember(Long activityId, Long accountId);
 }
