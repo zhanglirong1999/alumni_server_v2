@@ -11,6 +11,7 @@ import cn.edu.seu.alumni_server.dao.entity.Activity;
 import cn.edu.seu.alumni_server.dao.mapper.ActivityMapper;
 import cn.edu.seu.alumni_server.service.ActivityService;
 import cn.edu.seu.alumni_server.service.QCloudFileManager;
+import cn.edu.seu.alumni_server.service.fail.ActivityFailPrompt;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -30,42 +31,85 @@ public class ActivityServiceImpl implements ActivityService {
 	@Autowired
 	private QCloudFileManager qCloudFileManager;
 
+	@Autowired
+	private ActivityFailPrompt activityFailPrompt;
 
 	@Override
-	public Boolean isLegalDatetime(ActivityDTO activityDTO) {
-		return activityDTO.getExpirationTime().getTime() < activityDTO.getActivityTime().getTime();
+	public Boolean isLegalDateTime(ActivityDTO activityDTO) {
+		return activityDTO.getExpirationTime().before(activityDTO.getActivityTime());
 	}
 
 	@Override
 	public Boolean isValidStatus(ActivityDTO activityDTO) {
-		return (new Date().getTime()) < activityDTO.getActivityTime().getTime();
+		Date current = new Date();
+		return current.before(activityDTO.getActivityTime());
 	}
 
 	@Override
 	public Boolean hasActivityId(ActivityDTO activityDTO) {
-		return activityDTO.getActivityId() != null && !activityDTO.getActivityId().equals("");
+		return activityDTO.getActivityId() != null &&
+			!activityDTO.getActivityId().equals("");
 	}
 
 	@Override
 	public ActivityWithMultipartFileDTO checkInputtedActivityWithMultipartFileDTO(
-		ActivityWithMultipartFileDTO activityWithMPFDTO)
-		throws NullPointerException, ActivityServiceException {
+		ActivityWithMultipartFileDTO activityWithMPFDTO
+	) throws ActivityServiceException {
+		// 转换对象
 		ActivityDTO temp = activityWithMPFDTO.toActivityDTO();
+		// 确定当前的活动名称
+		String sname = "创建活动";
 		if (this.hasActivityId(temp)) {
-			throw new ActivityServiceException("This activity id is not null or empty.");
+			throw new ActivityServiceException(
+				this.activityFailPrompt.getUserPrompt(
+					sname, 1
+				)
+			);
 		}
+		// 活动的名字不可以为空.
+		if (temp.getActivityName() == null || temp.getActivityName().equals(""))
+			throw new ActivityServiceException(
+				this.activityFailPrompt.getUserPrompt(
+					sname, 13
+				)
+			);
 		if (
 			activityWithMPFDTO.getExpirationTime() == null ||
-				activityWithMPFDTO.getActivityTime() == null
-		) {
-			throw new NullPointerException("Date times cannot be null.");
-		}
-		if (
-			!this.isLegalDatetime(temp) ||  // 报名截止时间一定要是早于活动时间的
-				!this.isValidStatus(temp)  // 新创建的活动一定要是有效的, 不可以创建无效历史记录
+				activityWithMPFDTO.getExpirationTime().equals("")
 		) {
 			throw new ActivityServiceException(
-				"Activity/Expiration time is not logical exception.");
+				this.activityFailPrompt.getUserPrompt(
+					sname, 2
+				)
+			);
+		}
+		if (
+			activityWithMPFDTO.getActivityTime() == null ||
+				activityWithMPFDTO.getActivityTime().equals("")
+		) {
+			throw new ActivityServiceException(
+				this.activityFailPrompt.getUserPrompt(
+					sname, 3
+				)
+			);
+		}
+		if (
+			!this.isLegalDateTime(temp)  // 报名截止时间一定要是早于活动时间的
+		) {
+			throw new ActivityServiceException(
+				this.activityFailPrompt.getUserPrompt(
+					sname, 4
+				)
+			);
+		}
+		if (
+			!this.isValidStatus(temp)  // 新创建的活动一定要是有效的, 不可以创建无效历史记录
+		) {
+			throw new ActivityServiceException(
+				this.activityFailPrompt.getUserPrompt(
+					sname, 5
+				)
+			);
 		}
 		activityWithMPFDTO.setActivityId(Utils.generateId());
 		activityWithMPFDTO.setValidStatus(true);
@@ -105,13 +149,19 @@ public class ActivityServiceImpl implements ActivityService {
 	@Override
 	public Activity updateActivityDAO(
 		ActivityWithMultipartFileDTO activityWMPFDTO
-	) throws NullPointerException, ActivityServiceException, IOException,
+	) throws ActivityServiceException, IOException,
 		InvocationTargetException, IllegalAccessException {
+		// 服务内容
+		String sname = "更新活动";
 		// 首先获取到一个结果对象的配置.
 		ActivityDTO activityDTO = activityWMPFDTO.toActivityDTO();
 		// 判断是否有 id
 		if (!this.hasActivityId(activityDTO)) {
-			throw new ActivityServiceException("The activity id is null or empty.");
+			throw new ActivityServiceException(
+				this.activityFailPrompt.getUserPrompt(
+					sname, 1
+				)
+			);
 		}
 		// 注意更新操作要判断是否还有这个活动
 		if (
@@ -120,19 +170,25 @@ public class ActivityServiceImpl implements ActivityService {
 			)
 		) {
 			throw new ActivityServiceException(
-				"The activity is not available, which means earlier deleted."
+				this.activityFailPrompt.getUserPrompt(
+					sname, 10
+				)
 			);
 		}
 		// 首先确定时间的改变.
 		if ((activityDTO.getActivityTime() == null) ^ (activityDTO.getExpirationTime() == null)) {
 			throw new ActivityServiceException(
-				"Expiration and Activity datetime must be both null or both filed."
+				this.activityFailPrompt.getUserPrompt(
+					sname, 11
+				)
 			);
 		}
 		if (activityDTO.getActivityTime() != null && activityDTO.getExpirationTime() != null) {
-			if (!this.isLegalDatetime(activityDTO)) {
+			if (!this.isLegalDateTime(activityDTO)) {
 				throw new ActivityServiceException(
-					"Expiration datetime is later than activity time."
+					this.activityFailPrompt.getUserPrompt(
+						sname, 4
+					)
 				);
 			}
 			// 需要重新计算活动是否有效
@@ -150,7 +206,9 @@ public class ActivityServiceImpl implements ActivityService {
 	public String[] makeAndSetSuffixUrls(ActivityWithMultipartFileDTO originalMPFActivityDTO,
 		ActivityDTO resultActivityDTO)
 		throws ActivityServiceException, IllegalAccessException, InvocationTargetException {
-		// 然后确定文件的改变, 这里没有确定直接再次上传
+		// TODO: 应当确定文件的改变, 这里没有确定直接再次上传
+
+		// 创建图片的后缀码: /activities/imgs/<activityId>.<imgIndex>.<jpg>
 		String[] suffixes = this.makeUrlSuffixesForActivityImgs(
 			resultActivityDTO.getActivityId(),
 			originalMPFActivityDTO.getImg1(),
@@ -160,6 +218,8 @@ public class ActivityServiceImpl implements ActivityService {
 			originalMPFActivityDTO.getImg5(),
 			originalMPFActivityDTO.getImg6()
 		);
+		// 最终包含 qcloud 域名的编码
+		// https://qcloud-root-.../activities/imgs/<activityId>.<imgIndex>.<jpg>
 		String[] ansUrls = this.makeUrlsForActivityImgs(suffixes);
 		// 然后设置六个地址
 		for (int i = 0; i < 6; ++i) {
@@ -175,9 +235,13 @@ public class ActivityServiceImpl implements ActivityService {
 
 	@Override
 	public Activity deleteActivityDAO(ActivityDTO activityDTO)
-		throws NullPointerException, ActivityServiceException {
+		throws ActivityServiceException {
 		if (!this.hasActivityId(activityDTO)) {
-			throw new ActivityServiceException("The activity id is null or empty.");
+			throw new ActivityServiceException(
+				this.activityFailPrompt.getUserPrompt(
+					"删除活动", 1
+				)
+			);
 		}
 		return activityDTO.toActivity();
 	}
@@ -190,8 +254,12 @@ public class ActivityServiceImpl implements ActivityService {
 	@Override
 	public ActivityBasicInfoDTO queryBasicInfoOfActivityByActivityId(Long activityId)
 		throws ActivityServiceException {
-		if (activityId == null) {
-			throw new ActivityServiceException("Activity id is null.");
+		if (activityId == null || activityId.equals("")) {
+			throw new ActivityServiceException(
+				this.activityFailPrompt.getUserPrompt(
+					"查询活动基本信息", 1
+				)
+			);
 		}
 		ActivityBasicInfoDTO ans =
 			this.activityMapper.getBasicInfosByActivityId(activityId);
@@ -203,8 +271,12 @@ public class ActivityServiceImpl implements ActivityService {
 	public List<StartedOrEnrolledActivityInfoDTO> queryBasicInfoOfActivityByStartedAccountId(
 		Long accountId
 	) throws ActivityServiceException {
-		if (accountId == null) {
-			throw new ActivityServiceException("The account id is null");
+		if (accountId == null || accountId.equals("")) {
+			throw new ActivityServiceException(
+				this.activityFailPrompt.getUserPrompt(
+					"查询我发起的活动", 1
+				)
+			);
 		}
 		List<StartedOrEnrolledActivityInfoDTO> ans =
 			this.activityMapper.getBasicInfosByStartedAccountId(accountId);
@@ -218,8 +290,12 @@ public class ActivityServiceImpl implements ActivityService {
 	public List<StartedOrEnrolledActivityInfoDTO> queryBasicInfosOfActivityByEnrolledAccountId(
 		Long accountId
 	) throws ActivityServiceException {
-		if (accountId == null) {
-			throw new ActivityServiceException("The account id is null");
+		if (accountId == null || accountId.equals("")) {
+			throw new ActivityServiceException(
+				this.activityFailPrompt.getUserPrompt(
+					"查询我参与的", 1
+				)
+			);
 		}
 		List<StartedOrEnrolledActivityInfoDTO> ans =
 			this.activityMapper.getBasicInfosByEnrolledAccountId(accountId);
@@ -233,16 +309,20 @@ public class ActivityServiceImpl implements ActivityService {
 	public List<SearchedActivityInfoDTO> queryActivitiesFuzzilyByActivityNameKeyWord(
 		String activityNameKeyWord
 	) throws ActivityServiceException {
+		String sname = "查询活动";
 		if (activityNameKeyWord == null || activityNameKeyWord.equals("")
 			|| activityNameKeyWord.compareTo("") == 0) {
-			throw new ActivityServiceException("The fuzzily search key word is none or empty.");
+			throw new ActivityServiceException(
+				this.activityFailPrompt.getUserPrompt(sname, 12)
+			);
 		}
 		List<SearchedActivityInfoDTO> ans =
 			this.activityMapper.getActivitiesFuzzilyByActivityNameKeyWord(
 				activityNameKeyWord
 			);
-		for (SearchedActivityInfoDTO t : ans)
+		for (SearchedActivityInfoDTO t : ans) {
 			t.calculateActivityState();
+		}
 		return ans;
 	}
 
@@ -250,16 +330,20 @@ public class ActivityServiceImpl implements ActivityService {
 	public List<SearchedActivityInfoDTO> queryActivitiesByActivityNameKeyWord(
 		String activityNameKeyWord
 	) throws ActivityServiceException {
+		String sname = "查询活动";
 		if (activityNameKeyWord == null || activityNameKeyWord.equals("")
 			|| activityNameKeyWord.compareTo("") == 0) {
-			throw new ActivityServiceException("The fuzzily search key word is none or empty.");
+			throw new ActivityServiceException(
+				this.activityFailPrompt.getUserPrompt(sname, 12)
+			);
 		}
 		List<SearchedActivityInfoDTO> ans =
 			this.activityMapper.getActivitiesByActivityNameKeyWord(
 				activityNameKeyWord
 			);
-		for (SearchedActivityInfoDTO t : ans)
+		for (SearchedActivityInfoDTO t : ans) {
 			t.calculateActivityState();
+		}
 		return ans;
 	}
 
@@ -278,10 +362,13 @@ public class ActivityServiceImpl implements ActivityService {
 		Long activityId, Integer imgIndex,
 		MultipartFile multipartFile
 	) throws ActivityServiceException {
+		// 为活动创建一个新的名字
+		String sname = "为图片创建新的文件名";
 		String originalName = multipartFile.getOriginalFilename();
 		if (originalName == null) {
 			throw new ActivityServiceException(
-				"The original multipart file does not contain a name.");
+				this.activityFailPrompt.getUserPrompt(sname, 7)
+			);
 		}
 		String suffix = originalName.substring(originalName.lastIndexOf("."));
 		return "" + activityId + "." + imgIndex + suffix;
@@ -303,7 +390,9 @@ public class ActivityServiceImpl implements ActivityService {
 		// 根据输入的尾缀来上传图片
 		if (suffixes.length != multipartFiles.length) {
 			throw new ActivityServiceException(
-				"The suffixes number is not equal to files number."
+				this.activityFailPrompt.getUserPrompt(
+					"上传图片", 9
+				)
 			);
 		}
 		for (int i = 0; i < suffixes.length; ++i) {
@@ -322,12 +411,15 @@ public class ActivityServiceImpl implements ActivityService {
 	public String[] makeUrlSuffixesForActivityImgs(
 		Long activityId, MultipartFile... multipartFiles
 	) throws ActivityServiceException {
+		// 确定服务类型.
+		String sname = "为图片进行后缀编码";
 		// 判断是否有异常.
-		if (multipartFiles == null || multipartFiles.length <= 0) {
-			throw new ActivityServiceException("The imgs are empty.");
-		}
-		if (multipartFiles.length != 6) {
-			throw new ActivityServiceException("The activity imgs number should be 6.");
+		if (multipartFiles == null || multipartFiles.length != 6) {
+			throw new ActivityServiceException(
+				this.activityFailPrompt.getUserPrompt(
+					sname, 6
+				)
+			);
 		}
 		// 在这个部分完成对于 qcloud 上图片存储位置的保存
 		String[] ansStrings = new String[multipartFiles.length];
@@ -351,15 +443,20 @@ public class ActivityServiceImpl implements ActivityService {
 	public String[] makeUrlsForActivityImgs(
 		String[] suffixes
 	) throws ActivityServiceException {
-		if (suffixes == null || suffixes.length <= 0) {
-			throw new ActivityServiceException("The activities suffixes are empty or null");
+		String sname = "为当前的图片创建链接";
+		// 创建最终的 url
+		if (suffixes == null || suffixes.length != 6) {
+			throw new ActivityServiceException(
+				this.activityFailPrompt.getUserPrompt(sname, 6)
+			);
 		}
 		String[] ans = new String[suffixes.length];
 		for (int i = 0; i < ans.length; ++i) {
-			if (suffixes[i] == null)
+			if (suffixes[i] == null) {
 				ans[i] = null;
-			else
+			} else {
 				ans[i] = this.qCloudFileManager.makeUrlString(suffixes[i]);
+			}
 		}
 		return ans;
 	}
