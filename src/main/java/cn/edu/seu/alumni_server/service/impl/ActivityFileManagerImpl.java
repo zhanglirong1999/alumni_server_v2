@@ -3,6 +3,7 @@ package cn.edu.seu.alumni_server.service.impl;
 import cn.edu.seu.alumni_server.common.config.qcloud.QCloudCOSClientHolder;
 import cn.edu.seu.alumni_server.common.exceptions.ActivityServiceException;
 import cn.edu.seu.alumni_server.service.QCloudFileManager;
+import cn.edu.seu.alumni_server.service.fail.ActivityFailPrompt;
 import com.qcloud.cos.COSClient;
 import com.qcloud.cos.model.PutObjectRequest;
 import java.io.File;
@@ -22,6 +23,10 @@ public class ActivityFileManagerImpl implements QCloudFileManager {
 	@Autowired
 	QCloudCOSClientHolder qCloudCOSClientHolder;
 
+	@Autowired
+	ActivityFailPrompt activityFailPrompt;
+
+
 	@Override
 	public Boolean isLegalMultipartFile(MultipartFile multipartFile) {
 		return multipartFile != null && !multipartFile.equals("") && multipartFile.getSize() > 0;
@@ -33,7 +38,11 @@ public class ActivityFileManagerImpl implements QCloudFileManager {
 		// 获取到文件源路径
 		String originalFilename = multipartFile.getOriginalFilename()	;
 		if (originalFilename == null)
-			throw new ActivityServiceException("The img original name is null.");
+			throw new ActivityServiceException(
+				this.activityFailPrompt.getUserPrompt(
+					"将原图片转换成为可上传文件", 8
+				)
+			);
 		// 配置结果.
 		File ansFile = new File(newName == null ? originalFilename : newName);
 		// 使用 commons-io

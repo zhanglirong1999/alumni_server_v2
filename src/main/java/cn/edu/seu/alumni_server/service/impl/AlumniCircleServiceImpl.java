@@ -6,6 +6,7 @@ import cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleDTO;
 import cn.edu.seu.alumni_server.dao.entity.AlumniCircle;
 import cn.edu.seu.alumni_server.dao.mapper.AlumniCircleMapper;
 import cn.edu.seu.alumni_server.service.AlumniCircleService;
+import cn.edu.seu.alumni_server.service.fail.AlumniCircleFailPrompt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,12 +19,19 @@ public class AlumniCircleServiceImpl implements AlumniCircleService {
     @Autowired
     private AlumniCircleMapper alumniCircleMapper;
 
+    @Autowired
+    public AlumniCircleFailPrompt alumniCircleFailPrompt;
+
     @Override
     public AlumniCircle createAlumniCircleDAO(
         AlumniCircleDTO alumniCircleDTO
     ) throws AlumniCircleServiceException {
         if (!this.hasAlumniCircleId(alumniCircleDTO))
-            throw new AlumniCircleServiceException("The alumni circle id is none or empty.");
+            throw new AlumniCircleServiceException(
+                this.alumniCircleFailPrompt.getUserPrompt(
+                    "检查入参", 1
+                )
+            );
         return alumniCircleDTO.toAlumniCircle();
     }
 
@@ -40,7 +48,11 @@ public class AlumniCircleServiceImpl implements AlumniCircleService {
         Long accountId
     ) throws AlumniCircleServiceException {
         if (accountId == null || accountId.equals(""))
-            throw new AlumniCircleServiceException("The user id is none or empty.");
+            throw new AlumniCircleServiceException(
+                this.alumniCircleFailPrompt.getUserPrompt(
+                    "查询用户参与的圈群", 1
+                )
+            );
         List<AlumniCircleBasicInfoDTO> ans =
             this.alumniCircleMapper.queryEnrolledAlumniCircleInfosByAccountId(accountId);
         return ans;
@@ -49,14 +61,22 @@ public class AlumniCircleServiceImpl implements AlumniCircleService {
     @Override
     public List<AlumniCircleBasicInfoDTO> queryAlumniCircleInfosByAlumniCircleName(String aluCirName) throws AlumniCircleServiceException {
         if (aluCirName == null || aluCirName.compareTo("") == 0 || aluCirName.equals(""))
-            throw new AlumniCircleServiceException("The query word is none or empty.");
+            throw new AlumniCircleServiceException(
+                this.alumniCircleFailPrompt.getUserPrompt(
+                    "查询圈群信息", 2
+                )
+            );
         return this.alumniCircleMapper.queryAlumniCircleInfosByAluCirName(aluCirName);
     }
 
     @Override
     public List<AlumniCircleBasicInfoDTO> queryAlumniCircleInfosFuzzilyByAluCirName(String aluCirName) throws AlumniCircleServiceException {
         if (aluCirName == null || aluCirName.compareTo("") == 0 || aluCirName.equals(""))
-            throw new AlumniCircleServiceException("The query word is none or empty.");
+            throw new AlumniCircleServiceException(
+                this.alumniCircleFailPrompt.getUserPrompt(
+                    "查询圈群信息", 2
+                )
+            );
         return this.alumniCircleMapper.queryAlumniCircleInfosFuzzilyByAluCirName(aluCirName);
     }
 }

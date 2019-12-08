@@ -38,7 +38,8 @@ public interface ActivityMemberService {
 	 * @param activityId 活动 id.
 	 * @return 参加活动成员
 	 */
-	public List<ActivityMemberBasicInfoDTO> queryActivityMemberAccountInfosByAccountId(Long activityId)
+	public List<ActivityMemberBasicInfoDTO> queryActivityMemberAccountInfosByAccountId(
+		Long activityId)
 		throws ActivityMemberServiceException;
 
 	/**
@@ -63,10 +64,12 @@ public interface ActivityMemberService {
 	public boolean isCreatorOf(Long activityId, Long accountId);
 
 	// 将一个成员从一个活动中删除
-	public void removeOneActivityMember(ActivityMember activityMember)
-		throws ActivityMemberServiceException;
+	public void removeOneActivityMember(ActivityMember activityMember);
 
 	// 将一个成员从活动中删除, 进行先验判断
 	public ActivityMember removeOneActivityMemberDAO(Long activityId, Long accountId)
 		throws ActivityMemberServiceException;
+
+	// 判断一个用户是不是一个存在于一个活动中.
+	public Boolean hasEnrolledInto(Long activityId, Long accountId);
 }

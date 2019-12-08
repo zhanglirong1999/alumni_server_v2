@@ -15,6 +15,7 @@ public class ActivityMemberBasicInfoDTO {
 	private String name = null;
 	private Integer gender = null;
 	private String avatar = null;
+	private Long jobId = null;
 	private String jobCompany = null;
 	private String jobPosition = null;
 	private Long educationId = null;

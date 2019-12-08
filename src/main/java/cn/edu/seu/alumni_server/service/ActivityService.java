@@ -20,7 +20,7 @@ public interface ActivityService {
 	 * @param activityDTO 前端的输入.
 	 * @return 是否合法.
 	 */
-	public Boolean isLegalDatetime(ActivityDTO activityDTO);
+	public Boolean isLegalDateTime(ActivityDTO activityDTO);
 
 	/**
 	 * 判断活动时间是不是小于当前时间.
@@ -40,15 +40,15 @@ public interface ActivityService {
 	public Boolean hasActivityId(ActivityDTO activityDTO);
 
 	/**
-	 * 根据前端的输入来判断生成一个合法的 Activity 对象.
-	 *
-	 * @param activityDTO 前端输入的对象.
-	 * @return 合法的 Activity 对象.
-	 * @throws ActivityServiceException 输入数据异常.
+	 * 根据输入的参数, 判断是否是一个合法的前端输入.
+	 * @param activityDTO 输入的对象
+	 * @return 输出一个经过逻辑检验的对象
+	 * @throws NullPointerException 空指针异常
+	 * @throws ActivityServiceException 服务异常
 	 */
 	public ActivityWithMultipartFileDTO checkInputtedActivityWithMultipartFileDTO(
 		ActivityWithMultipartFileDTO activityDTO)
-		throws NullPointerException, ActivityServiceException;
+		throws ActivityServiceException;
 
 	/**
 	 * 向数据库插入一个活动对象.
@@ -70,7 +70,7 @@ public interface ActivityService {
 	 * @throws ActivityServiceException 自定义异常信息.
 	 */
 	public Activity updateActivityDAO(ActivityWithMultipartFileDTO activityWMPFDTO)
-		throws NullPointerException, ActivityServiceException, IOException, InvocationTargetException, IllegalAccessException;
+		throws ActivityServiceException, IOException, InvocationTargetException, IllegalAccessException;
 
 	/**
 	 * 向数据修改活动的信息.
@@ -88,7 +88,7 @@ public interface ActivityService {
 	 * @throws ActivityServiceException 由属性不合法.
 	 */
 	public Activity deleteActivityDAO(ActivityDTO activityDTO)
-		throws NullPointerException, ActivityServiceException;
+		throws ActivityServiceException;
 
 	/**
 	 * 向数据库彻底删除一个活动记录. 注意我修改了数据库的外键属性, 保证级联删除.

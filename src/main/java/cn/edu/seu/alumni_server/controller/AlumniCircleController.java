@@ -30,17 +30,19 @@ public class AlumniCircleController {
 	@Autowired
 	AlumniCircleService alumniCircleService;
 
-	@PostMapping("/alumniCircle")
-	public WebResponse changeAlumniCircle() {
-		return new WebResponse().success();
-	}
-
 	@GetMapping("/alumniCircles/enrolledAlumniCircles")
 	public WebResponse getEnrolledAlumniCirclesByAccountId(
-		@RequestParam(value = "accountId", required = true) Long accountId,
+		HttpServletRequest request,
+		@RequestParam(value = "accountId", required = false)
+			Long _accountId,
 		@RequestParam int pageIndex,
 		@RequestParam int pageSize
 	) {
+		Long accountId = (
+			(_accountId == null || _accountId.equals("")) ?
+				(Long) request.getAttribute("accountId") :
+				_accountId
+		);
 		try {
 			PageHelper.startPage(pageIndex, pageSize);
 			List<AlumniCircleBasicInfoDTO> alumniCircleDTOList =

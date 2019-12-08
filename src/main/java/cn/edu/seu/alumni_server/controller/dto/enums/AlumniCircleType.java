@@ -3,7 +3,6 @@ package cn.edu.seu.alumni_server.controller.dto.enums;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @AllArgsConstructor
 @NoArgsConstructor
