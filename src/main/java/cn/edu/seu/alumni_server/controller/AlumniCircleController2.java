@@ -1,12 +1,15 @@
 package cn.edu.seu.alumni_server.controller;
 
 import cn.edu.seu.alumni_server.common.dto.WebResponse;
+import cn.edu.seu.alumni_server.controller.dto.PageResult;
 import cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleDTO;
+import cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleMemberDTO;
 import cn.edu.seu.alumni_server.dao.entity.Activity;
 import cn.edu.seu.alumni_server.dao.entity.AlumniCircleMember;
 import cn.edu.seu.alumni_server.dao.mapper.ActivityMapper;
 import cn.edu.seu.alumni_server.dao.mapper.AlumniCircleMapper;
 import cn.edu.seu.alumni_server.dao.mapper.AlumniCircleMemberMapper;
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -60,11 +63,10 @@ public class AlumniCircleController2 {
 
         Example example = new Example(AlumniCircleMember.class);
         example.createCriteria().andEqualTo("alumniCircleId", alumniCircleId);
-        List<AlumniCircleMember> res = alumniCircleMemberMapper.selectByExample(example);
+        List<AlumniCircleMemberDTO> res = alumniCircleMemberMapper.getAlumniCircleMembers();
 
-        return new WebResponse(
-//                new PageResult<FavoriteDTO>(1, )
-        );
+        return new WebResponse().success(
+                new PageResult<AlumniCircleMemberDTO>(((Page) res).getTotal(), res));
     }
 
     /**

@@ -1,39 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.edu.seu.alumni_server.dao.mapper.AlumniCircleMapper">
     <resultMap id="BaseResultMap" type="cn.edu.seu.alumni_server.dao.entity.AlumniCircle">
     </resultMap>
     <select id="queryEnrolledAlumniCircleInfosByAccountId"
-        resultType="cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleBasicInfoDTO">
+            resultType="cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleBasicInfoDTO">
         SELECT ALC.*
-        FROM alumni_circle AS ALC, alumni_circle_member AS ALCM
-        WHERE ALC.is_available = 1 AND
-        ALCM.valid_status = 1 AND
-        ALC.alumni_circle_id = ALCM.alumni_circle_id AND
-        ALCM.alumni_circle_id IN (
+        FROM alumni_circle AS ALC,
+             alumni_circle_member AS ALCM
+        WHERE ALC.is_available = 1
+          AND ALCM.valid_status = 1
+          AND ALC.alumni_circle_id = ALCM.alumni_circle_id
+          AND ALCM.alumni_circle_id IN (
             SELECT ALCM1.alumni_circle_id
             FROM alumni_circle_member AS ALCM1
-            WHERE ALCM1.valid_status = 1 AND
-            ALCM1.account_id = #{accountId}
+            WHERE ALCM1.valid_status = 1
+              AND ALCM1.account_id = #{accountId}
         )
     </select>
     <select id="queryAlumniCircleInfosFuzzilyByAluCirName"
-        resultType="cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleBasicInfoDTO">
+            resultType="cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleBasicInfoDTO">
         SELECT ALC.*
-        FROM alumni_circle AS ALC, alumni_circle_member AS ALCM
-        WHERE ALC.is_available = 1 AND
-        ALCM.valid_status = 1 AND
-        ALC.alumni_circle_id = ALCM.alumni_circle_id AND
-        INSTR(ALC.alumni_circle_name, #{name}) > 0
+        FROM alumni_circle AS ALC,
+             alumni_circle_member AS ALCM
+        WHERE ALC.is_available = 1
+          AND ALCM.valid_status = 1
+          AND ALC.alumni_circle_id = ALCM.alumni_circle_id
+          AND INSTR(ALC.alumni_circle_name, #{name}) > 0
     </select>
     <select id="queryAlumniCircleInfosByAluCirName"
-        resultType="cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleBasicInfoDTO">
+            resultType="cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleBasicInfoDTO">
         SELECT ALC.*
-        FROM alumni_circle AS ALC, alumni_circle_member AS ALCM
-        WHERE ALC.is_available = 1 AND
-        ALCM.valid_status = 1 AND
-        ALC.alumni_circle_id = ALCM.alumni_circle_id AND
-        ALC.alumni_circle_name = #{name}
+        FROM alumni_circle AS ALC,
+             alumni_circle_member AS ALCM
+        WHERE ALC.is_available = 1
+          AND ALCM.valid_status = 1
+          AND ALC.alumni_circle_id = ALCM.alumni_circle_id
+          AND ALC.alumni_circle_name = #{name}
+    </select>
+
+    <select id="alumniCirclesRecommend"
+            resultType="cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleBasicInfoDTO">
+        SELECT ALC.*
+        FROM alumni_circle AS ALC
     </select>
 </mapper>

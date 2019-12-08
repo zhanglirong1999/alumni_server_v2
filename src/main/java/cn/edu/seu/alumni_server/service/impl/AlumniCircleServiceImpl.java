@@ -79,4 +79,10 @@ public class AlumniCircleServiceImpl implements AlumniCircleService {
             );
         return this.alumniCircleMapper.queryAlumniCircleInfosFuzzilyByAluCirName(aluCirName);
     }
+
+    @Override
+    public List<AlumniCircleBasicInfoDTO> alumniCirclesRecommend() {
+//        alumniCircleMapper.alumniCirclesRecommend();
+        return alumniCircleMapper.alumniCirclesRecommend();
+    }
 }

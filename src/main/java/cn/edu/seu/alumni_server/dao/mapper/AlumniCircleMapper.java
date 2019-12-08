@@ -34,4 +34,6 @@ public interface AlumniCircleMapper extends Mapper<AlumniCircle> {
 	 * @return 模糊查询结果.
 	 */
 	public List<AlumniCircleBasicInfoDTO> queryAlumniCircleInfosByAluCirName(String name);
+
+	public List<AlumniCircleBasicInfoDTO> alumniCirclesRecommend();
 }

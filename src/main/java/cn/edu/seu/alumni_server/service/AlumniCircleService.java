@@ -55,4 +55,6 @@ public interface AlumniCircleService {
 		String aluCirName
 	) throws AlumniCircleServiceException;
 
+
+	public List<AlumniCircleBasicInfoDTO> alumniCirclesRecommend();
 }
