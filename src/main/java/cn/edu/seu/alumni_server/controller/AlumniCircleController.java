@@ -1,15 +1,18 @@
 package cn.edu.seu.alumni_server.controller;
 
 
+import cn.edu.seu.alumni_server.common.CONST;
+import cn.edu.seu.alumni_server.common.Utils;
 import cn.edu.seu.alumni_server.common.dto.WebResponse;
 import cn.edu.seu.alumni_server.common.exceptions.AlumniCircleServiceException;
-import cn.edu.seu.alumni_server.common.token.Acl;
+import cn.edu.seu.alumni_server.controller.dto.ActivityDTO;
 import cn.edu.seu.alumni_server.controller.dto.MyAlumniCircleInfoDTO;
 import cn.edu.seu.alumni_server.controller.dto.PageResult;
 import cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleBasicInfoDTO;
 import cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleDTO;
 import cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleMemberDTO;
 import cn.edu.seu.alumni_server.dao.entity.Activity;
+import cn.edu.seu.alumni_server.dao.entity.AlumniCircle;
 import cn.edu.seu.alumni_server.dao.entity.AlumniCircleMember;
 import cn.edu.seu.alumni_server.dao.mapper.ActivityMapper;
 import cn.edu.seu.alumni_server.dao.mapper.AlumniCircleMapper;
@@ -18,16 +21,17 @@ import cn.edu.seu.alumni_server.service.AlumniCircleService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.*;
-import tk.mybatis.mapper.entity.Example;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 @SuppressWarnings("ALL")
 @RestController
-@Acl
+//@Acl
 @RequestMapping("/alumniCircle")
 public class AlumniCircleController {
 
@@ -127,20 +131,32 @@ public class AlumniCircleController {
         AlumniCircleMember alumniCircleMember = new AlumniCircleMember();
         alumniCircleMember.setAccountId(accountId);
         alumniCircleMember.setAlumniCircleId(alumniCircleId);
-        alumniCircleMemberMapper.insert(alumniCircleMember);
+
+        try {
+            alumniCircleMemberMapper.insertSelective(alumniCircleMember);
+        } catch (DuplicateKeyException e) {
+            alumniCircleMemberMapper.joinUpdate(alumniCircleId, accountId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return new WebResponse();
     }
 
-    @PostMapping("/leave")
+    @GetMapping("/leave")
     public WebResponse leave(@RequestParam Long alumniCircleId,
-                             @RequestParam Long accountId) {
+                             @RequestParam(required = false) Long accountId) {
+        // TODO 仅测试用
+        if (accountId == null)
+            accountId = (Long) request.getAttribute(CONST.ACL_ACCOUNTID);
 
-        AlumniCircleMember alumniCircleMember = new AlumniCircleMember();
-        alumniCircleMember.setAccountId(accountId);
-        alumniCircleMember.setAlumniCircleId(alumniCircleId);
-        alumniCircleMember.setValidStatus(false);
-        alumniCircleMemberMapper.insert(alumniCircleMember);
+//        AlumniCircleMember alumniCircleMember = new AlumniCircleMember();
+//        alumniCircleMember.setAccountId(accountId);
+//        alumniCircleMember.setAlumniCircleId(alumniCircleId);
+//        alumniCircleMember.setValidStatus(false);
+//         TODO 退圈再加圈的逻辑
+//        alumniCircleMemberMapper.updateByPrimaryKeySelective(alumniCircleMember);
+        alumniCircleMemberMapper.leave(alumniCircleId, accountId);
         return new WebResponse();
     }
 
@@ -151,45 +167,64 @@ public class AlumniCircleController {
             @RequestParam int pageSize
     ) {
         PageHelper.startPage(pageIndex, pageSize);
-
-        Example example = new Example(AlumniCircleMember.class);
-        example.createCriteria().andEqualTo("alumniCircleId", alumniCircleId);
-        List<AlumniCircleMemberDTO> res = alumniCircleMemberMapper.getAlumniCircleMembers();
+        List<AlumniCircleMemberDTO> res = alumniCircleMapper.getAlumniCircleMembers(alumniCircleId);
 
         return new WebResponse().success(
                 new PageResult<AlumniCircleMemberDTO>(((Page) res).getTotal(), res));
     }
 
     /**
-     * 活动列表
+     * 当前校友圈的活动列表
      *
      * @return
      */
-    @PostMapping("/activities")
+    @GetMapping("/activities")
     public WebResponse activities(@RequestParam Long alumniCircleId,
                                   @RequestParam int pageIndex,
                                   @RequestParam int pageSize
     ) {
+        List<ActivityDTO> res = new ArrayList<>();
+
         Activity activity = new Activity();
         activity.setAlumniCircleId(alumniCircleId);
 
         PageHelper.startPage(pageIndex, pageSize);
         List<Activity> activities = activityMapper.select(activity);
+        activities.forEach((e) -> {
+            res.add(new ActivityDTO(e));
+        });
 
-        return new WebResponse();
+        return new WebResponse().success(
+                new PageResult<>(((Page) activities).getTotal(), res)
+        );
     }
 
-    @PutMapping("/maintain")
+    @PutMapping("")
     public WebResponse maintain(@RequestBody AlumniCircleDTO alumniCircleDTO) {
 
         alumniCircleMapper.updateByPrimaryKey(alumniCircleDTO.toAlumniCircle());
         return new WebResponse();
     }
 
-    @PostMapping("/")
-    public WebResponse create(@RequestBody AlumniCircleDTO alumniCircleDTO) {
+    @PostMapping("")
+    public WebResponse create(@RequestBody AlumniCircleDTO alumniCircleDTO,
+                              @RequestParam(required = false) Long accountId) {
+        // TODO 仅测试用
+        if (accountId == null)
+            accountId = (Long) request.getAttribute(CONST.ACL_ACCOUNTID);
 
-        alumniCircleMapper.updateByPrimaryKey(alumniCircleDTO.toAlumniCircle());
+        if (accountId == null) {
+            return new WebResponse().fail("accountId is null");
+        }
+        AlumniCircle alumniCircle = new AlumniCircle();
+        alumniCircle.setAlumniCircleDesc(alumniCircleDTO.getAlumniCircleDesc());
+        alumniCircle.setAlumniCircleName(alumniCircleDTO.getAlumniCircleName());
+        alumniCircle.setAlumniCircleAnnouncement(alumniCircleDTO.getAlumniCircleAnnouncement());
+        alumniCircle.setAvatar(alumniCircleDTO.getAvatar());
+
+        alumniCircle.setCreatorId(accountId);
+        alumniCircle.setAlumniCircleId(Utils.generateId());
+        alumniCircleMapper.insertSelective(alumniCircle);
         return new WebResponse();
     }
 

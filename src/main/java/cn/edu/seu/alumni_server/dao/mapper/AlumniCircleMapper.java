@@ -1,6 +1,7 @@
 package cn.edu.seu.alumni_server.dao.mapper;
 
 import cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleBasicInfoDTO;
+import cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleMemberDTO;
 import cn.edu.seu.alumni_server.dao.entity.AlumniCircle;
 
 import java.util.List;
@@ -36,4 +37,7 @@ public interface AlumniCircleMapper extends Mapper<AlumniCircle> {
 	public List<AlumniCircleBasicInfoDTO> queryAlumniCircleInfosByAluCirName(String name);
 
 	public List<AlumniCircleBasicInfoDTO> alumniCirclesRecommend();
+
+	public List<AlumniCircleMemberDTO> getAlumniCircleMembers(Long alumniCircleId);
+
 }
