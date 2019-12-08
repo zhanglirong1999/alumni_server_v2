@@ -45,7 +45,6 @@ public class TestController {
     String login(@RequestParam(required = false) String accountId) {
         String token = TokenUtil.createToken(accountId);
         log.info("dev token: " + token);
-
         return token;
     }
 

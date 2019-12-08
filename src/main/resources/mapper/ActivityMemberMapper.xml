@@ -66,12 +66,14 @@
           AND A.is_available = 1
     </select>
     <select id="getExistedEnrolledMember"
-            resultType="cn.edu.seu.alumni_server.dao.entity.ActivityMember">
-        SELECT *
-        FROM activity_member AS ACM
+            resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM activity_member AS ACM, activity AS ACT
         WHERE ACM.is_available = 1
           AND ACM.activity_id = #{activityId}
           AND ACM.account_id = #{accountId}
+          AND ACT.is_available = 1
+          AND ACT.activity_id = #{activityId}
     </select>
 
 

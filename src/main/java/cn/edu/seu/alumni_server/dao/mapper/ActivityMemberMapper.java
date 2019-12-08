@@ -39,5 +39,5 @@ public interface ActivityMemberMapper extends Mapper<ActivityMember> {
 	public Long getAvailableCreatorIdOfActivity(Long activityId);
 
 	// 选出存在的一个注册信息
-	public ActivityMember getExistedEnrolledMember(Long activityId, Long accountId);
+	public Integer getExistedEnrolledMember(Long activityId, Long accountId);
 }

@@ -80,6 +80,8 @@ public class ActivityMemberController {
 		}
 	}
 
+//	@PutMapping("/activities/informAllMembers")
+
 	@PutMapping("/activities/members")
 	public WebResponse updateActivityMemberReadStatus(
 		@RequestParam(value = "activityId") Long activityId,
