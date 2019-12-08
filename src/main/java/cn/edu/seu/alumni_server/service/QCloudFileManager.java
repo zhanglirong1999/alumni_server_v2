@@ -17,6 +17,11 @@ public interface QCloudFileManager {
 	// 上传一个 file 到指定配置的 cos 的 bucket 中
 	String uploadFileToQCloudBySuffixes(File file, String suffixKey);
 
-	// 获取一个新的 url 路径
+	/**
+	 * 根据输入的后缀, 创建生成一个完整的 qcloud-url 地址
+	 * 比如, /activities/imgs/123456.1.jpg => www.qcloud.xxx/activities/imgs/123456.1.jpg
+	 * @param suffixKey /activities/imgs/123456.1.jpg
+	 * @return www.qcloud.xxx/activities/imgs/123456.1.jpg
+	 */
 	String makeUrlString(String suffixKey);
 }
