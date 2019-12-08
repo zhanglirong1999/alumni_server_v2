@@ -20,6 +20,7 @@ public class AlumniCircle implements Serializable {
     private String alumniCircleName;
 
     private String alumniCircleDesc;
+    private String alumniCircleAnnouncement;
 
     private String avatar;
 
