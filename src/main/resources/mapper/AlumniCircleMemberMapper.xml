@@ -3,4 +3,15 @@
 <mapper namespace="cn.edu.seu.alumni_server.dao.mapper.AlumniCircleMemberMapper">
     <resultMap id="BaseResultMap" type="cn.edu.seu.alumni_server.dao.entity.AlumniCircleMember">
     </resultMap>
+
+    <select id="getAlumniCircleMembers"
+            resultType="cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleMemberDTO">
+        SELECT ACM.account_id
+        FROM alumni_circle AC
+                 left join alumni_circle_member ACM on AC.alumni_circle_id = acm.alumni_circle_id
+                 left join account b on ACM.account_id = b.account_id
+                 left join job JOB on ACM.account_id = JOB.account_id
+                 left join education EDU on ACM.account_id = EDU.account_id
+        where AC.alumni_circle_id = #{alumniCircleId}
+    </select>
 </mapper>

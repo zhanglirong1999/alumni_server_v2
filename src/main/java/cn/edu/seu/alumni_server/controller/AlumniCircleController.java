@@ -186,4 +186,12 @@ public class AlumniCircleController {
         return new WebResponse();
     }
 
+    @PostMapping("/")
+    public WebResponse create(@RequestBody AlumniCircleDTO alumniCircleDTO) {
+
+        alumniCircleMapper.updateByPrimaryKey(alumniCircleDTO.toAlumniCircle());
+        return new WebResponse();
+    }
+
+
 }
