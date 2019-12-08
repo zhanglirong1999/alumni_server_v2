@@ -18,7 +18,7 @@ public class AlumniCircleBasicInfoDTO {
 	private String alumniCircleName = null;
 	private String alumniCircleDesc = null;
 	// 群组的头像
-	private String avatar = null;
+	private String alumniCircleAvatar = null;
 	// 群组的验证状态
 	private Boolean authorizationStatus = null;
 
@@ -28,7 +28,7 @@ public class AlumniCircleBasicInfoDTO {
 		ans.setAlumniCircleType(AlumniCircleType.getAlumniCircleTypeBy(alumniCircleType));
 		ans.setAlumniCircleName(alumniCircleName);
 		ans.setAlumniCircleDesc(alumniCircleDesc);
-		ans.setAvatar(avatar);
+		ans.setAlumniCircleAvatar(alumniCircleAvatar);
 		ans.setAuthorizationStatus(
 			AlumniCircleAuthorizationState.getAlumniCircleAuthorizationStateBy(
 				authorizationStatus
