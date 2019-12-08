@@ -1,5 +1,6 @@
 package cn.edu.seu.alumni_server.controller;
 
+import cn.edu.seu.alumni_server.common.Utils;
 import cn.edu.seu.alumni_server.common.dto.WebResponse;
 import cn.edu.seu.alumni_server.common.exceptions.ActivityServiceException;
 import cn.edu.seu.alumni_server.common.token.Acl;
@@ -14,8 +15,10 @@ import cn.edu.seu.alumni_server.dao.entity.Activity;
 import cn.edu.seu.alumni_server.dao.entity.ActivityMember;
 import cn.edu.seu.alumni_server.service.ActivityMemberService;
 import cn.edu.seu.alumni_server.service.ActivityService;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServlet;
@@ -83,8 +86,8 @@ public class ActivityController {
 		);
 		t.setActivityName(activityName);
 		t.setActivityDesc(activityDesc);
-		t.setActivityTime(activityTime);
-		t.setExpirationTime(expirationTime);
+		t.setActivityTime(Utils.addEightHours(activityTime));
+		t.setExpirationTime(Utils.addEightHours(expirationTime));
 		t.setImg1(img1);
 		t.setImg2(img2);
 		t.setImg3(img3);
@@ -155,8 +158,8 @@ public class ActivityController {
 		activityWMPFDTO.setActivityId(activityId);
 		activityWMPFDTO.setActivityName(activityName);
 		activityWMPFDTO.setActivityDesc(activityDesc);
-		activityWMPFDTO.setActivityTime(activityTime);
-		activityWMPFDTO.setExpirationTime(expirationTime);
+		activityWMPFDTO.setActivityTime(Utils.addEightHours(activityTime));
+		activityWMPFDTO.setExpirationTime(Utils.addEightHours(expirationTime));
 		activityWMPFDTO.setImg1(img1);
 		activityWMPFDTO.setImg2(img2);
 		activityWMPFDTO.setImg3(img3);

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Date;
 import org.apache.http.entity.ContentType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,4 +28,7 @@ public class Utils {
             ContentType.APPLICATION_OCTET_STREAM.toString(), inputStream);
     }
 
+    public static Date addEightHours(Date date) {
+        return new Date(date.getTime() + 8 * 60 * 60 * 1000);
+    }
 }
