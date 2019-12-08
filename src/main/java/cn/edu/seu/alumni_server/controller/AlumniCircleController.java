@@ -3,6 +3,7 @@ package cn.edu.seu.alumni_server.controller;
 
 import cn.edu.seu.alumni_server.common.dto.WebResponse;
 import cn.edu.seu.alumni_server.common.exceptions.AlumniCircleServiceException;
+import cn.edu.seu.alumni_server.common.token.Acl;
 import cn.edu.seu.alumni_server.controller.dto.MyAlumniCircleInfoDTO;
 import cn.edu.seu.alumni_server.controller.dto.PageResult;
 import cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleBasicInfoDTO;
@@ -26,7 +27,7 @@ import java.util.List;
 
 @SuppressWarnings("ALL")
 @RestController
-//@Acl
+@Acl
 @RequestMapping("/alumniCircle")
 public class AlumniCircleController {
 
@@ -48,7 +49,6 @@ public class AlumniCircleController {
 
     @GetMapping("/enrolledAlumniCircles")
     public WebResponse getEnrolledAlumniCirclesByAccountId(
-            HttpServletRequest request,
             @RequestParam(value = "accountId", required = false)
                     Long _accountId,
             @RequestParam int pageIndex,

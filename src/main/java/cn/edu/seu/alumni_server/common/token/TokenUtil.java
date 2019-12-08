@@ -2,12 +2,15 @@ package cn.edu.seu.alumni_server.common.token;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.log4j.Log4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
 import java.security.Key;
 import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Log4j
 public class TokenUtil {
     public static final String TOKEN_HEADER = "X-Wx-Token";
     static final long EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;
@@ -31,6 +34,11 @@ public class TokenUtil {
             return false;
         }
     }
+
+    static {
+        log.info("dev token : " + createToken("3245005322240"));
+    }
+
 
     public static String createToken(String accountId) throws ExpiredJwtException {
 

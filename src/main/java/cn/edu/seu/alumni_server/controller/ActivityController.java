@@ -2,6 +2,7 @@ package cn.edu.seu.alumni_server.controller;
 
 import cn.edu.seu.alumni_server.common.dto.WebResponse;
 import cn.edu.seu.alumni_server.common.exceptions.ActivityServiceException;
+import cn.edu.seu.alumni_server.common.token.Acl;
 import cn.edu.seu.alumni_server.controller.dto.ActivityBasicInfoDTO;
 import cn.edu.seu.alumni_server.controller.dto.ActivityDTO;
 import cn.edu.seu.alumni_server.controller.dto.ActivityWithMultipartFileDTO;
@@ -32,10 +33,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-// TODO 之后需要加上 Acl 注解用来判断 token
-//@Acl
+@Acl
 @RestController
 public class ActivityController {
+
+	@Autowired
+	HttpServletRequest request;
 
 	@Autowired
 	private ActivityService activityService;
@@ -57,7 +60,6 @@ public class ActivityController {
 	 */
 	@PostMapping("/activities/adapter")
 	public WebResponse createActivityAdapter(
-		HttpServletRequest request,
 		@RequestParam(value = "accountId", required = false)
 			Long _accountId,
 		@RequestParam Long alumniCircleId,
@@ -218,7 +220,6 @@ public class ActivityController {
 	 */
 	@RequestMapping("/activities/startedActivities")
 	public WebResponse getBasicInfosOfActivitiesByStartedAccountId(
-		HttpServletRequest request,
 		@RequestParam(value = "accountId", required = false) Long _accountId,
 		@RequestParam int pageIndex,
 		@RequestParam int pageSize
@@ -250,7 +251,6 @@ public class ActivityController {
 	 */
 	@GetMapping(value = "/activities/enrolledActivities")
 	public WebResponse getBasicInfosOfActivitiesByEnrolledAccountId(
-		HttpServletRequest request,
 		@RequestParam(value = "accountId", required = false) Long _accountId,
 		@RequestParam int pageIndex,
 		@RequestParam int pageSize
