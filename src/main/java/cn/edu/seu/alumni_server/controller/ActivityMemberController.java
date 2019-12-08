@@ -80,33 +80,35 @@ public class ActivityMemberController {
 		}
 	}
 
-//	@PutMapping("/activities/informAllMembers")
+	@PutMapping("/activities/informAllMembers")
+	public WebResponse informAllMembers(
+		@RequestParam(value = "activityId") Long activityId,
+		@RequestParam(value = "readStatus") Boolean readStatus
+	) {
+		try {
+			this.activityMemberService.updateAllActivityMembersReadStatus(
+				activityId,
+				readStatus
+			);
+			return new WebResponse().success("通知成功.");
+		} catch (ActivityMemberServiceException | Exception e) {
+			return new WebResponse().fail(e.getMessage());
+		}
+	}
 
 	@PutMapping("/activities/members")
 	public WebResponse updateActivityMemberReadStatus(
 		@RequestParam(value = "activityId") Long activityId,
-		@RequestParam(value = "accountId", required = false) Long accountId,
+		@RequestParam(value = "accountId") Long accountId,
 		@RequestParam(value = "readStatus") Boolean readStatus
 	) {
-		if (null == accountId || accountId.equals("")) {  // 通知全体
-			try {
-				this.activityMemberService.updateAllActivityMembersReadStatus(
-					activityId,
-					readStatus
-				);
-				return new WebResponse().success();
-			} catch (ActivityMemberServiceException | Exception e) {
-				return new WebResponse().fail(e.getMessage());
-			}
-		} else {  // 修改一位成员的读取通知状态
-			try {
-				this.activityMemberService.updateOneActivityMemberReadStatus(
-					activityId, accountId, readStatus
-				);
-				return new WebResponse().success();
-			} catch (ActivityMemberServiceException | Exception e) {
-				return new WebResponse().fail(e.getMessage());
-			}
+		try {
+			this.activityMemberService.updateOneActivityMemberReadStatus(
+				activityId, accountId, readStatus
+			);
+			return new WebResponse().success();
+		} catch (ActivityMemberServiceException | Exception e) {
+			return new WebResponse().fail(e.getMessage());
 		}
 	}
 
