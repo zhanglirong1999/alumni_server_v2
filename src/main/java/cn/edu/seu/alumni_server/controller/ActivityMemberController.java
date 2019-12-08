@@ -127,7 +127,7 @@ public class ActivityMemberController {
 			ActivityMember activityMember =
 				this.activityMemberService.removeOneActivityMemberDAO(activityId, accountId);
 			this.activityMemberService.removeOneActivityMember(activityMember);
-			return new WebResponse().success();
+			return new WebResponse().success("退出成功.");
 		} catch (ActivityMemberServiceException e) {
 			return new WebResponse().fail(e.getMessage());
 		}
