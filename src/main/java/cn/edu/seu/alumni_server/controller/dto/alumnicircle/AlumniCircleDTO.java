@@ -23,6 +23,7 @@ public class AlumniCircleDTO {
     private String alumniCircleName;
 
     private String alumniCircleDesc;
+    private String alumniCircleAnnouncement;
 
     // 群组的头像
     private String avatar;

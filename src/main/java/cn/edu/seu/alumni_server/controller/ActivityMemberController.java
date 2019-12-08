@@ -2,6 +2,7 @@ package cn.edu.seu.alumni_server.controller;
 
 import cn.edu.seu.alumni_server.common.dto.WebResponse;
 import cn.edu.seu.alumni_server.common.exceptions.ActivityMemberServiceException;
+import cn.edu.seu.alumni_server.common.token.Acl;
 import cn.edu.seu.alumni_server.controller.dto.AccountDTO;
 import cn.edu.seu.alumni_server.controller.dto.ActivityMemberBasicInfoDTO;
 import cn.edu.seu.alumni_server.controller.dto.ActivityMemberDTO;
@@ -22,17 +23,18 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-// TODO 之后要加上 acl 注解来实现 token 的检验
 @RestController
-//@Acl
+@Acl
 public class ActivityMemberController {
+
+	@Autowired
+	HttpServletRequest request;
 
 	@Autowired
 	private ActivityMemberService activityMemberService;
 
 	@PostMapping("/activities/members")
 	public WebResponse addAccount2Activity(
-		HttpServletRequest request,
 		@RequestParam(value = "accountId", required = false)
 			Long _accountId,
 		@RequestParam(value = "activityId")
@@ -108,7 +110,6 @@ public class ActivityMemberController {
 
 	@DeleteMapping("/activities/members")
 	public WebResponse deleteOneActivityMemberFromActivity(
-		HttpServletRequest request,
 		@RequestParam(value = "accountId", required = false)
 			Long _accountId,
 		@RequestParam(value = "activityId") Long activityId
