@@ -276,7 +276,7 @@ public class ActivityController {
 
 	@GetMapping("/search/activities")
 	public WebResponse searchByActivityName(
-		@RequestParam(value = "activityName", required = true) String activityName,
+		@RequestParam(value = "activityName") String activityName,
 		@RequestParam(value = "fuzzy", required = false, defaultValue = "true") Boolean fuzzy,
 		@RequestParam int pageIndex,
 		@RequestParam int pageSize
