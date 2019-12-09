@@ -263,6 +263,12 @@ public class ActivityServiceImpl implements ActivityService {
 		}
 		ActivityBasicInfoDTO ans =
 			this.activityMapper.getBasicInfosByActivityId(activityId);
+		if (ans == null)
+			throw new ActivityServiceException(
+				this.activityFailPrompt.getUserPrompt(
+					"查询活动基本信息", 14
+				)
+			);
 		ans.calculateStarterEducationGrade();
 		return ans;
 	}

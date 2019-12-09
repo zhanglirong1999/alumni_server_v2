@@ -9,6 +9,7 @@ import cn.edu.seu.alumni_server.common.token.Acl;
 import cn.edu.seu.alumni_server.controller.dto.ActivityDTO;
 import cn.edu.seu.alumni_server.controller.dto.MyAlumniCircleInfoDTO;
 import cn.edu.seu.alumni_server.controller.dto.PageResult;
+import cn.edu.seu.alumni_server.controller.dto.StartedOrEnrolledActivityInfoDTO;
 import cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleBasicInfoDTO;
 import cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleDTO;
 import cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleMemberDTO;
@@ -184,19 +185,29 @@ public class AlumniCircleController {
                                   @RequestParam int pageIndex,
                                   @RequestParam int pageSize
     ) {
-        List<ActivityDTO> res = new ArrayList<>();
-
-        Activity activity = new Activity();
-        activity.setAlumniCircleId(alumniCircleId);
-
+//        List<ActivityDTO> res = new ArrayList<>();
+//
+//        Activity activity = new Activity();
+//        activity.setAlumniCircleId(alumniCircleId);
+//
+//        PageHelper.startPage(pageIndex, pageSize);
+//        List<Activity> activities = activityMapper.select(activity);
+//        activities.forEach((e) -> {
+//            res.add(new ActivityDTO(e));
+//        });
+//
+//        return new WebResponse().success(
+//                new PageResult<>(((Page) activities).getTotal(), res)
+//        );
         PageHelper.startPage(pageIndex, pageSize);
-        List<Activity> activities = activityMapper.select(activity);
-        activities.forEach((e) -> {
-            res.add(new ActivityDTO(e));
-        });
-
+        List<StartedOrEnrolledActivityInfoDTO> ans =
+            this.activityMapper.getActivitiesOfOneAlumniCircle(
+                alumniCircleId
+            );
+        for (StartedOrEnrolledActivityInfoDTO t: ans)
+            t.calculateActivityState();
         return new WebResponse().success(
-                new PageResult<>(((Page) activities).getTotal(), res)
+            new PageResult<>(((Page) ans).getTotal(), ans)
         );
     }
 

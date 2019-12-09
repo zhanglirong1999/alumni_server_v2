@@ -141,6 +141,26 @@
         FROM activity AS ACT
         WHERE ACT.activity_id = #{activityId} AND ACT.is_available = 1
     </select>
+    <select id="getActivitiesOfOneAlumniCircle"
+        resultType="cn.edu.seu.alumni_server.controller.dto.StartedOrEnrolledActivityInfoDTO">
+        SELECT ACT.activity_id, ACT.activity_name,
+        ACT.expiration_time AS expiration_date_time,
+        ACT.activity_time AS activity_date_time,
+        ACT.c_time AS activity_created_date_time,
+        COUNT(ACT_MEM.account_id) AS enrolled_number
+        FROM activity AS ACT,
+        activity_member AS ACT_MEM
+        WHERE ACT.is_available = 1 AND
+        ACT_MEM.is_available = 1 AND
+        ACT.activity_id = ACT_MEM.activity_id AND
+        ACT.activity_id IN (
+            SELECT ACT2.activity_id
+            FROM activity AS ACT2
+            WHERE ACT2.is_available = 1
+            AND ACT2.alumni_circle_id = #{alumniCircleId}
+        )
+        GROUP BY ACT.activity_id
+    </select>
     <update id="deleteActivityLogically">
         UPDATE activity AS ACT
         SET ACT.is_available = 0
