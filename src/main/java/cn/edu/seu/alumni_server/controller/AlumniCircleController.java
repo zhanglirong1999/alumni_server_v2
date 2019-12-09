@@ -31,167 +31,167 @@ import java.util.List;
 @RequestMapping("/alumniCircle")
 public class AlumniCircleController {
 
-    @Autowired
-    HttpServletRequest request;
+	@Autowired
+	HttpServletRequest request;
 
-    @Autowired
-    AlumniCircleService alumniCircleService;
+	@Autowired
+	AlumniCircleService alumniCircleService;
 
-    @Autowired
-    ActivityMapper activityMapper;
+	@Autowired
+	ActivityMapper activityMapper;
 
-    @Autowired
-    AlumniCircleMapper alumniCircleMapper;
-
-
-    @Autowired
-    AlumniCircleMemberMapper alumniCircleMemberMapper;
-
-    @GetMapping("/enrolledAlumniCircles")
-    public WebResponse getEnrolledAlumniCirclesByAccountId(
-            @RequestParam(value = "accountId", required = false)
-                    Long _accountId,
-            @RequestParam int pageIndex,
-            @RequestParam int pageSize
-    ) {
-        Long accountId = (
-                (_accountId == null || _accountId.equals("")) ?
-                        (Long) request.getAttribute("accountId") :
-                        _accountId
-        );
-        try {
-            PageHelper.startPage(pageIndex, pageSize);
-            List<AlumniCircleBasicInfoDTO> alumniCircleDTOList =
-                    this.alumniCircleService.queryEnrolledAlumniCircleByAccountId(accountId);
-            List<MyAlumniCircleInfoDTO> ans = new LinkedList<>();
-            for (AlumniCircleBasicInfoDTO t : alumniCircleDTOList)
-                ans.add(t.toMyAlumniCircleInfoDTO());
-            return new WebResponse().success(
-                    new PageResult<>(((Page) alumniCircleDTOList).getTotal(), ans)
-            );
-        } catch (AlumniCircleServiceException | Exception e) {
-            return new WebResponse().fail(e.getMessage());
-        }
-    }
-
-    @GetMapping("/search")
-    public WebResponse searchByActivityName(
-            @RequestParam(value = "alumniCircleName", required = true) String alumniCircleName,
-            @RequestParam(value = "fuzzy", required = false, defaultValue = "true") Boolean fuzzy,
-            @RequestParam int pageIndex,
-            @RequestParam int pageSize
-    ) {
-        try {
-            PageHelper.startPage(pageIndex, pageSize);
-            List<AlumniCircleBasicInfoDTO> ans = (
-                    fuzzy ?
-                            this.alumniCircleService
-                                    .queryAlumniCircleInfosFuzzilyByAluCirName(alumniCircleName) :
-                            this.alumniCircleService
-                                    .queryAlumniCircleInfosByAlumniCircleName(alumniCircleName)
-            );
-            List<MyAlumniCircleInfoDTO> finalAns = new LinkedList<>();
-            for (AlumniCircleBasicInfoDTO t : ans)
-                finalAns.add(t.toMyAlumniCircleInfoDTO());
-            return new WebResponse().success(
-                    new PageResult<>(((Page) ans).getTotal(), finalAns)
-            );
-        } catch (AlumniCircleServiceException e) {
-            return new WebResponse().fail(e.getMessage());
-        }
-    }
-
-    @RequestMapping("/recommend")
-    public WebResponse alumniCirclesRecommend(@RequestParam int pageIndex,
-                                              @RequestParam int pageSize) {
-        PageHelper.startPage(pageIndex, pageSize);
-
-        List<AlumniCircleBasicInfoDTO> res = alumniCircleService.alumniCirclesRecommend();
-        return new WebResponse().success(
-                new PageResult(((Page) res).getTotal(), res)
-        );
-    }
-
-    @GetMapping("/information")
-    public WebResponse information(@RequestParam Long alumniCircleId) {
-        alumniCircleMapper.selectByPrimaryKey(alumniCircleId);
-        return new WebResponse().success(
-                alumniCircleMapper.selectByPrimaryKey(alumniCircleId));
-    }
+	@Autowired
+	AlumniCircleMapper alumniCircleMapper;
 
 
-    @PostMapping("/join")
-    public WebResponse join(@RequestParam Long alumniCircleId,
-                            @RequestParam Long accountId) {
+	@Autowired
+	AlumniCircleMemberMapper alumniCircleMemberMapper;
 
-        AlumniCircleMember alumniCircleMember = new AlumniCircleMember();
-        alumniCircleMember.setAccountId(accountId);
-        alumniCircleMember.setAlumniCircleId(alumniCircleId);
-        alumniCircleMemberMapper.insert(alumniCircleMember);
+	@GetMapping("/enrolledAlumniCircles")
+	public WebResponse getEnrolledAlumniCirclesByAccountId(
+		@RequestParam(value = "accountId", required = false)
+			Long _accountId,
+		@RequestParam int pageIndex,
+		@RequestParam int pageSize
+	) {
+		Long accountId = (
+			(_accountId == null || _accountId.equals("")) ?
+				(Long) request.getAttribute("accountId") :
+				_accountId
+		);
+		try {
+			PageHelper.startPage(pageIndex, pageSize);
+			List<AlumniCircleBasicInfoDTO> alumniCircleDTOList =
+				this.alumniCircleService.queryEnrolledAlumniCircleByAccountId(accountId);
+			List<MyAlumniCircleInfoDTO> ans = new LinkedList<>();
+			for (AlumniCircleBasicInfoDTO t : alumniCircleDTOList)
+				ans.add(t.toMyAlumniCircleInfoDTO());
+			return new WebResponse().success(
+				new PageResult<>(((Page) alumniCircleDTOList).getTotal(), ans)
+			);
+		} catch (AlumniCircleServiceException | Exception e) {
+			return new WebResponse().fail(e.getMessage());
+		}
+	}
 
-        return new WebResponse();
-    }
+	@GetMapping("/search")
+	public WebResponse searchByActivityName(
+		@RequestParam(value = "alumniCircleName", required = true) String alumniCircleName,
+		@RequestParam(value = "fuzzy", required = false, defaultValue = "true") Boolean fuzzy,
+		@RequestParam int pageIndex,
+		@RequestParam int pageSize
+	) {
+		try {
+			PageHelper.startPage(pageIndex, pageSize);
+			List<AlumniCircleBasicInfoDTO> ans = (
+				fuzzy ?
+					this.alumniCircleService
+						.queryAlumniCircleInfosFuzzilyByAluCirName(alumniCircleName) :
+					this.alumniCircleService
+						.queryAlumniCircleInfosByAlumniCircleName(alumniCircleName)
+			);
+			List<MyAlumniCircleInfoDTO> finalAns = new LinkedList<>();
+			for (AlumniCircleBasicInfoDTO t : ans)
+				finalAns.add(t.toMyAlumniCircleInfoDTO());
+			return new WebResponse().success(
+				new PageResult<>(((Page) ans).getTotal(), finalAns)
+			);
+		} catch (AlumniCircleServiceException e) {
+			return new WebResponse().fail(e.getMessage());
+		}
+	}
 
-    @PostMapping("/leave")
-    public WebResponse leave(@RequestParam Long alumniCircleId,
-                             @RequestParam Long accountId) {
+	@RequestMapping("/recommend")
+	public WebResponse alumniCirclesRecommend(@RequestParam int pageIndex,
+		@RequestParam int pageSize) {
+		PageHelper.startPage(pageIndex, pageSize);
 
-        AlumniCircleMember alumniCircleMember = new AlumniCircleMember();
-        alumniCircleMember.setAccountId(accountId);
-        alumniCircleMember.setAlumniCircleId(alumniCircleId);
-        alumniCircleMember.setValidStatus(false);
-        alumniCircleMemberMapper.insert(alumniCircleMember);
-        return new WebResponse();
-    }
+		List<AlumniCircleBasicInfoDTO> res = alumniCircleService.alumniCirclesRecommend();
+		return new WebResponse().success(
+			new PageResult(((Page) res).getTotal(), res)
+		);
+	}
 
-    @GetMapping("/members")
-    public WebResponse members(
-            @RequestParam Long alumniCircleId,
-            @RequestParam int pageIndex,
-            @RequestParam int pageSize
-    ) {
-        PageHelper.startPage(pageIndex, pageSize);
+	@GetMapping("/information")
+	public WebResponse information(@RequestParam Long alumniCircleId) {
+		alumniCircleMapper.selectByPrimaryKey(alumniCircleId);
+		return new WebResponse().success(
+			alumniCircleMapper.selectByPrimaryKey(alumniCircleId));
+	}
 
-        Example example = new Example(AlumniCircleMember.class);
-        example.createCriteria().andEqualTo("alumniCircleId", alumniCircleId);
-        List<AlumniCircleMemberDTO> res = alumniCircleMemberMapper.getAlumniCircleMembers();
 
-        return new WebResponse().success(
-                new PageResult<AlumniCircleMemberDTO>(((Page) res).getTotal(), res));
-    }
+	@PostMapping("/join")
+	public WebResponse join(@RequestParam Long alumniCircleId,
+		@RequestParam Long accountId) {
 
-    /**
-     * 活动列表
-     *
-     * @return
-     */
-    @PostMapping("/activities")
-    public WebResponse activities(@RequestParam Long alumniCircleId,
-                                  @RequestParam int pageIndex,
-                                  @RequestParam int pageSize
-    ) {
-        Activity activity = new Activity();
-        activity.setAlumniCircleId(alumniCircleId);
+		AlumniCircleMember alumniCircleMember = new AlumniCircleMember();
+		alumniCircleMember.setAccountId(accountId);
+		alumniCircleMember.setAlumniCircleId(alumniCircleId);
+		alumniCircleMemberMapper.insert(alumniCircleMember);
 
-        PageHelper.startPage(pageIndex, pageSize);
-        List<Activity> activities = activityMapper.select(activity);
+		return new WebResponse();
+	}
 
-        return new WebResponse();
-    }
+	@PostMapping("/leave")
+	public WebResponse leave(@RequestParam Long alumniCircleId,
+		@RequestParam Long accountId) {
 
-    @PutMapping("/maintain")
-    public WebResponse maintain(@RequestBody AlumniCircleDTO alumniCircleDTO) {
+		AlumniCircleMember alumniCircleMember = new AlumniCircleMember();
+		alumniCircleMember.setAccountId(accountId);
+		alumniCircleMember.setAlumniCircleId(alumniCircleId);
+		alumniCircleMember.setValidStatus(false);
+		alumniCircleMemberMapper.insert(alumniCircleMember);
+		return new WebResponse();
+	}
 
-        alumniCircleMapper.updateByPrimaryKey(alumniCircleDTO.toAlumniCircle());
-        return new WebResponse();
-    }
+	@GetMapping("/members")
+	public WebResponse members(
+		@RequestParam Long alumniCircleId,
+		@RequestParam int pageIndex,
+		@RequestParam int pageSize
+	) {
+		PageHelper.startPage(pageIndex, pageSize);
 
-    @PostMapping("/")
-    public WebResponse create(@RequestBody AlumniCircleDTO alumniCircleDTO) {
+		Example example = new Example(AlumniCircleMember.class);
+		example.createCriteria().andEqualTo("alumniCircleId", alumniCircleId);
+		List<AlumniCircleMemberDTO> res = alumniCircleMemberMapper.getAlumniCircleMembers();
 
-        alumniCircleMapper.updateByPrimaryKey(alumniCircleDTO.toAlumniCircle());
-        return new WebResponse();
-    }
+		return new WebResponse().success(
+			new PageResult<AlumniCircleMemberDTO>(((Page) res).getTotal(), res));
+	}
+
+	/**
+	 * 活动列表
+	 *
+	 * @return
+	 */
+	@PostMapping("/activities")
+	public WebResponse activities(@RequestParam Long alumniCircleId,
+		@RequestParam int pageIndex,
+		@RequestParam int pageSize
+	) {
+		Activity activity = new Activity();
+		activity.setAlumniCircleId(alumniCircleId);
+
+		PageHelper.startPage(pageIndex, pageSize);
+		List<Activity> activities = activityMapper.select(activity);
+
+		return new WebResponse();
+	}
+
+	@PutMapping("/maintain")
+	public WebResponse maintain(@RequestBody AlumniCircleDTO alumniCircleDTO) {
+
+		alumniCircleMapper.updateByPrimaryKey(alumniCircleDTO.toAlumniCircle());
+		return new WebResponse();
+	}
+
+	@PostMapping("/")
+	public WebResponse create(@RequestBody AlumniCircleDTO alumniCircleDTO) {
+
+		alumniCircleMapper.updateByPrimaryKey(alumniCircleDTO.toAlumniCircle());
+		return new WebResponse();
+	}
 
 
 }
