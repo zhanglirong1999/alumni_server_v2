@@ -31,7 +31,7 @@ import java.util.List;
 
 @SuppressWarnings("ALL")
 @RestController
-//@Acl
+@Acl
 @RequestMapping("/alumniCircle")
 public class AlumniCircleController {
 
