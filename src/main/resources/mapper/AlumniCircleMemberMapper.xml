@@ -4,14 +4,17 @@
     <resultMap id="BaseResultMap" type="cn.edu.seu.alumni_server.dao.entity.AlumniCircleMember">
     </resultMap>
 
-    <select id="getAlumniCircleMembers"
-            resultType="cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleMemberDTO">
-        SELECT ACM.account_id
-        FROM alumni_circle AC
-                 left join alumni_circle_member ACM on AC.alumni_circle_id = acm.alumni_circle_id
-                 left join account b on ACM.account_id = b.account_id
-                 left join job JOB on ACM.account_id = JOB.account_id
-                 left join education EDU on ACM.account_id = EDU.account_id
-        where AC.alumni_circle_id = #{alumniCircleId}
-    </select>
+    <update id="leave">
+        update alumni_circle_member a
+        set a.valid_status = false
+        where account_id = #{accountId}
+          and alumni_circle_id = #{alumniCircleId}
+    </update>
+
+    <update id="joinUpdate">
+        update alumni_circle_member a
+        set a.valid_status = true
+        where account_id = #{accountId}
+          and alumni_circle_id = #{alumniCircleId}
+    </update>
 </mapper>
