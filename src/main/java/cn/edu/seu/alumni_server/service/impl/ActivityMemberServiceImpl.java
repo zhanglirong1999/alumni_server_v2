@@ -48,6 +48,7 @@ public class ActivityMemberServiceImpl implements ActivityMemberService {
 	public ActivityMember addMember2ActivityDAO(ActivityMemberDTO activityMemberDTO)
 		throws ActivityMemberServiceException {
 		String sname = "将用户添加到活动中";
+		// 如果当前的用户的 id 为 null
 		if (!this.isLegalAccountId(activityMemberDTO.getAccountId())) {
 			throw new ActivityMemberServiceException(
 				this.activityMemberFailPrompt.getUserPrompt(
@@ -55,6 +56,7 @@ public class ActivityMemberServiceImpl implements ActivityMemberService {
 				)
 			);
 		}
+		// 当前活动 id 为 null
 		if (!this.isLegalActivityId(activityMemberDTO.getActivityId())) {
 			throw new ActivityMemberServiceException(
 				this.activityMemberFailPrompt.getUserPrompt(
@@ -62,6 +64,7 @@ public class ActivityMemberServiceImpl implements ActivityMemberService {
 				)
 			);
 		}
+		// 已经加入当前活动
 		if (
 			this.hasEnrolledInto(
 				activityMemberDTO.getActivityId(), activityMemberDTO.getAccountId()
@@ -80,8 +83,25 @@ public class ActivityMemberServiceImpl implements ActivityMemberService {
 	}
 
 	@Override
-	public void insertActivityMember(ActivityMember activityMember) {
-		this.activityMemberMapper.insertSelective(activityMember);
+	public void insertActivityMember(ActivityMember activityMember)
+		throws ActivityMemberServiceException {
+		// 注意要判断是否已经有了一个记录, 即 加入 退出 加入的逻辑
+		Integer recordNumber =
+			this.activityMemberMapper.getRecordNumberByPrimaryKey(
+				activityMember.getActivityId(),
+				activityMember.getAccountId()
+			);
+		if (recordNumber == 0)
+			this.activityMemberMapper.insertSelective(activityMember);
+		else if (recordNumber == 1) {
+			// 特殊情况
+			activityMember.setIsAvailable(true);
+			this.activityMemberMapper.updateByPrimaryKey(activityMember);
+		} else throw new ActivityMemberServiceException(
+			this.activityMemberFailPrompt.getUserPrompt(
+				"用户加入活动", 7
+			)
+		);
 	}
 
 	@Override
@@ -215,5 +235,10 @@ public class ActivityMemberServiceImpl implements ActivityMemberService {
 			activityId, accountId
 		);
 		return legalMemberRecordNumber > 0;
+	}
+
+	@Override
+	public Boolean hasPrimaryKeyInActivityMember(Long activityId, Long accountId) {
+		return this.activityMemberMapper.getRecordNumberByPrimaryKey(activityId, accountId) == 1;
 	}
 }

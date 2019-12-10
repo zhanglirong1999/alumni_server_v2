@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.edu.seu.alumni_server.dao.mapper.ActivityMemberMapper">
-    <resultMap id="BaseResultMap" type="cn.edu.seu.alumni_server.dao.entity.ActivityMember">
-    </resultMap>
+	<resultMap id="BaseResultMap" type="cn.edu.seu.alumni_server.dao.entity.ActivityMember">
+	</resultMap>
 
-    <select id="getActivityMemberInfosByActivityId"
-            resultType="cn.edu.seu.alumni_server.controller.dto.ActivityMemberBasicInfoDTO">
+	<select id="getActivityMemberInfosByActivityId"
+		resultType="cn.edu.seu.alumni_server.controller.dto.ActivityMemberBasicInfoDTO">
         SELECT AC.account_id,
                AC.name,
                AC.gender,
@@ -35,7 +36,7 @@
         GROUP BY AM.account_id
         ORDER BY EDU.end_time DESC, EDU.u_time DESC, JB.start_time DESC, JB.u_time DESC
     </select>
-    <update id="updateAllActivityMembersExceptStarterReadStatusByActivityId">
+	<update id="updateAllActivityMembersExceptStarterReadStatusByActivityId">
         UPDATE activity_member AS A
         SET A.read_status = #{readStatus}
         WHERE A.activity_id = #{activityId}
@@ -46,27 +47,27 @@
             WHERE AC.activity_id = #{activityId}
         )
     </update>
-    <update id="updateAllActivityMembersReadStatus">
+	<update id="updateAllActivityMembersReadStatus">
         UPDATE activity_member AS A
         SET A.read_status = #{readStatus}
         WHERE A.activity_id = #{activityId}
           AND A.is_available = 1
     </update>
-    <update id="updateOneActivityMemberReadStatus">
+	<update id="updateOneActivityMemberReadStatus">
         UPDATE activity_member AS A
         SET A.read_status = #{readStatus}
         WHERE A.activity_id = #{activityId}
           AND A.is_available = 1
           AND A.account_id = #{accountId}
     </update>
-    <select id="getAvailableCreatorIdOfActivity" resultType="java.lang.Long">
+	<select id="getAvailableCreatorIdOfActivity" resultType="java.lang.Long">
         SELECT A.account_id
         FROM activity AS A
         WHERE A.activity_id = #{activityId}
           AND A.is_available = 1
     </select>
-    <select id="getExistedEnrolledMember"
-            resultType="java.lang.Integer">
+	<select id="getExistedEnrolledMember"
+		resultType="java.lang.Integer">
         SELECT COUNT(*)
         FROM activity_member AS ACM, activity AS ACT
         WHERE ACM.is_available = 1
@@ -75,6 +76,12 @@
           AND ACT.is_available = 1
           AND ACT.activity_id = #{activityId}
     </select>
-
-
+	<select id="getRecordNumberByPrimaryKey" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM activity_member AS ACM, activity AS ACT
+        WHERE ACM.activity_id = #{activityId}
+          AND ACM.account_id = #{accountId}
+          AND ACT.is_available = 1
+          AND ACT.activity_id = #{activityId}
+    </select>
 </mapper>

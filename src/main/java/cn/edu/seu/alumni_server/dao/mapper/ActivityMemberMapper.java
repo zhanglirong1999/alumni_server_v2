@@ -38,6 +38,9 @@ public interface ActivityMemberMapper extends Mapper<ActivityMember> {
 	// 获取一条存在的活动的发起人的 id
 	public Long getAvailableCreatorIdOfActivity(Long activityId);
 
-	// 选出存在的一个注册信息
+	// 选出当前存在的一个参与活动信息
 	public Integer getExistedEnrolledMember(Long activityId, Long accountId);
+
+	// 选出曾经存在的一个参与活动信息
+	public Integer getRecordNumberByPrimaryKey(Long activityId, Long accountId);
 }
