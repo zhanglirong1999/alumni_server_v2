@@ -19,12 +19,8 @@
     <select id="queryAlumniCircleInfosFuzzilyByAluCirName"
             resultType="cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleBasicInfoDTO">
         SELECT ALC.*
-        FROM alumni_circle AS ALC,
-             alumni_circle_member AS ALCM
-        WHERE ALC.is_available = 1
-          AND ALCM.valid_status = 1
-          AND ALC.alumni_circle_id = ALCM.alumni_circle_id
-          AND INSTR(ALC.alumni_circle_name, #{name}) > 0
+		FROM alumni_circle AS ALC
+		WHERE ALC.is_available = 1 AND INSTR(ALC.alumni_circle_name, #{name}) > 0
     </select>
     <select id="queryAlumniCircleInfosByAluCirName"
             resultType="cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleBasicInfoDTO">
