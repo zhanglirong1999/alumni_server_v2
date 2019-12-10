@@ -7,7 +7,7 @@
 	<select id="queryEnrolledAlumniCircleInfosByAccountId"
 		resultType="cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleBasicInfoDTO">
         SELECT ALC.alumni_circle_id, ALC.alumni_circle_type, ALC.alumni_circle_name,
-		ALC.alumni_circle_desc, ALC.avatar AS alumni_circle_avatar,
+		ALC.alumni_circle_desc, ALC.avatar,
 		ALC.authorization_status
 		FROM alumni_circle AS ALC,
 			 alumni_circle_member AS ALCM

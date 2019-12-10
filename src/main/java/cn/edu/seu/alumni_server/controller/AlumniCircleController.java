@@ -68,12 +68,9 @@ public class AlumniCircleController {
         try {
             PageHelper.startPage(pageIndex, pageSize);
             List<AlumniCircleBasicInfoDTO> alumniCircleDTOList =
-                    this.alumniCircleService.queryEnrolledAlumniCircleByAccountId(accountId);
-            List<MyAlumniCircleInfoDTO> ans = new LinkedList<>();
-            for (AlumniCircleBasicInfoDTO t : alumniCircleDTOList)
-                ans.add(t.toMyAlumniCircleInfoDTO());
+                this.alumniCircleService.queryEnrolledAlumniCircleByAccountId(accountId);
             return new WebResponse().success(
-                    new PageResult<>(((Page) alumniCircleDTOList).getTotal(), ans)
+                new PageResult<>(((Page) alumniCircleDTOList).getTotal(), alumniCircleDTOList)
             );
         } catch (AlumniCircleServiceException | Exception e) {
             return new WebResponse().fail(e.getMessage());
