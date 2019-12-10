@@ -2,6 +2,7 @@ package cn.edu.seu.alumni_server.controller;
 
 import cn.edu.seu.alumni_server.common.Utils;
 import cn.edu.seu.alumni_server.common.dto.WebResponse;
+import cn.edu.seu.alumni_server.common.exceptions.ActivityMemberServiceException;
 import cn.edu.seu.alumni_server.common.exceptions.ActivityServiceException;
 import cn.edu.seu.alumni_server.common.token.Acl;
 import cn.edu.seu.alumni_server.controller.dto.ActivityBasicInfoDTO;
@@ -16,13 +17,10 @@ import cn.edu.seu.alumni_server.dao.entity.Activity;
 import cn.edu.seu.alumni_server.dao.entity.ActivityMember;
 import cn.edu.seu.alumni_server.service.ActivityMemberService;
 import cn.edu.seu.alumni_server.service.ActivityService;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -32,7 +30,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -64,8 +61,6 @@ public class ActivityController {
 	 */
 	@PostMapping("/activities/adapter")
 	public WebResponse createActivityAdapter(
-		@RequestParam(value = "accountId", required = false)
-			Long _accountId,
 		@RequestParam Long alumniCircleId,
 		@RequestParam String activityName,
 		@RequestParam String activityDesc,
@@ -81,9 +76,7 @@ public class ActivityController {
 		ActivityWithMultipartFileDTO t = new ActivityWithMultipartFileDTO();
 		t.setAlumniCircleId(alumniCircleId);
 		t.setAccountId(
-			(_accountId == null || _accountId.equals("")) ?
-				(Long) request.getAttribute("accountId") :
-				_accountId
+			(Long) request.getAttribute("accountId")
 		);
 		t.setActivityName(activityName);
 		t.setActivityDesc(activityDesc);
@@ -126,7 +119,7 @@ public class ActivityController {
 			this.activityMemberService.insertActivityMember(activityMember);
 			// 返回结果里面包括需要的 id, 以及处理完成的图片地址.
 			return new WebResponse().success(new ActivityDTO(ans));
-		} catch (ActivityServiceException | Exception e) {
+		} catch (ActivityServiceException | Exception | ActivityMemberServiceException e) {
 			return new WebResponse().fail(e.getMessage());
 		}
 	}
@@ -222,22 +215,14 @@ public class ActivityController {
 		}
 	}
 
-	/**
-	 * 查询一个发起者发起的所有活动的信息.
-	 *
-	 * @param _accountId 发起者的账户 id
-	 * @return 响应.
-	 */
+
 	@RequestMapping("/activities/startedActivities")
 	public WebResponse getBasicInfosOfActivitiesByStartedAccountId(
-		@RequestParam(value = "accountId", required = false) Long _accountId,
 		@RequestParam int pageIndex,
 		@RequestParam int pageSize
 	) {
 		Long accountId = (
-			(_accountId == null || _accountId.equals("")) ?
-				(Long) request.getAttribute("accountId") :
-				_accountId
+			(Long) request.getAttribute("accountId")
 		);
 		try {
 			PageHelper.startPage(pageIndex, pageSize);
@@ -253,22 +238,14 @@ public class ActivityController {
 		}
 	}
 
-	/**
-	 * 获取用户参与的活动的信息.
-	 *
-	 * @param _accountId 账户的账号.
-	 * @return 参与的活动的基本信息.
-	 */
+
 	@GetMapping(value = "/activities/enrolledActivities")
 	public WebResponse getBasicInfosOfActivitiesByEnrolledAccountId(
-		@RequestParam(value = "accountId", required = false) Long _accountId,
 		@RequestParam int pageIndex,
 		@RequestParam int pageSize
 	) {
 		Long accountId = (
-			(_accountId == null || _accountId.equals("")) ?
-				(Long) request.getAttribute("accountId") :
-				_accountId
+			(Long) request.getAttribute("accountId")
 		);
 		try {
 			PageHelper.startPage(pageIndex, pageSize);

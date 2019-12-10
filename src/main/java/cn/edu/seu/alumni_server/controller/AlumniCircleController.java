@@ -49,21 +49,16 @@ public class AlumniCircleController {
     @Autowired
     AlumniCircleMapper alumniCircleMapper;
 
-
     @Autowired
     AlumniCircleMemberMapper alumniCircleMemberMapper;
 
     @GetMapping("/enrolledAlumniCircles")
     public WebResponse getEnrolledAlumniCirclesByAccountId(
-            @RequestParam(value = "accountId", required = false)
-                    Long _accountId,
             @RequestParam int pageIndex,
             @RequestParam int pageSize
     ) {
         Long accountId = (
-                (_accountId == null || _accountId.equals("")) ?
-                        (Long) request.getAttribute("accountId") :
-                        _accountId
+            (Long) request.getAttribute("accountId")
         );
         try {
             PageHelper.startPage(pageIndex, pageSize);
@@ -87,17 +82,14 @@ public class AlumniCircleController {
         try {
             PageHelper.startPage(pageIndex, pageSize);
             List<AlumniCircleBasicInfoDTO> ans = (
-                    fuzzy ?
-                            this.alumniCircleService
-                                    .queryAlumniCircleInfosFuzzilyByAluCirName(alumniCircleName) :
-                            this.alumniCircleService
-                                    .queryAlumniCircleInfosByAlumniCircleName(alumniCircleName)
+                fuzzy ?
+                    this.alumniCircleService
+                        .queryAlumniCircleInfosFuzzilyByAluCirName(alumniCircleName) :
+                    this.alumniCircleService
+                        .queryAlumniCircleInfosByAlumniCircleName(alumniCircleName)
             );
-            List<MyAlumniCircleInfoDTO> finalAns = new LinkedList<>();
-            for (AlumniCircleBasicInfoDTO t : ans)
-                finalAns.add(t.toMyAlumniCircleInfoDTO());
             return new WebResponse().success(
-                    new PageResult<>(((Page) ans).getTotal(), finalAns)
+                    new PageResult<>(((Page) ans).getTotal(), ans)
             );
         } catch (AlumniCircleServiceException e) {
             return new WebResponse().fail(e.getMessage());
