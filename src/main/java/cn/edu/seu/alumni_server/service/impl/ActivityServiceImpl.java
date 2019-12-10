@@ -9,6 +9,7 @@ import cn.edu.seu.alumni_server.controller.dto.SearchedActivityInfoDTO;
 import cn.edu.seu.alumni_server.controller.dto.StartedOrEnrolledActivityInfoDTO;
 import cn.edu.seu.alumni_server.dao.entity.Activity;
 import cn.edu.seu.alumni_server.dao.mapper.ActivityMapper;
+import cn.edu.seu.alumni_server.dao.mapper.ActivityMemberMapper;
 import cn.edu.seu.alumni_server.service.ActivityService;
 import cn.edu.seu.alumni_server.service.QCloudFileManager;
 import cn.edu.seu.alumni_server.service.fail.ActivityFailPrompt;
@@ -24,6 +25,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class ActivityServiceImpl implements ActivityService {
+
+	@Autowired
+	private ActivityMemberMapper activityMemberMapper;
 
 	@Autowired
 	private ActivityMapper activityMapper;

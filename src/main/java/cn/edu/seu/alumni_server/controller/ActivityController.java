@@ -5,6 +5,7 @@ import cn.edu.seu.alumni_server.common.dto.WebResponse;
 import cn.edu.seu.alumni_server.common.exceptions.ActivityServiceException;
 import cn.edu.seu.alumni_server.common.token.Acl;
 import cn.edu.seu.alumni_server.controller.dto.ActivityBasicInfoDTO;
+import cn.edu.seu.alumni_server.controller.dto.ActivityBasicInfoWithCurrentAccountEnrollState;
 import cn.edu.seu.alumni_server.controller.dto.ActivityDTO;
 import cn.edu.seu.alumni_server.controller.dto.ActivityWithMultipartFileDTO;
 import cn.edu.seu.alumni_server.controller.dto.DemoDTO;
@@ -209,7 +210,13 @@ public class ActivityController {
 		try {
 			ActivityBasicInfoDTO basicInfos =
 				this.activityService.queryBasicInfoOfActivityByActivityId(activityId);
-			return new WebResponse().success(basicInfos);
+			// 还需要判断当前的用户是否在这个活动中
+			Boolean hasEnrolled = this.activityMemberService.hasEnrolledInto(
+				activityId, (Long) this.request.getAttribute("accountId")
+			);
+			ActivityBasicInfoWithCurrentAccountEnrollState ans =
+				new ActivityBasicInfoWithCurrentAccountEnrollState(basicInfos, hasEnrolled);
+			return new WebResponse().success(ans);
 		} catch (ActivityServiceException | Exception e) {
 			return new WebResponse().fail(e.getMessage());
 		}
