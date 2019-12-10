@@ -30,7 +30,7 @@ public class AlumniServerApplicationTests {
 	public void testPostImgs() {
 		// 获取图片
 		File file = new File(
-			"/Users/wangqing/IdeaProjects/alumni_server/doc/demo.png"
+			"F:\\JavaProjects\\AlumniServer\\doc\\demo.png"
 		);
 		try {
 			MultipartFile multipartFile = Utils.fileToMultipartFile(file);
@@ -46,6 +46,24 @@ public class AlumniServerApplicationTests {
 			e.printStackTrace();
 		}
 //		System.out.println("1123");
+	}
+
+	@Test
+	public void testUploadOneFile() {
+		// 获取图片
+		File file = new File(
+			"F:\\JavaProjects\\AlumniServer\\doc\\demo.png"
+		);
+		try {
+			MultipartFile multipartFile = Utils.fileToMultipartFile(file);
+			String ansUrl = this.fileManager.uploadOneFile(
+				multipartFile, "test-img-02",
+				"test", "imgs"
+			);
+			System.out.println(ansUrl);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
