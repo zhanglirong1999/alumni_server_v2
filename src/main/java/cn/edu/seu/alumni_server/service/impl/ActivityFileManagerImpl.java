@@ -8,6 +8,7 @@ import com.qcloud.cos.COSClient;
 import com.qcloud.cos.model.PutObjectRequest;
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.io.FileUtils;
@@ -34,11 +35,11 @@ public class ActivityFileManagerImpl implements QCloudFileManager {
 
 	@Override
 	public File convertMultipartFileToFile(MultipartFile multipartFile, String newName)
-		throws IOException, ActivityServiceException {
+		throws IOException {
 		// 获取到文件源路径
 		String originalFilename = multipartFile.getOriginalFilename();
 		if (originalFilename == null)
-			throw new ActivityServiceException(
+			throw new IOException(
 				this.activityFailPrompt.getUserPrompt(
 					"将原图片转换成为可上传文件", 8
 				)
@@ -69,5 +70,52 @@ public class ActivityFileManagerImpl implements QCloudFileManager {
 	@Override
 	public String makeUrlString(String suffixKey) {
 		return this.qCloudCOSClientHolder.getPath() + suffixKey;
+	}
+
+	@Override
+	public String uploadOneFile(
+		MultipartFile multipartFile,
+		String newFileNameWithoutType,
+		String ... subDirs
+	) throws IOException {
+		// 首先获取到
+		String ansFileUrl = this.getBaseUrl();
+		// 获取到原始文件的类型
+		String newFileNameWithType =
+			newFileNameWithoutType + Objects.requireNonNull(
+				multipartFile.getOriginalFilename()
+		).substring(
+			multipartFile.getOriginalFilename().lastIndexOf(".")
+		);
+		// 创建文件
+		File uploadFile = this.convertMultipartFileToFile(
+			multipartFile, newFileNameWithType
+		);
+		// 创建新的文件路径
+		StringBuilder bucketNameBuilder = new StringBuilder();
+		for (String subDir: subDirs)
+			bucketNameBuilder.append("/").append(subDir);
+		String uploadFileKey =
+			bucketNameBuilder.append("/").append(
+				uploadFile.getName()
+			).toString();
+		// 上传文件
+		// 创建客户端
+		COSClient cosClient = this.qCloudCOSClientHolder.newCOSClient();
+		// 上传图片文件到指定的桶中
+		PutObjectRequest putObjectRequest = new PutObjectRequest(
+			this.qCloudCOSClientHolder.getBucketName(),
+			uploadFileKey,
+			uploadFile
+		);
+		cosClient.putObject(putObjectRequest);
+		// 关闭
+		this.qCloudCOSClientHolder.closeCOSClient(cosClient);
+		return ansFileUrl + putObjectRequest.getKey();
+	}
+
+	@Override
+	public String getBaseUrl() {
+		return this.qCloudCOSClientHolder.getPath();
 	}
 }
