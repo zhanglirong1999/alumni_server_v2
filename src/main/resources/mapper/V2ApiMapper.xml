@@ -244,6 +244,7 @@
                a.self_desc  as selfDesc,
                b.school,
                b.college,
+               b.start_time,
                c.company,
                c.position,
                (CASE
@@ -253,7 +254,7 @@
                     else ''
                    END)     as recommondReason
         from (
-              (account a left join (select max(account_id) as account_id, school, college
+              (account a left join (select max(account_id) as account_id, school, college,start_time
                                     from education
                                     group by account_id) b on a.account_id = b.account_id)
                  left join

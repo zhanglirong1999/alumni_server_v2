@@ -17,25 +17,22 @@
         select a.account_id          as accountId,
                a.favorite_account_id as favoriteAccountId,
                a.status,
+               b.avatar,
                b.name,
                b.city,
                t1.school,
                t1.college,
+               t1.start_time,
                t2.company,
                t2.position
-        from (
-                 ( favorite a left join account b on a.favorite_account_id = b.account_id )
-                     left join
-                     (select max(account_id) as account_id_t1, school, college
-                      from education e
-                      group by account_id) as t1 on a.favorite_account_id = t1.account_id_t1
-                 )
-                 left join
-             (
-                 select max(account_id) as account_id_t1, company, position
-                 from job j
-                 group by account_id
-             ) as t2 on a.favorite_account_id = t2.account_id_t1
+        from favorite a
+                 left join account b on a.favorite_account_id = b.account_id
+                 left join (select max(account_id) as account_id_t1, school, college, start_time
+                            from education e
+                            group by account_id) as t1 on a.favorite_account_id = t1.account_id_t1
+                 left join (select max(account_id) as account_id_t1, company, position
+                            from job j
+                            group by account_id) as t2 on a.favorite_account_id = t2.account_id_t1
         where a.account_id = #{accountId}
           and a.status = 1;
 
