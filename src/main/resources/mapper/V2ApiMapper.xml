@@ -253,15 +253,48 @@
                     WHEN b.school = #{school} THEN '同学校'
                     else ''
                    END)     as recommondReason
-        from (
-              (account a left join (select max(account_id) as account_id, school, college,start_time
-                                    from education
-                                    group by account_id) b on a.account_id = b.account_id)
-                 left join
-             (select max(account_id) as account_id, company, position
-              from job
-              group by account_id) c on a.account_id = c.account_id
-                 )
+        from account a
+                 left join (select max(account_id) as account_id, school, college, start_time
+                            from education
+                            group by account_id) b on a.account_id = b.account_id
+                 left join (select max(account_id) as account_id, company, position from job group by account_id) c
+                           on a.account_id = c.account_id
+        where a.account_id NOT in
+              (select distinct d.friend_account_id
+               from friend d
+               where d.account_id = #{accountId}
+                 and d.status = 2)
+          and a.account_id != #{accountId}
+        order by recommondReason DESC
+    </select>
+
+
+    <select id="recommandWithFilter"
+            parameterType="cn.edu.seu.alumni_server.controller.dto.BriefInfo"
+            resultType="cn.edu.seu.alumni_server.controller.dto.BriefInfo">
+        select a.account_id as accountId,
+               a.openid,
+               a.avatar,
+               a.name,
+               a.city,
+               a.self_desc  as selfDesc,
+               b.school,
+               b.college,
+               b.start_time,
+               c.company,
+               c.position,
+               (CASE
+                    WHEN a.city = #{city} THEN '同城市'
+                    WHEN b.college = #{college} THEN '同学院'
+                    WHEN b.school = #{school} THEN '同学校'
+                    else ''
+                   END)     as recommondReason
+        from account a
+                 left join (select max(account_id) as account_id, school, college, start_time
+                            from education
+                            group by account_id) b on a.account_id = b.account_id
+                 left join (select max(account_id) as account_id, company, position from job group by account_id) c
+                           on a.account_id = c.account_id
         where a.account_id NOT in
               (select distinct d.friend_account_id
                from friend d

@@ -90,23 +90,58 @@ public class ActivityController {
 		t.setImg6(img6);
 		return createActivity(t);
 	}
+//
+//	/**
+//	 * 创建一个活动
+//	 */
+//	@PostMapping("/activities")
+//	public WebResponse createActivity(
+//		@RequestBody ActivityWithMultipartFileDTO activityDTO
+//	) {
+//		try {
+//			// 创建一个活动.
+//			ActivityWithMultipartFileDTO activityMPFFTO =
+//				this.activityService.checkInputtedActivityWithMultipartFileDTO(
+//					activityDTO
+//				);
+//			// 发送给 qcloud.
+//			Activity ans = this.activityService.insertActivityDAO(
+//				activityMPFFTO
+//			);
+//			// 插入数据库
+//			this.activityService.insertActivity(ans);
+//			// 注意创建活动的人应该被加入到活动中去.
+//			ActivityMember activityMember = new ActivityMember();
+//			activityMember.setAccountId(activityMPFFTO.getAccountId());
+//			activityMember.setActivityId(activityMPFFTO.getActivityId());
+//			// 刚刚创建的时候一定不用读消息.
+//			activityMember.setReadStatus(true);
+//			this.activityMemberService.insertActivityMember(activityMember);
+//			// 返回结果里面包括需要的 id, 以及处理完成的图片地址.
+//			return new WebResponse().success(new ActivityDTO(ans));
+//		} catch (ActivityServiceException | Exception | ActivityMemberServiceException e) {
+//			return new WebResponse().fail(e.getMessage());
+//		}
+//	}
+
+
 
 	/**
 	 * 创建一个活动
 	 */
 	@PostMapping("/activities")
 	public WebResponse createActivity(
-		@RequestBody ActivityWithMultipartFileDTO activityDTO
+			@RequestBody ActivityWithMultipartFileDTO activityDTO
 	) {
 		try {
 			// 创建一个活动.
 			ActivityWithMultipartFileDTO activityMPFFTO =
-				this.activityService.checkInputtedActivityWithMultipartFileDTO(
-					activityDTO
-				);
+					this.activityService.checkInputtedActivityWithMultipartFileDTO(
+							activityDTO
+					);
 			// 发送给 qcloud.
 			Activity ans = this.activityService.insertActivityDAO(
-				activityMPFFTO
+					activityMPFFTO
 			);
 			// 插入数据库
 			this.activityService.insertActivity(ans);

@@ -10,7 +10,6 @@ import cn.edu.seu.alumni_server.controller.dto.enums.SearchType;
 import cn.edu.seu.alumni_server.dao.entity.Account;
 import cn.edu.seu.alumni_server.dao.mapper.*;
 import cn.edu.seu.alumni_server.service.CommonService;
-import cn.edu.seu.alumni_server.service.impl.CommonServiceImpl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.google.gson.Gson;
@@ -242,9 +241,20 @@ public class V2ApiController {
         return new WebResponse().success(res);
     }
 
+    /**
+     *
+     * @param request
+     * @param filter 0 行业
+     *               1 可能认识
+     *               2 同城
+     * @param pageSize
+     * @param pageIndex
+     * @return
+     */
     @Acl
     @RequestMapping("/recommand")
     public WebResponse recommand(HttpServletRequest request,
+                                 @RequestParam String filter,
                                  @RequestParam int pageSize,
                                  @RequestParam int pageIndex) {
         Long accountId = (Long) request.getAttribute("accountId");
@@ -262,7 +272,7 @@ public class V2ApiController {
         }
 
         PageHelper.startPage(pageIndex, pageSize);
-        List<BriefInfo> temp = v2ApiMapper.recommand(briefInfo);
+        List<BriefInfo> temp = v2ApiMapper.recommandWithFilter(briefInfo,filter);
 
         return new WebResponse().success(
                 new PageResult<BriefInfo>(

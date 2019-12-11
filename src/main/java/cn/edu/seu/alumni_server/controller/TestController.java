@@ -10,12 +10,15 @@ import cn.edu.seu.alumni_server.dao.mapper.AccountMapper;
 import cn.edu.seu.alumni_server.dao.mapper.ConstMajorMapper;
 import cn.edu.seu.alumni_server.dao.mapper.ConstSchoolMapper;
 import cn.edu.seu.alumni_server.dao.mapper.V2ApiMapper;
+import cn.edu.seu.alumni_server.service.QCloudFileManager;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +40,9 @@ public class TestController {
     ConstSchoolMapper constSchoolMapper;
     @Autowired
     ConstMajorMapper constMajorMapper;
+
+    @Autowired
+    QCloudFileManager qCloudFileManager;
 
     static {
     }
@@ -97,5 +103,14 @@ public class TestController {
 
         System.out.println(new Gson().toJson(req));
         return "{\"error\":0}";
+    }
+
+    @PostMapping("/file")
+    public String fileDemo(
+            @RequestParam MultipartFile demo
+    ) throws IOException {
+        return qCloudFileManager.uploadOneFile(
+                demo,
+                String.valueOf(Utils.generateId()) + "." + demo.getOriginalFilename());
     }
 }

@@ -6,14 +6,11 @@ import cn.edu.seu.alumni_server.common.Utils;
 import cn.edu.seu.alumni_server.common.dto.WebResponse;
 import cn.edu.seu.alumni_server.common.exceptions.AlumniCircleServiceException;
 import cn.edu.seu.alumni_server.common.token.Acl;
-import cn.edu.seu.alumni_server.controller.dto.ActivityDTO;
-import cn.edu.seu.alumni_server.controller.dto.MyAlumniCircleInfoDTO;
 import cn.edu.seu.alumni_server.controller.dto.PageResult;
 import cn.edu.seu.alumni_server.controller.dto.StartedOrEnrolledActivityInfoDTO;
 import cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleBasicInfoDTO;
 import cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleDTO;
 import cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleMemberDTO;
-import cn.edu.seu.alumni_server.dao.entity.Activity;
 import cn.edu.seu.alumni_server.dao.entity.AlumniCircle;
 import cn.edu.seu.alumni_server.dao.entity.AlumniCircleMember;
 import cn.edu.seu.alumni_server.dao.mapper.ActivityMapper;
@@ -27,8 +24,6 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 @SuppressWarnings("ALL")
@@ -58,14 +53,14 @@ public class AlumniCircleController {
             @RequestParam int pageSize
     ) {
         Long accountId = (
-            (Long) request.getAttribute("accountId")
+                (Long) request.getAttribute("accountId")
         );
         try {
             PageHelper.startPage(pageIndex, pageSize);
             List<AlumniCircleBasicInfoDTO> alumniCircleDTOList =
-                this.alumniCircleService.queryEnrolledAlumniCircleByAccountId(accountId);
+                    this.alumniCircleService.queryEnrolledAlumniCircleByAccountId(accountId);
             return new WebResponse().success(
-                new PageResult<>(((Page) alumniCircleDTOList).getTotal(), alumniCircleDTOList)
+                    new PageResult<>(((Page) alumniCircleDTOList).getTotal(), alumniCircleDTOList)
             );
         } catch (AlumniCircleServiceException | Exception e) {
             return new WebResponse().fail(e.getMessage());
@@ -82,11 +77,11 @@ public class AlumniCircleController {
         try {
             PageHelper.startPage(pageIndex, pageSize);
             List<AlumniCircleBasicInfoDTO> ans = (
-                fuzzy ?
-                    this.alumniCircleService
-                        .queryAlumniCircleInfosFuzzilyByAluCirName(alumniCircleName) :
-                    this.alumniCircleService
-                        .queryAlumniCircleInfosByAlumniCircleName(alumniCircleName)
+                    fuzzy ?
+                            this.alumniCircleService
+                                    .queryAlumniCircleInfosFuzzilyByAluCirName(alumniCircleName) :
+                            this.alumniCircleService
+                                    .queryAlumniCircleInfosByAlumniCircleName(alumniCircleName)
             );
             return new WebResponse().success(
                     new PageResult<>(((Page) ans).getTotal(), ans)
@@ -109,9 +104,14 @@ public class AlumniCircleController {
 
     @GetMapping("/information")
     public WebResponse information(@RequestParam Long alumniCircleId) {
-        alumniCircleMapper.selectByPrimaryKey(alumniCircleId);
-        return new WebResponse().success(
-                alumniCircleMapper.selectByPrimaryKey(alumniCircleId));
+        Long accountId = (Long) request.getAttribute("accountId");
+
+        AlumniCircle alumniCircle = alumniCircleMapper.selectByPrimaryKey(alumniCircleId);
+        AlumniCircleDTO alumniCircleDTO = new AlumniCircleDTO(alumniCircle);
+
+        alumniCircleDTO.setIsJoined(
+                alumniCircleMemberMapper.isJoined(alumniCircleId, accountId));
+        return new WebResponse().success(alumniCircleDTO);
     }
 
 
@@ -190,13 +190,13 @@ public class AlumniCircleController {
 //        );
         PageHelper.startPage(pageIndex, pageSize);
         List<StartedOrEnrolledActivityInfoDTO> ans =
-            this.activityMapper.getActivitiesOfOneAlumniCircle(
-                alumniCircleId
-            );
-        for (StartedOrEnrolledActivityInfoDTO t: ans)
+                this.activityMapper.getActivitiesOfOneAlumniCircle(
+                        alumniCircleId
+                );
+        for (StartedOrEnrolledActivityInfoDTO t : ans)
             t.calculateActivityState();
         return new WebResponse().success(
-            new PageResult<>(((Page) ans).getTotal(), ans)
+                new PageResult<>(((Page) ans).getTotal(), ans)
         );
     }
 

@@ -17,4 +17,14 @@
         where account_id = #{accountId}
           and alumni_circle_id = #{alumniCircleId}
     </update>
+
+    <select id="isJoined" resultType="java.lang.Boolean">
+        select (case
+                    when count(1) = 0 then false
+                    else true end)
+        from alumni_circle_member
+        where account_id = #{accountId}
+          and alumni_circle_id = #{alumniCircleId}
+    </select>
+
 </mapper>
