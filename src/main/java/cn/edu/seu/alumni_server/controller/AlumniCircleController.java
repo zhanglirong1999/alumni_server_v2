@@ -203,7 +203,7 @@ public class AlumniCircleController {
     @PutMapping("")
     public WebResponse maintain(@RequestBody AlumniCircleDTO alumniCircleDTO) {
 
-        alumniCircleMapper.updateByPrimaryKey(alumniCircleDTO.toAlumniCircle());
+        alumniCircleMapper.updateByPrimaryKeySelective(alumniCircleDTO.toAlumniCircle());
         return new WebResponse();
     }
 
