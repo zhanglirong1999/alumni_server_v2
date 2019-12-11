@@ -2,6 +2,7 @@ package cn.edu.seu.alumni_server;
 
 import cn.edu.seu.alumni_server.common.Utils;
 import cn.edu.seu.alumni_server.common.exceptions.ActivityServiceException;
+import cn.edu.seu.alumni_server.controller.CommonController;
 import cn.edu.seu.alumni_server.controller.dto.ActivityWithMultipartFileDTO;
 import cn.edu.seu.alumni_server.dao.entity.Activity;
 import cn.edu.seu.alumni_server.service.ActivityService;
@@ -25,6 +26,8 @@ public class AlumniServerApplicationTests {
 	QCloudFileManager fileManager;
 	@Autowired
 	ActivityService activityService;
+	@Autowired
+	CommonController commonController;
 
 	@Test
 	public void testPostImgs() {
@@ -65,5 +68,23 @@ public class AlumniServerApplicationTests {
 			e.printStackTrace();
 		}
 	}
+
+	@Test
+	public void testCommonController() {
+		// 获取图片
+		File file = new File(
+			"F:\\JavaProjects\\AlumniServer\\doc\\demo.png"
+		);
+		try {
+			MultipartFile multipartFile = Utils.fileToMultipartFile(file);
+			String ansUrl = this.commonController.fileDemo(
+				multipartFile
+			);
+			System.out.println(ansUrl);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 
 }
