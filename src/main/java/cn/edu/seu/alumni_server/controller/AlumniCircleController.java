@@ -92,13 +92,10 @@ public class AlumniCircleController {
     }
 
     @RequestMapping("/recommend")
-    public WebResponse alumniCirclesRecommend(@RequestParam int pageIndex,
-                                              @RequestParam int pageSize) {
-        PageHelper.startPage(pageIndex, pageSize);
-
-        List<AlumniCircleBasicInfoDTO> res = alumniCircleService.alumniCirclesRecommend();
+    public WebResponse recommend(@RequestParam int pageIndex,
+                                 @RequestParam int pageSize) {
         return new WebResponse().success(
-                new PageResult(((Page) res).getTotal(), res)
+                alumniCircleService.alumniCirclesRecommend()
         );
     }
 

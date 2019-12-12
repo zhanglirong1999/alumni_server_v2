@@ -13,6 +13,7 @@ import cn.edu.seu.alumni_server.controller.dto.DemoDTO;
 import cn.edu.seu.alumni_server.controller.dto.PageResult;
 import cn.edu.seu.alumni_server.controller.dto.SearchedActivityInfoDTO;
 import cn.edu.seu.alumni_server.controller.dto.StartedOrEnrolledActivityInfoDTO;
+import cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleBasicInfoDTO;
 import cn.edu.seu.alumni_server.dao.entity.Activity;
 import cn.edu.seu.alumni_server.service.ActivityMemberService;
 import cn.edu.seu.alumni_server.service.ActivityService;
@@ -276,5 +277,13 @@ public class ActivityController {
 		} catch (ActivityServiceException | Exception e) {
 			return new WebResponse().fail(e.getMessage());
 		}
+	}
+	@RequestMapping("/activities/recommend")
+	public WebResponse recommend(@RequestParam int pageIndex,
+								 @RequestParam int pageSize) {
+		PageResult res= activityService.recommend( pageIndex, pageSize);
+		return new WebResponse().success(
+				res
+		);
 	}
 }

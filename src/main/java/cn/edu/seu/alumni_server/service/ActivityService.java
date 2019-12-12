@@ -1,11 +1,7 @@
 package cn.edu.seu.alumni_server.service;
 
 import cn.edu.seu.alumni_server.common.exceptions.ActivityServiceException;
-import cn.edu.seu.alumni_server.controller.dto.ActivityBasicInfoDTO;
-import cn.edu.seu.alumni_server.controller.dto.ActivityDTO;
-import cn.edu.seu.alumni_server.controller.dto.ActivityWithMultipartFileDTO;
-import cn.edu.seu.alumni_server.controller.dto.SearchedActivityInfoDTO;
-import cn.edu.seu.alumni_server.controller.dto.StartedOrEnrolledActivityInfoDTO;
+import cn.edu.seu.alumni_server.controller.dto.*;
 import cn.edu.seu.alumni_server.dao.entity.Activity;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -180,4 +176,7 @@ public interface ActivityService {
 		ActivityWithMultipartFileDTO originalMPFActivityDTO,
 		ActivityDTO resultActivityDTO) throws ActivityServiceException,
 		IllegalAccessException, InvocationTargetException;
+
+
+	public PageResult recommend(int pageIndex, int pageSize);
 }
