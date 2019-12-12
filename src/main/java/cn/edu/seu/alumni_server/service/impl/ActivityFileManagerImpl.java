@@ -1,10 +1,10 @@
 package cn.edu.seu.alumni_server.service.impl;
 
-import cn.edu.seu.alumni_server.common.config.qcloud.QCloudCOSClientHolder;
-import cn.edu.seu.alumni_server.common.exceptions.ActivityServiceException;
+import cn.edu.seu.alumni_server.common.config.qcloud.QCloudHolder;
 import cn.edu.seu.alumni_server.service.QCloudFileManager;
 import cn.edu.seu.alumni_server.service.fail.ActivityFailPrompt;
 import com.qcloud.cos.COSClient;
+import com.qcloud.cos.model.ObjectMetadata;
 import com.qcloud.cos.model.PutObjectRequest;
 import java.io.File;
 import java.io.IOException;
@@ -22,7 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class ActivityFileManagerImpl implements QCloudFileManager {
 
 	@Autowired
-	QCloudCOSClientHolder qCloudCOSClientHolder;
+	QCloudHolder qCloudHolder;
 
 	@Autowired
 	ActivityFailPrompt activityFailPrompt;
@@ -54,22 +54,22 @@ public class ActivityFileManagerImpl implements QCloudFileManager {
 	@Override
 	public String uploadFileToQCloudBySuffixes(File file, String suffixKey) {
 		// 创建客户端
-		COSClient cosClient = this.qCloudCOSClientHolder.newCOSClient();
+		COSClient cosClient = this.qCloudHolder.newCOSClient();
 		// 上传图片文件到指定的桶中
 		PutObjectRequest putObjectRequest = new PutObjectRequest(
-			this.qCloudCOSClientHolder.getBucketName(),
+			this.qCloudHolder.getBucketName(),
 			suffixKey,
 			file
 		);
 		cosClient.putObject(putObjectRequest);
 		// 关闭.
-		this.qCloudCOSClientHolder.closeCOSClient(cosClient);
+		this.qCloudHolder.closeCOSClient(cosClient);
 		return putObjectRequest.getKey();
 	}
 
 	@Override
 	public String makeUrlString(String suffixKey) {
-		return this.qCloudCOSClientHolder.getPath() + suffixKey;
+		return this.qCloudHolder.getBaseUrl() + suffixKey;
 	}
 
 	@Override
@@ -80,12 +80,9 @@ public class ActivityFileManagerImpl implements QCloudFileManager {
 	) throws IOException {
 		// 首先获取到
 		String ansFileUrl = this.getBaseUrl();
-		// 获取到原始文件的类型
-		String newFileNameWithType =
-			newFileNameWithoutType + Objects.requireNonNull(
-				multipartFile.getOriginalFilename()
-		).substring(
-			multipartFile.getOriginalFilename().lastIndexOf(".")
+		String newFileNameWithType = buildNewFileNameWithType(
+			multipartFile,
+			newFileNameWithoutType
 		);
 		// 创建文件
 		File uploadFile = this.convertMultipartFileToFile(
@@ -101,21 +98,61 @@ public class ActivityFileManagerImpl implements QCloudFileManager {
 			).toString();
 		// 上传文件
 		// 创建客户端
-		COSClient cosClient = this.qCloudCOSClientHolder.newCOSClient();
+		COSClient cosClient = this.qCloudHolder.newCOSClient();
 		// 上传图片文件到指定的桶中
 		PutObjectRequest putObjectRequest = new PutObjectRequest(
-			this.qCloudCOSClientHolder.getBucketName(),
+			this.qCloudHolder.getBucketName(),
 			uploadFileKey,
 			uploadFile
 		);
 		cosClient.putObject(putObjectRequest);
 		// 关闭
-		this.qCloudCOSClientHolder.closeCOSClient(cosClient);
+		this.qCloudHolder.closeCOSClient(cosClient);
 		return ansFileUrl + putObjectRequest.getKey();
+	}
+
+	public String buildNewFileNameWithType(MultipartFile multipartFile,
+		String newFileNameWithoutType) {
+		// 获取到原始文件的类型
+		return newFileNameWithoutType + Objects.requireNonNull(
+			multipartFile.getOriginalFilename()
+		).substring(
+			multipartFile.getOriginalFilename().lastIndexOf(".")
+		);
 	}
 
 	@Override
 	public String getBaseUrl() {
-		return this.qCloudCOSClientHolder.getPath();
+		return this.qCloudHolder.getBaseUrl();
+	}
+
+	@Override
+	public Boolean hasObject(String objectKey) {
+		Boolean ans = null;
+		// 创建客户端
+		COSClient cosClient = this.qCloudHolder.newCOSClient();
+		// 尝试获取元数据
+		try {
+			ObjectMetadata objectMetadata = cosClient.getObjectMetadata(
+				this.qCloudHolder.getBucketName(), objectKey
+			);
+			ans = objectMetadata != null;
+		} catch (Exception any) {
+			ans = false;
+		} finally {
+			if (cosClient != null)
+				cosClient.shutdown();
+		}
+		return ans;
+	}
+
+	@Override
+	public void deleteObject(String objectKey) throws IOException {
+		// 创建客户端
+		COSClient cosClient = this.qCloudHolder.newCOSClient();
+		if (cosClient != null) {
+			cosClient.deleteObject(this.qCloudHolder.getBucketName(), objectKey);
+			cosClient.shutdown();
+		} else throw new IOException("创建客户端失败.");
 	}
 }

@@ -10,33 +10,33 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class QCloudCOSClientHolder {
+public class QCloudHolder {
 
 	private QCloudCOSConfig qCloudCOSConfig;
 	private Region region;
 	private COSCredentials cred;
 	private ClientConfig clientConfig;
 	private String bucketName;
-	private String path;
+	private String baseUrl;
 
-	public QCloudCOSClientHolder(
+	public QCloudHolder(
 		QCloudCOSConfig qCloudCOSConfig,
 		String bucketName,
-		String path
+		String baseUrl
 	) {
-		this.init(qCloudCOSConfig, bucketName, path);
+		this.init(qCloudCOSConfig, bucketName, baseUrl);
 	}
 
 	public void init(QCloudCOSConfig qCloudCOSConfig,
 		String bucketName,
-		String path
+		String baseUrl
 	) {
 		this.qCloudCOSConfig = qCloudCOSConfig;
 		this.region = new Region(qCloudCOSConfig.regionString);
 		this.cred = new BasicCOSCredentials(qCloudCOSConfig.secretId, qCloudCOSConfig.secretKey);
 		this.clientConfig = new ClientConfig(this.region);
 		this.bucketName = bucketName;
-		this.path = path;
+		this.baseUrl = baseUrl;
 	}
 
 	public COSClient newCOSClient() {

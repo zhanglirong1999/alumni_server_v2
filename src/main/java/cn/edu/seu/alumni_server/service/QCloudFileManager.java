@@ -41,4 +41,14 @@ public interface QCloudFileManager {
 	) throws IOException;
 
 	String getBaseUrl();
+
+	// 判断一个桶中是否又一个对象
+	Boolean hasObject(String objectKey);
+
+	// 删除一个对象
+	void deleteObject(String objectKey) throws IOException;
+
+	// 构建新的名字
+	public String buildNewFileNameWithType(MultipartFile multipartFile,
+		String newFileNameWithoutType);
 }
