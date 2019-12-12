@@ -115,9 +115,11 @@ public class AlumniCircleController {
     }
 
 
-    @PostMapping("/join")
+    @GetMapping("/join")
     public WebResponse join(@RequestParam Long alumniCircleId,
-                            @RequestParam Long accountId) {
+                            @RequestParam(required = false) Long accountId) {
+        if (accountId == null)
+            accountId = (Long) request.getAttribute(CONST.ACL_ACCOUNTID);
 
         AlumniCircleMember alumniCircleMember = new AlumniCircleMember();
         alumniCircleMember.setAccountId(accountId);

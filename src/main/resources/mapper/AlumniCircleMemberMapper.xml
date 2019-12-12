@@ -25,6 +25,7 @@
         from alumni_circle_member
         where account_id = #{accountId}
           and alumni_circle_id = #{alumniCircleId}
+          and valid_status = true
     </select>
 
 </mapper>

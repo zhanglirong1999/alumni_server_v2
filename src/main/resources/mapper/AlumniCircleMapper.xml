@@ -2,25 +2,29 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.edu.seu.alumni_server.dao.mapper.AlumniCircleMapper">
-	<resultMap id="BaseResultMap" type="cn.edu.seu.alumni_server.dao.entity.AlumniCircle">
-	</resultMap>
-	<select id="queryEnrolledAlumniCircleInfosByAccountId"
-		resultType="cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleBasicInfoDTO">
-        SELECT ALC.alumni_circle_id, ALC.alumni_circle_type, ALC.alumni_circle_name,
-		ALC.alumni_circle_desc, ALC.avatar,
-		ALC.authorization_status
-		FROM alumni_circle AS ALC,
-			 alumni_circle_member AS ALCM
-		WHERE ALC.is_available = 1
-		  AND ALCM.valid_status = 1
-		  AND ALC.alumni_circle_id = ALCM.alumni_circle_id
-		  AND ALCM.account_id = #{accountId}
+    <resultMap id="BaseResultMap" type="cn.edu.seu.alumni_server.dao.entity.AlumniCircle">
+    </resultMap>
+    <select id="queryEnrolledAlumniCircleInfosByAccountId"
+            resultType="cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleBasicInfoDTO">
+        SELECT ALC.alumni_circle_id,
+               ALC.alumni_circle_type,
+               ALC.alumni_circle_name,
+               ALC.alumni_circle_desc,
+               ALC.avatar,
+               ALC.authorization_status
+        FROM alumni_circle AS ALC,
+             alumni_circle_member AS ALCM
+        WHERE ALC.is_available = 1
+          AND ALCM.valid_status = 1
+          AND ALC.alumni_circle_id = ALCM.alumni_circle_id
+          AND ALCM.account_id = #{accountId}
     </select>
     <select id="queryAlumniCircleInfosFuzzilyByAluCirName"
             resultType="cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleBasicInfoDTO">
         SELECT ALC.*
-		FROM alumni_circle AS ALC
-		WHERE ALC.is_available = 1 AND INSTR(ALC.alumni_circle_name, #{name}) > 0
+        FROM alumni_circle AS ALC
+        WHERE ALC.is_available = 1
+          AND INSTR(ALC.alumni_circle_name, #{name}) > 0
     </select>
     <select id="queryAlumniCircleInfosByAluCirName"
             resultType="cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleBasicInfoDTO">
@@ -56,6 +60,7 @@
                  left join (select *, max(account_id) from education group by account_id) EDU
                            on ACM.account_id = EDU.account_id
         where AC.alumni_circle_id = #{alumniCircleId}
+          and ACM.valid_status = true
 
     </select>
 
