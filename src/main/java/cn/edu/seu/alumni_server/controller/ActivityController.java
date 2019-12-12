@@ -14,7 +14,6 @@ import cn.edu.seu.alumni_server.controller.dto.PageResult;
 import cn.edu.seu.alumni_server.controller.dto.SearchedActivityInfoDTO;
 import cn.edu.seu.alumni_server.controller.dto.StartedOrEnrolledActivityInfoDTO;
 import cn.edu.seu.alumni_server.dao.entity.Activity;
-import cn.edu.seu.alumni_server.dao.entity.ActivityMember;
 import cn.edu.seu.alumni_server.service.ActivityMemberService;
 import cn.edu.seu.alumni_server.service.ActivityService;
 import com.github.pagehelper.Page;
@@ -66,14 +65,14 @@ public class ActivityController {
 		@RequestParam String activityDesc,
 		@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date activityTime,
 		@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date expirationTime,
-		@RequestParam(required = false) MultipartFile img1,
-		@RequestParam(required = false) MultipartFile img2,
-		@RequestParam(required = false) MultipartFile img3,
-		@RequestParam(required = false) MultipartFile img4,
-		@RequestParam(required = false) MultipartFile img5,
-		@RequestParam(required = false) MultipartFile img6
+		@RequestParam(required = false) String img1,
+		@RequestParam(required = false) String img2,
+		@RequestParam(required = false) String img3,
+		@RequestParam(required = false) String img4,
+		@RequestParam(required = false) String img5,
+		@RequestParam(required = false) String img6
 	) {
-		ActivityWithMultipartFileDTO t = new ActivityWithMultipartFileDTO();
+		ActivityDTO t = new ActivityDTO();
 		t.setAlumniCircleId(alumniCircleId);
 		t.setAccountId(
 			(Long) request.getAttribute("accountId")
@@ -88,42 +87,10 @@ public class ActivityController {
 		t.setImg4(img4);
 		t.setImg5(img5);
 		t.setImg6(img6);
+		t.setValidStatus(true);
+		t.setVisibleStatus(true);
 		return createActivity(t);
 	}
-//
-//	/**
-//	 * 创建一个活动
-//	 */
-//	@PostMapping("/activities")
-//	public WebResponse createActivity(
-//		@RequestBody ActivityWithMultipartFileDTO activityDTO
-//	) {
-//		try {
-//			// 创建一个活动.
-//			ActivityWithMultipartFileDTO activityMPFFTO =
-//				this.activityService.checkInputtedActivityWithMultipartFileDTO(
-//					activityDTO
-//				);
-//			// 发送给 qcloud.
-//			Activity ans = this.activityService.insertActivityDAO(
-//				activityMPFFTO
-//			);
-//			// 插入数据库
-//			this.activityService.insertActivity(ans);
-//			// 注意创建活动的人应该被加入到活动中去.
-//			ActivityMember activityMember = new ActivityMember();
-//			activityMember.setAccountId(activityMPFFTO.getAccountId());
-//			activityMember.setActivityId(activityMPFFTO.getActivityId());
-//			// 刚刚创建的时候一定不用读消息.
-//			activityMember.setReadStatus(true);
-//			this.activityMemberService.insertActivityMember(activityMember);
-//			// 返回结果里面包括需要的 id, 以及处理完成的图片地址.
-//			return new WebResponse().success(new ActivityDTO(ans));
-//		} catch (ActivityServiceException | Exception | ActivityMemberServiceException e) {
-//			return new WebResponse().fail(e.getMessage());
-//		}
-//	}
-
 
 
 	/**
@@ -131,29 +98,22 @@ public class ActivityController {
 	 */
 	@PostMapping("/activities")
 	public WebResponse createActivity(
-			@RequestBody ActivityWithMultipartFileDTO activityDTO
+		@RequestBody ActivityDTO activityDTO
 	) {
+		// 在这里完成对于创建活动的构建
 		try {
-			// 创建一个活动.
-			ActivityWithMultipartFileDTO activityMPFFTO =
-					this.activityService.checkInputtedActivityWithMultipartFileDTO(
-							activityDTO
-					);
-			// 发送给 qcloud.
-			Activity ans = this.activityService.insertActivityDAO(
-					activityMPFFTO
+			Activity targetActivity = this.activityService.checkInputtedActivityForCreate(
+				activityDTO
 			);
-			// 插入数据库
-			this.activityService.insertActivity(ans);
-			// 注意创建活动的人应该被加入到活动中去.
-			ActivityMember activityMember = new ActivityMember();
-			activityMember.setAccountId(activityMPFFTO.getAccountId());
-			activityMember.setActivityId(activityMPFFTO.getActivityId());
-			// 刚刚创建的时候一定不用读消息.
-			activityMember.setReadStatus(true);
-			this.activityMemberService.insertActivityMember(activityMember);
-			// 返回结果里面包括需要的 id, 以及处理完成的图片地址.
-			return new WebResponse().success(new ActivityDTO(ans));
+			// TODO 这里应该有一个判断是否全网有效的逻辑
+
+			// 执行插入
+			this.activityService.insertActivity(targetActivity);
+			// 注意是现有活动, 再有成员, 将当前用户加入到这个活动中
+			this.activityMemberService.addAccountToActivity(
+				targetActivity.getActivityId(), targetActivity.getAccountId()
+			);
+			return new WebResponse<>().success(new ActivityDTO(targetActivity));
 		} catch (ActivityServiceException | Exception | ActivityMemberServiceException e) {
 			return new WebResponse().fail(e.getMessage());
 		}

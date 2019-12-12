@@ -241,4 +241,18 @@ public class ActivityMemberServiceImpl implements ActivityMemberService {
 	public Boolean hasPrimaryKeyInActivityMember(Long activityId, Long accountId) {
 		return this.activityMemberMapper.getRecordNumberByPrimaryKey(activityId, accountId) == 1;
 	}
+
+	@Override
+	public void addAccountToActivity(Long activityId, Long accountId)
+		throws ActivityMemberServiceException {
+		ActivityMemberDTO activityMemberDTO = new ActivityMemberDTO();
+		activityMemberDTO.setActivityId(activityId);
+		activityMemberDTO.setAccountId(accountId);
+		activityMemberDTO.setReadStatus(true);
+		// 输入参数条件检验
+		ActivityMember activityMember =
+			this.addMember2ActivityDAO(activityMemberDTO);
+		// 执行插入
+		this.insertActivityMember(activityMember);
+	}
 }

@@ -1,6 +1,7 @@
 package cn.edu.seu.alumni_server;
 
 import cn.edu.seu.alumni_server.common.Utils;
+import cn.edu.seu.alumni_server.common.dto.WebResponse;
 import cn.edu.seu.alumni_server.common.exceptions.ActivityServiceException;
 import cn.edu.seu.alumni_server.controller.CommonController;
 import cn.edu.seu.alumni_server.controller.dto.ActivityWithMultipartFileDTO;
@@ -73,11 +74,11 @@ public class AlumniServerApplicationTests {
 	public void testCommonController() {
 		// 获取图片
 		File file = new File(
-			"F:\\JavaProjects\\AlumniServer\\doc\\demo.png"
+			"F:\\JavaProjects\\AlumniServer\\doc\\demo1.jpg"
 		);
 		try {
 			MultipartFile multipartFile = Utils.fileToMultipartFile(file);
-			String ansUrl = this.commonController.fileDemo(
+			WebResponse ansUrl = this.commonController.uploadFile(
 				multipartFile
 			);
 			System.out.println(ansUrl);
@@ -86,5 +87,8 @@ public class AlumniServerApplicationTests {
 		}
 	}
 
-
+	@Test
+	public void testDeleteFile() {
+		System.out.println(this.commonController.deleteFile("https://root-test-bucket-1258701411.cos.ap-shanghai.myqcloud.com/11813611470848.jpg"));
+	}
 }

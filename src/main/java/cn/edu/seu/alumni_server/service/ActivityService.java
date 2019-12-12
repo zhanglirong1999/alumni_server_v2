@@ -41,13 +41,13 @@ public interface ActivityService {
 
 	/**
 	 * 根据输入的参数, 判断是否是一个合法的前端输入.
-	 * @param activityDTO 输入的对象
+	 * @param activity 输入的对象
 	 * @return 输出一个经过逻辑检验的对象
 	 * @throws NullPointerException 空指针异常
 	 * @throws ActivityServiceException 服务异常
 	 */
-	public ActivityWithMultipartFileDTO checkInputtedActivityWithMultipartFileDTO(
-		ActivityWithMultipartFileDTO activityDTO)
+	public Activity checkInputtedActivityForCreate(
+		ActivityDTO activity)
 		throws ActivityServiceException;
 
 	/**

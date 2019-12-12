@@ -76,4 +76,8 @@ public interface ActivityMemberService {
 
 	// 判断一个参与记录是否已经有了
 	public Boolean hasPrimaryKeyInActivityMember(Long activityId, Long accountId);
+
+	// 将一个用户插入到一个活动中
+	public void addAccountToActivity(Long activityId, Long accountId)
+		throws ActivityMemberServiceException;
 }

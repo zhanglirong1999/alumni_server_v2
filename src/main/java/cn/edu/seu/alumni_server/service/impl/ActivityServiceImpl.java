@@ -56,11 +56,11 @@ public class ActivityServiceImpl implements ActivityService {
 	}
 
 	@Override
-	public ActivityWithMultipartFileDTO checkInputtedActivityWithMultipartFileDTO(
-		ActivityWithMultipartFileDTO activityWithMPFDTO
+	public Activity checkInputtedActivityForCreate(
+		ActivityDTO activityDTO
 	) throws ActivityServiceException {
 		// 转换对象
-		ActivityDTO temp = activityWithMPFDTO.toActivityDTO();
+		ActivityDTO temp = activityDTO;
 		// 确定当前的活动名称
 		String sname = "创建活动";
 		if (this.hasActivityId(temp)) {
@@ -71,15 +71,16 @@ public class ActivityServiceImpl implements ActivityService {
 			);
 		}
 		// 活动的名字不可以为空.
-		if (temp.getActivityName() == null || temp.getActivityName().equals(""))
+		if (temp.getActivityName() == null || temp.getActivityName().equals("")) {
 			throw new ActivityServiceException(
 				this.activityFailPrompt.getUserPrompt(
 					sname, 13
 				)
 			);
+		}
 		if (
-			activityWithMPFDTO.getExpirationTime() == null ||
-				activityWithMPFDTO.getExpirationTime().equals("")
+			temp.getExpirationTime() == null ||
+				temp.getExpirationTime().equals("")
 		) {
 			throw new ActivityServiceException(
 				this.activityFailPrompt.getUserPrompt(
@@ -88,8 +89,8 @@ public class ActivityServiceImpl implements ActivityService {
 			);
 		}
 		if (
-			activityWithMPFDTO.getActivityTime() == null ||
-				activityWithMPFDTO.getActivityTime().equals("")
+			temp.getActivityTime() == null ||
+				temp.getActivityTime().equals("")
 		) {
 			throw new ActivityServiceException(
 				this.activityFailPrompt.getUserPrompt(
@@ -115,9 +116,9 @@ public class ActivityServiceImpl implements ActivityService {
 				)
 			);
 		}
-		activityWithMPFDTO.setActivityId(Utils.generateId());
-		activityWithMPFDTO.setValidStatus(true);
-		return activityWithMPFDTO;
+		temp.setActivityId(Utils.generateId());
+		temp.setValidStatus(true);
+		return temp.toActivity();
 	}
 
 	@Override
@@ -267,12 +268,13 @@ public class ActivityServiceImpl implements ActivityService {
 		}
 		ActivityBasicInfoDTO ans =
 			this.activityMapper.getBasicInfosByActivityId(activityId);
-		if (ans == null)
+		if (ans == null) {
 			throw new ActivityServiceException(
 				this.activityFailPrompt.getUserPrompt(
 					"查询活动基本信息", 14
 				)
 			);
+		}
 		ans.calculateStarterEducationGrade();
 		return ans;
 	}
