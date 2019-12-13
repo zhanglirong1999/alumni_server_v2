@@ -81,7 +81,7 @@ public class V2ApiController {
                             .build()
             );
             if (resAccount != null) {
-                BeanUtils.copyProperties(loginResTemp,resAccount);
+                org.springframework.beans.BeanUtils.copyProperties(resAccount,loginResTemp);
                 loginResTemp.setToken(TokenUtil.createToken(resAccount.getAccountId().toString()));
                 return new WebResponse().success(loginResTemp);
             } else {
