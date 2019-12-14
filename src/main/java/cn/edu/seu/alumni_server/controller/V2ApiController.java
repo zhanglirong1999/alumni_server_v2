@@ -10,12 +10,11 @@ import cn.edu.seu.alumni_server.controller.dto.enums.SearchType;
 import cn.edu.seu.alumni_server.dao.entity.Account;
 import cn.edu.seu.alumni_server.dao.mapper.*;
 import cn.edu.seu.alumni_server.service.CommonService;
-import cn.edu.seu.alumni_server.service.impl.CommonServiceImpl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.google.gson.Gson;
 import lombok.Data;
-import org.springframework.beans.BeanUtils;
+import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +25,7 @@ import tk.mybatis.mapper.entity.Example;
 import tk.mybatis.mapper.util.Sqls;
 
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -62,7 +62,7 @@ public class V2ApiController {
      * @return
      */
     @RequestMapping("/login/wechat")
-    public WebResponse login(@RequestParam String js_code) {
+    public WebResponse login(@RequestParam String js_code) throws InvocationTargetException, IllegalAccessException {
         // 微信登陆，获取openid
         String wxApiUrl = "https://api.weixin.qq.com/sns/jscode2session?" +
                 "appid=" + CONST.appId +
@@ -81,7 +81,7 @@ public class V2ApiController {
                             .build()
             );
             if (resAccount != null) {
-                BeanUtils.copyProperties(resAccount, loginResTemp);
+                org.springframework.beans.BeanUtils.copyProperties(resAccount,loginResTemp);
                 loginResTemp.setToken(TokenUtil.createToken(resAccount.getAccountId().toString()));
                 return new WebResponse().success(loginResTemp);
             } else {
@@ -242,11 +242,22 @@ public class V2ApiController {
         return new WebResponse().success(res);
     }
 
+    /**
+     * @param request
+     * @param filter    0 同学校
+     *                  1 同城市
+     *                  2 可能认识
+     * @param pageSize
+     * @param pageIndex
+     * @return
+     */
     @Acl
     @RequestMapping("/recommand")
     public WebResponse recommand(HttpServletRequest request,
+                                 @RequestParam int filter,
                                  @RequestParam int pageSize,
-                                 @RequestParam int pageIndex) {
+                                 @RequestParam int pageIndex)
+            throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         Long accountId = (Long) request.getAttribute("accountId");
 
         BriefInfo briefInfo = new BriefInfo();
@@ -261,8 +272,10 @@ public class V2ApiController {
                     accountAllDTO.getEducations().get(0).getCollege());
         }
 
+        Map filterMap = BeanUtils.describe(briefInfo);
+        filterMap.put("filter", filter);
         PageHelper.startPage(pageIndex, pageSize);
-        List<BriefInfo> temp = v2ApiMapper.recommand(briefInfo);
+        List<BriefInfo> temp = v2ApiMapper.recommandWithFilter(filterMap);
 
         return new WebResponse().success(
                 new PageResult<BriefInfo>(

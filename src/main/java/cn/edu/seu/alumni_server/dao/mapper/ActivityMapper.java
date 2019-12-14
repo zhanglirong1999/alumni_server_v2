@@ -57,4 +57,7 @@ public interface ActivityMapper extends Mapper<Activity> {
 
 	// 逻辑删除一个活动
 	void deleteActivityLogically(Long activityId);
+
+	// 获取
+	List<StartedOrEnrolledActivityInfoDTO> getActivitiesOfOneAlumniCircle(Long alumniCircleId);
 }

@@ -32,7 +32,7 @@ public class ActivityMemberServiceImpl implements ActivityMemberService {
 	public Boolean isLegalPrimaryKey(ActivityMemberDTO activityMemberDTO) {
 		return (
 			this.isLegalActivityId(activityMemberDTO.getActivityId()) &&
-			this.isLegalAccountId(activityMemberDTO.getAccountId())
+				this.isLegalAccountId(activityMemberDTO.getAccountId())
 		);
 	}
 
@@ -48,6 +48,7 @@ public class ActivityMemberServiceImpl implements ActivityMemberService {
 	public ActivityMember addMember2ActivityDAO(ActivityMemberDTO activityMemberDTO)
 		throws ActivityMemberServiceException {
 		String sname = "将用户添加到活动中";
+		// 如果当前的用户的 id 为 null
 		if (!this.isLegalAccountId(activityMemberDTO.getAccountId())) {
 			throw new ActivityMemberServiceException(
 				this.activityMemberFailPrompt.getUserPrompt(
@@ -55,6 +56,7 @@ public class ActivityMemberServiceImpl implements ActivityMemberService {
 				)
 			);
 		}
+		// 当前活动 id 为 null
 		if (!this.isLegalActivityId(activityMemberDTO.getActivityId())) {
 			throw new ActivityMemberServiceException(
 				this.activityMemberFailPrompt.getUserPrompt(
@@ -62,15 +64,18 @@ public class ActivityMemberServiceImpl implements ActivityMemberService {
 				)
 			);
 		}
+		// 已经加入当前活动
 		if (
 			this.hasEnrolledInto(
 				activityMemberDTO.getActivityId(), activityMemberDTO.getAccountId()
 			)
-		) throw new ActivityMemberServiceException(
-			this.activityMemberFailPrompt.getUserPrompt(
-				sname, 2
-			)
-		);
+		) {
+			throw new ActivityMemberServiceException(
+				this.activityMemberFailPrompt.getUserPrompt(
+					sname, 2
+				)
+			);
+		}
 		activityMemberDTO.setReadStatus(true);  // 加入的时候, 不需要被通知.
 		ActivityMember ans = activityMemberDTO.toActivityMember();
 		ans.setIsAvailable(true);
@@ -78,12 +83,30 @@ public class ActivityMemberServiceImpl implements ActivityMemberService {
 	}
 
 	@Override
-	public void insertActivityMember(ActivityMember activityMember) {
-		this.activityMemberMapper.insertSelective(activityMember);
+	public void insertActivityMember(ActivityMember activityMember)
+		throws ActivityMemberServiceException {
+		// 注意要判断是否已经有了一个记录, 即 加入 退出 加入的逻辑
+		Integer recordNumber =
+			this.activityMemberMapper.getRecordNumberByPrimaryKey(
+				activityMember.getActivityId(),
+				activityMember.getAccountId()
+			);
+		if (recordNumber == 0)
+			this.activityMemberMapper.insertSelective(activityMember);
+		else if (recordNumber == 1) {
+			// 特殊情况
+			activityMember.setIsAvailable(true);
+			this.activityMemberMapper.updateByPrimaryKey(activityMember);
+		} else throw new ActivityMemberServiceException(
+			this.activityMemberFailPrompt.getUserPrompt(
+				"用户加入活动", 7
+			)
+		);
 	}
 
 	@Override
-	public List<ActivityMemberBasicInfoDTO> queryActivityMemberAccountInfosByAccountId(Long activityId)
+	public List<ActivityMemberBasicInfoDTO> queryActivityMemberAccountInfosByAccountId(
+		Long activityId)
 		throws ActivityMemberServiceException {
 		if (activityId == null || activityId.equals("")) {
 			throw new ActivityMemberServiceException(
@@ -94,8 +117,9 @@ public class ActivityMemberServiceImpl implements ActivityMemberService {
 		}
 		List<ActivityMemberBasicInfoDTO> ans =
 			this.activityMemberMapper.getActivityMemberInfosByActivityId(activityId);
-		for (ActivityMemberBasicInfoDTO t : ans)
+		for (ActivityMemberBasicInfoDTO t : ans) {
 			t.calculateStarterEducationGrade();
+		}
 		return ans;
 	}
 
@@ -105,19 +129,19 @@ public class ActivityMemberServiceImpl implements ActivityMemberService {
 		if (activityId == null || activityId.equals("")) {
 			throw new ActivityMemberServiceException(
 				this.activityMemberFailPrompt.getUserPrompt(
-					"更新所有的活动成员的通知阅读状态", 1
+					"更新所有活动成员的通知阅读状态", 1
 				)
 			);
 		}
 		// 首先应该看一下这个活动是否存在
-		if (this.activityMapper.hasAvailableActivity(activityId) != null)
-			this.activityMemberMapper.updateAllActivityMembersReadStatus(
-				activityId, readStatus  // 设置全体状态为未读.
+		if (!this.hasAvailableActivity(activityId))
+			throw new ActivityMemberServiceException(
+				this.activityMemberFailPrompt.getUserPrompt(
+					"更新所有活动成员的通知阅读状态", 3
+				)
 			);
-		else throw new ActivityMemberServiceException(
-			this.activityMemberFailPrompt.getUserPrompt(
-				"更新所有的活动成员的通知阅读状态", 3
-			)
+		this.activityMemberMapper.updateAllActivityMembersReadStatus(
+			activityId, readStatus  // 设置全体状态为未读.
 		);
 	}
 
@@ -132,15 +156,16 @@ public class ActivityMemberServiceImpl implements ActivityMemberService {
 				)
 			);
 		}
-		// 首先应该看一下这个活动是否存在
-		if (this.activityMapper.hasAvailableActivity(activityId) != null)
-			this.activityMemberMapper.updateOneActivityMemberReadStatus(
-				activityId, accountId, readStatus  // 设置全体状态为未读.
+		// 首先应该判断当前用户的记录是否有效
+		// 既要有活动, 又要有参与信息
+		if (!this.hasEnrolledInto(activityId, accountId))
+			throw new ActivityMemberServiceException(
+				this.activityMemberFailPrompt.getUserPrompt(
+					"更新一位活动成员的通知阅读状态", 6
+				)
 			);
-		else throw new ActivityMemberServiceException(
-			this.activityMemberFailPrompt.getUserPrompt(
-				"更新一位活动成员的通知阅读状态", 3
-			)
+		this.activityMemberMapper.updateOneActivityMemberReadStatus(
+			activityId, accountId, readStatus  // 设置全体状态为未读.
 		);
 	}
 
@@ -163,47 +188,71 @@ public class ActivityMemberServiceImpl implements ActivityMemberService {
 		ActivityMember activityMember = new ActivityMember();
 		activityMember.setActivityId(activityId);
 		activityMember.setAccountId(accountId);
-		if (!this.isLegalActivityId(activityId))
+		if (!this.isLegalActivityId(activityId)) {
 			throw new ActivityMemberServiceException(
 				this.activityMemberFailPrompt.getUserPrompt(
 					"用户退出活动", 5
 				)
 			);
-		if (!this.isLegalAccountId(accountId))
+		}
+		if (!this.isLegalAccountId(accountId)) {
 			throw new ActivityMemberServiceException(
 				this.activityMemberFailPrompt.getUserPrompt(
 					"用户退出活动", 1
 				)
 			);
+		}
 		// 先判断是否还有这个活动
-		if (!this.hasAvailableActivity(activityId))
+		if (!this.hasAvailableActivity(activityId)) {
 			throw new ActivityMemberServiceException(
 				this.activityMemberFailPrompt.getUserPrompt(
 					"用户退出活动", 3
 				)
 			);
+		}
 		// 判断当前用户是否属于这个活动
-		if (!this.hasEnrolledInto(activityId, accountId))
+		if (!this.hasEnrolledInto(activityId, accountId)) {
 			throw new ActivityMemberServiceException(
 				this.activityMemberFailPrompt.getUserPrompt(
 					"用户退出活动", 6
 				)
 			);
+		}
 		// 然后判断这个成员是不是活动发起人, 发起人无法退出
-		if (this.isCreatorOf(activityMember.getActivityId(), activityMember.getAccountId()))
+		if (this.isCreatorOf(activityMember.getActivityId(), activityMember.getAccountId())) {
 			throw new ActivityMemberServiceException(
 				this.activityMemberFailPrompt.getUserPrompt(
 					"用户退出活动", 4
 				)
 			);
+		}
 		return activityMember;
 	}
 
 	@Override
 	public Boolean hasEnrolledInto(Long activityId, Long accountId) {
-		ActivityMember activityMember = this.activityMemberMapper.getExistedEnrolledMember(
+		Integer legalMemberRecordNumber = this.activityMemberMapper.getExistedEnrolledMember(
 			activityId, accountId
 		);
-		return activityMember != null;
+		return legalMemberRecordNumber > 0;
+	}
+
+	@Override
+	public Boolean hasPrimaryKeyInActivityMember(Long activityId, Long accountId) {
+		return this.activityMemberMapper.getRecordNumberByPrimaryKey(activityId, accountId) == 1;
+	}
+
+	@Override
+	public void addAccountToActivity(Long activityId, Long accountId)
+		throws ActivityMemberServiceException {
+		ActivityMemberDTO activityMemberDTO = new ActivityMemberDTO();
+		activityMemberDTO.setActivityId(activityId);
+		activityMemberDTO.setAccountId(accountId);
+		activityMemberDTO.setReadStatus(true);
+		// 输入参数条件检验
+		ActivityMember activityMember =
+			this.addMember2ActivityDAO(activityMemberDTO);
+		// 执行插入
+		this.insertActivityMember(activityMember);
 	}
 }

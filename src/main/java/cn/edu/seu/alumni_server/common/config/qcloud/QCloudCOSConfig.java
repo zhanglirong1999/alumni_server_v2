@@ -19,8 +19,8 @@ public class QCloudCOSConfig {
 	@Value("${qCloud.cos.regionString}")
 	public String regionString;
 
-	@Bean
-	public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
-		return new PropertySourcesPlaceholderConfigurer();
-	}
+//	@Bean
+//	public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
+//		return new PropertySourcesPlaceholderConfigurer();
+//	}
 }

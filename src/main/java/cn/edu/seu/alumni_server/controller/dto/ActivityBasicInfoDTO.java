@@ -12,44 +12,44 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ActivityBasicInfoDTO {
 
-	private Long activityId = null;
-	private String activityName = null;
-	private String activityDesc = null;
+	protected Long activityId = null;
+	protected String activityName = null;
+	protected String activityDesc = null;
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	private Date activityDateTime = null;
+	protected Date activityDateTime = null;
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	private Date expirationDateTime = null;
+	protected Date expirationDateTime = null;
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	private Date activityCreatedDateTime = null;
-	private String img1;
+	protected Date activityCreatedDateTime = null;
+	protected String img1;
 
-	private String img2;
+	protected String img2;
 
-	private String img3;
+	protected String img3;
 
-	private String img4;
+	protected String img4;
 
-	private String img5;
+	protected String img5;
 
-	private String img6;
+	protected String img6;
 	// 参与的人数
-	private Long enrolledNumber = null;
+	protected Long enrolledNumber = null;
 
 	// 群组的信息
-	private Long alumniCircleId = null;
-	private String alumniCircleAvatar = null;
+	protected Long alumniCircleId = null;
+	protected String alumniCircleAvatar = null;
 
 	// 额外的信息
-	private Long starterId = null;  // 发起者 id
-	private String starterName = null;  // 发起者姓名
-	private String starterAvatar = null;  // 发起者头像
+	protected Long starterId = null;  // 发起者 id
+	protected String starterName = null;  // 发起者姓名
+	protected String starterAvatar = null;  // 发起者头像
 	// 教育信息
-	private Long starterEducationId = null;
-	private String starterEducationLevel = null;
-	private String starterEducationSchool = null;
-	private String starterEducationCollege = null;
-	private Long starterStartEducationYear = null;  // 几几 级
-	private String starterEducationGrade = null;  // 需要计算
+	protected Long starterEducationId = null;
+	protected String starterEducationLevel = null;
+	protected String starterEducationSchool = null;
+	protected String starterEducationCollege = null;
+	protected Long starterStartEducationYear = null;  // 几几 级
+	protected String starterEducationGrade = null;  // 需要计算
 
 	public void calculateStarterEducationGrade() {
 		Date date = new Date(starterStartEducationYear);

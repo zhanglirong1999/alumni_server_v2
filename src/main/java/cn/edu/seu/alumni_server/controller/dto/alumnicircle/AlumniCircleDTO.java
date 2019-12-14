@@ -30,6 +30,8 @@ public class AlumniCircleDTO {
 
     // 群组的验证状态
     private Boolean authorizationStatus;
+    // 当前用户是否属于当前圈子
+    private Boolean isJoined;
 
     public AlumniCircleDTO(AlumniCircle alumniCircle) {
         BeanUtils.copyProperties(alumniCircle, this);

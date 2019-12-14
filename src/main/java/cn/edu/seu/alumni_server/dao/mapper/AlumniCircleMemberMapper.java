@@ -9,5 +9,7 @@ import java.util.List;
 
 @Repository
 public interface AlumniCircleMemberMapper extends Mapper<AlumniCircleMember> {
-    public List<AlumniCircleMemberDTO> getAlumniCircleMembers();
+    public void leave(Long alumniCircleId, Long accountId);
+    public void joinUpdate(Long alumniCircleId, Long accountId);
+    public Boolean isJoined(Long alumniCircleId, Long accountId);
 }

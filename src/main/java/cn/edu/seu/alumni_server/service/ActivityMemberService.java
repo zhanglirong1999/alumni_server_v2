@@ -30,7 +30,8 @@ public interface ActivityMemberService {
 	 *
 	 * @param activityMember 活动成员数据.
 	 */
-	public void insertActivityMember(ActivityMember activityMember);
+	public void insertActivityMember(ActivityMember activityMember)
+		throws ActivityMemberServiceException;
 
 	/**
 	 * 从数据库中获取到指定活动 id 的成员的信息.
@@ -72,4 +73,11 @@ public interface ActivityMemberService {
 
 	// 判断一个用户是不是一个存在于一个活动中.
 	public Boolean hasEnrolledInto(Long activityId, Long accountId);
+
+	// 判断一个参与记录是否已经有了
+	public Boolean hasPrimaryKeyInActivityMember(Long activityId, Long accountId);
+
+	// 将一个用户插入到一个活动中
+	public void addAccountToActivity(Long activityId, Long accountId)
+		throws ActivityMemberServiceException;
 }

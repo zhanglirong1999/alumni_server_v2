@@ -6,7 +6,6 @@ import cn.edu.seu.alumni_server.controller.dto.enums.AlumniCircleType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.commons.beanutils.BeanUtils;
 
 @Data
 @AllArgsConstructor
@@ -28,7 +27,7 @@ public class AlumniCircleBasicInfoDTO {
 		ans.setAlumniCircleType(AlumniCircleType.getAlumniCircleTypeBy(alumniCircleType));
 		ans.setAlumniCircleName(alumniCircleName);
 		ans.setAlumniCircleDesc(alumniCircleDesc);
-		ans.setAvatar(avatar);
+		ans.setAlumniCircleAvatar(avatar);
 		ans.setAuthorizationStatus(
 			AlumniCircleAuthorizationState.getAlumniCircleAuthorizationStateBy(
 				authorizationStatus

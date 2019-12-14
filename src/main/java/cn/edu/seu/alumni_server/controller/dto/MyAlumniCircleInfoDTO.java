@@ -16,7 +16,7 @@ public class MyAlumniCircleInfoDTO {
 	private String alumniCircleName = null;
 	private String alumniCircleDesc = null;
 	// 群组的头像
-	private String avatar = null;
+	private String alumniCircleAvatar = null;
 	// 群组的验证状态
 	private AlumniCircleAuthorizationState authorizationStatus = null;
 }

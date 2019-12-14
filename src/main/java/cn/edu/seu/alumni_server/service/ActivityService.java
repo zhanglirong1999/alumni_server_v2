@@ -1,11 +1,7 @@
 package cn.edu.seu.alumni_server.service;
 
 import cn.edu.seu.alumni_server.common.exceptions.ActivityServiceException;
-import cn.edu.seu.alumni_server.controller.dto.ActivityBasicInfoDTO;
-import cn.edu.seu.alumni_server.controller.dto.ActivityDTO;
-import cn.edu.seu.alumni_server.controller.dto.ActivityWithMultipartFileDTO;
-import cn.edu.seu.alumni_server.controller.dto.SearchedActivityInfoDTO;
-import cn.edu.seu.alumni_server.controller.dto.StartedOrEnrolledActivityInfoDTO;
+import cn.edu.seu.alumni_server.controller.dto.*;
 import cn.edu.seu.alumni_server.dao.entity.Activity;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -41,13 +37,13 @@ public interface ActivityService {
 
 	/**
 	 * 根据输入的参数, 判断是否是一个合法的前端输入.
-	 * @param activityDTO 输入的对象
+	 * @param activity 输入的对象
 	 * @return 输出一个经过逻辑检验的对象
 	 * @throws NullPointerException 空指针异常
 	 * @throws ActivityServiceException 服务异常
 	 */
-	public ActivityWithMultipartFileDTO checkInputtedActivityWithMultipartFileDTO(
-		ActivityWithMultipartFileDTO activityDTO)
+	public Activity checkInputtedActivityForCreate(
+		ActivityDTO activity)
 		throws ActivityServiceException;
 
 	/**
@@ -180,4 +176,7 @@ public interface ActivityService {
 		ActivityWithMultipartFileDTO originalMPFActivityDTO,
 		ActivityDTO resultActivityDTO) throws ActivityServiceException,
 		IllegalAccessException, InvocationTargetException;
+
+
+	public PageResult recommend(int pageIndex, int pageSize);
 }

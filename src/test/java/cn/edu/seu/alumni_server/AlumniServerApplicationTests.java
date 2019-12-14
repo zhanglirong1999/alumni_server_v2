@@ -1,7 +1,9 @@
 package cn.edu.seu.alumni_server;
 
 import cn.edu.seu.alumni_server.common.Utils;
+import cn.edu.seu.alumni_server.common.dto.WebResponse;
 import cn.edu.seu.alumni_server.common.exceptions.ActivityServiceException;
+import cn.edu.seu.alumni_server.controller.CommonController;
 import cn.edu.seu.alumni_server.controller.dto.ActivityWithMultipartFileDTO;
 import cn.edu.seu.alumni_server.dao.entity.Activity;
 import cn.edu.seu.alumni_server.service.ActivityService;
@@ -25,12 +27,14 @@ public class AlumniServerApplicationTests {
 	QCloudFileManager fileManager;
 	@Autowired
 	ActivityService activityService;
+	@Autowired
+	CommonController commonController;
 
 	@Test
 	public void testPostImgs() {
 		// 获取图片
 		File file = new File(
-			"/Users/wangqing/IdeaProjects/alumni_server/doc/demo.png"
+			"F:\\JavaProjects\\AlumniServer\\doc\\demo.png"
 		);
 		try {
 			MultipartFile multipartFile = Utils.fileToMultipartFile(file);
@@ -48,4 +52,43 @@ public class AlumniServerApplicationTests {
 //		System.out.println("1123");
 	}
 
+	@Test
+	public void testUploadOneFile() {
+		// 获取图片
+		File file = new File(
+			"F:\\JavaProjects\\AlumniServer\\doc\\demo.png"
+		);
+		try {
+			MultipartFile multipartFile = Utils.fileToMultipartFile(file);
+			String ansUrl = this.fileManager.uploadOneFile(
+				multipartFile, "test-img-02",
+				"test", "imgs"
+			);
+			System.out.println(ansUrl);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void testCommonController() {
+		// 获取图片
+		File file = new File(
+			"F:\\JavaProjects\\AlumniServer\\doc\\demo1.jpg"
+		);
+		try {
+			MultipartFile multipartFile = Utils.fileToMultipartFile(file);
+			WebResponse ansUrl = this.commonController.uploadFile(
+				multipartFile
+			);
+			System.out.println(ansUrl);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void testDeleteFile() {
+		System.out.println(this.commonController.deleteFile("https://root-test-bucket-1258701411.cos.ap-shanghai.myqcloud.com/11813611470848.jpg"));
+	}
 }

@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class COSClientWrapperForActivity {
+public class QCloudActivityConfig {
 
 	@Autowired
 	private QCloudCOSConfig qCloudCOSConfig;
@@ -16,7 +16,7 @@ public class COSClientWrapperForActivity {
 	private String bucketPath;
 
 	@Bean
-	public QCloudCOSClientHolder qCloudCOSClientHolder() {
-		return new QCloudCOSClientHolder(this.qCloudCOSConfig, this.bucketName, this.bucketPath);
+	public QCloudHolder qCloudCOSClientHolder() {
+		return new QCloudHolder(this.qCloudCOSConfig, this.bucketName, this.bucketPath);
 	}
 }
