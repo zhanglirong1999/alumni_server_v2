@@ -21,6 +21,8 @@ public class AlumniCircleBasicInfoDTO {
 	// 群组的验证状态
 	private Boolean authorizationStatus = null;
 
+	private Boolean isJoined = false;
+
 	public MyAlumniCircleInfoDTO toMyAlumniCircleInfoDTO() {
 		MyAlumniCircleInfoDTO ans = new MyAlumniCircleInfoDTO();
 		ans.setAlumniCircleId(alumniCircleId);
