@@ -102,7 +102,10 @@ public class ActivityController {
     public WebResponse createActivity(
             @RequestBody ActivityDTO activityDTO
     ) {
-        // 在这里完成对于创建活动的构建
+
+		Long accountId = (Long) request.getAttribute("accountId");
+		activityDTO.setAccountId(accountId);
+		// 在这里完成对于创建活动的构建
         try {
             Activity targetActivity = this.activityService.checkInputtedActivityForCreate(
                     activityDTO
