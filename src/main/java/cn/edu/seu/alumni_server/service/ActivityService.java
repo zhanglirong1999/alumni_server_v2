@@ -178,5 +178,5 @@ public interface ActivityService {
 		IllegalAccessException, InvocationTargetException;
 
 
-	public PageResult recommend(int pageIndex, int pageSize);
+	public PageResult recommend(int pageIndex, int pageSize,Long accountId);
 }

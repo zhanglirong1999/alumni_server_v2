@@ -234,15 +234,12 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
-    public PageResult recommend(int pageIndex, int pageSize) {
+    public PageResult recommend(int pageIndex, int pageSize,Long accountId) {
 		PageHelper.startPage(pageIndex, pageSize);
 // TODO
-		List<Activity> temp = activityMapper.selectAll();
-        List<ActivityDTO> res = new ArrayList<>();
-        temp.forEach((activity) -> {
-            res.add(new ActivityDTO(activity));
-        });
-		PageResult pageResult=new PageResult(((Page) temp).getTotal(), res);
+		List<ActivityBasicInfoDTO> temp = activityMapper.recommend(accountId);
+
+		PageResult pageResult=new PageResult(((Page) temp).getTotal(), temp);
         return pageResult;
     }
 

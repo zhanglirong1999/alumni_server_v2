@@ -284,7 +284,9 @@ public class ActivityController {
     @RequestMapping("/activities/recommend")
     public WebResponse recommend(@RequestParam int pageIndex,
                                  @RequestParam int pageSize) {
-        PageResult res = activityService.recommend(pageIndex, pageSize);
+        Long accountId = (Long) request.getAttribute("accountId");
+
+        PageResult res = activityService.recommend(pageIndex, pageSize,accountId);
         return new WebResponse().success(
                 res
         );

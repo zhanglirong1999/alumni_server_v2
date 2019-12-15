@@ -60,4 +60,6 @@ public interface ActivityMapper extends Mapper<Activity> {
 
 	// 获取
 	List<StartedOrEnrolledActivityInfoDTO> getActivitiesOfOneAlumniCircle(Long alumniCircleId);
+
+	List<ActivityBasicInfoDTO> recommend(Long accountId);
 }
