@@ -6,7 +6,9 @@ import cn.edu.seu.alumni_server.common.exceptions.ActivityServiceException;
 import cn.edu.seu.alumni_server.controller.CommonController;
 import cn.edu.seu.alumni_server.controller.dto.ActivityWithMultipartFileDTO;
 import cn.edu.seu.alumni_server.dao.entity.Activity;
+import cn.edu.seu.alumni_server.dao.entity.AlumniCircle;
 import cn.edu.seu.alumni_server.service.ActivityService;
+import cn.edu.seu.alumni_server.service.AlumniCircleService;
 import cn.edu.seu.alumni_server.service.QCloudFileManager;
 import java.io.File;
 import java.io.IOException;
@@ -29,6 +31,8 @@ public class AlumniServerApplicationTests {
 	ActivityService activityService;
 	@Autowired
 	CommonController commonController;
+	@Autowired
+	AlumniCircleService alumniCircleService;
 
 	@Test
 	public void testPostImgs() {
@@ -90,5 +94,10 @@ public class AlumniServerApplicationTests {
 	@Test
 	public void testDeleteFile() {
 		System.out.println(this.commonController.deleteFile("https://root-test-bucket-1258701411.cos.ap-shanghai.myqcloud.com/11813611470848.jpg"));
+	}
+
+	@Test
+	public void testAlumniCircleRecommand() {
+		System.out.println(alumniCircleService.alumniCirclesRecommend());
 	}
 }

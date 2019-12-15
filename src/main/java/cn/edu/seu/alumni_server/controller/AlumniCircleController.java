@@ -94,8 +94,16 @@ public class AlumniCircleController {
     @RequestMapping("/recommend")
     public WebResponse recommend(@RequestParam int pageIndex,
                                  @RequestParam int pageSize) {
+        Long accountId = (Long) request.getAttribute("accountId");
+        PageHelper.startPage(pageIndex, pageSize);
+        List<AlumniCircleBasicInfoDTO> res = alumniCircleMapper.alumniCirclesRecommend();
+        res.forEach(alumniCircleBasicInfoDTO -> {
+            alumniCircleBasicInfoDTO.setIsJoined(
+                    alumniCircleMemberMapper.isJoined(alumniCircleBasicInfoDTO.getAlumniCircleId(), accountId)
+            );
+        });
         return new WebResponse().success(
-                alumniCircleService.alumniCirclesRecommend()
+                        new PageResult<AlumniCircleBasicInfoDTO>(((Page)res).getTotal(),res)
         );
     }
 
