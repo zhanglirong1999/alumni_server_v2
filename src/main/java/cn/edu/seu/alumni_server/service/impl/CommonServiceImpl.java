@@ -43,7 +43,8 @@ public class CommonServiceImpl implements CommonService {
         // 查询 education 信息
         Example example1 = new Example(Education.class);
         example1.orderBy("endTime").desc();
-        example1.createCriteria().andEqualTo("accountId", accountId);
+        example1.createCriteria().andEqualTo("accountId", accountId)
+                .andEqualTo("validStatus", true);
         accountAllDTO.setEducations(educationMapper.selectByExample(example1)
                 .stream().map(EducationDTO::new).collect(Collectors.toList()));
 
@@ -51,7 +52,9 @@ public class CommonServiceImpl implements CommonService {
 
         Example example2 = new Example(Job.class);
         example2.orderBy("endTime").desc();
-        example2.createCriteria().andEqualTo("accountId", accountId);
+        example2.createCriteria().andEqualTo("accountId", accountId)
+                .andEqualTo("validStatus", true);
+
         accountAllDTO.setJobs(jobMapper.selectByExample(example2)
                 .stream().map(JobDTO::new).collect(Collectors.toList()));
 
