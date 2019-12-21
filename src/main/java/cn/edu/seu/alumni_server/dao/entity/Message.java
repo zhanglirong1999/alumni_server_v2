@@ -15,7 +15,7 @@ public class Message implements Serializable {
 
     private Integer type;
 
-    private String payload;
+    private String content;
 
     /**
      * 0未读1已读

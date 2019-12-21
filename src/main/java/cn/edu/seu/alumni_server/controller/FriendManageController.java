@@ -3,6 +3,7 @@ package cn.edu.seu.alumni_server.controller;
 import cn.edu.seu.alumni_server.common.CONST;
 import cn.edu.seu.alumni_server.common.dto.WebResponse;
 import cn.edu.seu.alumni_server.common.token.Acl;
+import cn.edu.seu.alumni_server.controller.dto.FriendApplyDTO;
 import cn.edu.seu.alumni_server.controller.dto.FriendDTO;
 import cn.edu.seu.alumni_server.controller.dto.PageResult;
 import cn.edu.seu.alumni_server.controller.dto.enums.FriendStatus;
@@ -41,10 +42,11 @@ public class FriendManageController {
 
     @PostMapping("/friend/apply")
     @Transactional
-    public WebResponse friendApply(@RequestBody Map<String, Long> req) {
+    public WebResponse friendApply(@RequestBody FriendApplyDTO friendApplyDTO) {
         Friend f = new Friend();
-        f.setAccountId(req.get("A"));
-        f.setFriendAccountId(req.get("B"));
+        f.setAccountId(friendApplyDTO.getA());
+        f.setFriendAccountId(friendApplyDTO.getB());
+
 
         Friend fRes = friendMapper.selectOne(f);
         if (fRes != null && fRes.getStatus() == FriendStatus.apply.getStatus()) {
@@ -52,15 +54,15 @@ public class FriendManageController {
         }
 
         Friend A2B = new Friend();
-        A2B.setAccountId(req.get("A"));
-        A2B.setFriendAccountId(req.get("B"));
+        A2B.setAccountId(friendApplyDTO.getA());
+        A2B.setFriendAccountId(friendApplyDTO.getB());
         A2B.setStatus(FriendStatus.apply.getStatus());
 
         friendMapper.insertOnDuplicateKeyUpdate(A2B);
 
         Friend B2A = new Friend();
-        B2A.setAccountId(req.get("B"));
-        B2A.setFriendAccountId(req.get("A"));
+        B2A.setAccountId(friendApplyDTO.getB());
+        B2A.setFriendAccountId(friendApplyDTO.getA());
         B2A.setStatus(FriendStatus.todo.getStatus());
         friendMapper.insertOnDuplicateKeyUpdate(B2A);
 
@@ -72,8 +74,8 @@ public class FriendManageController {
 //        message.setType(MessageType.APPLY.getValue());
 //        messageMapper.insertSelective(message);
 
-        messageService.newMessage(req.get("A"), req.get("B"),
-                MessageType.APPLY.getValue());
+        messageService.newMessage(friendApplyDTO.getA(), friendApplyDTO.getB(),
+                MessageType.APPLY.getValue(), friendApplyDTO.getMessage());
 
         return new WebResponse();
     }

@@ -26,4 +26,18 @@ public class MessageServiceImpl implements MessageService {
         messageMapper.insertSelective(message);
 //        messageMapper
     }
+
+    @Override
+    public void newMessage(Long fromUser, Long toUser, Integer type, String content) {
+        //消息通知
+        Message message = new Message();
+        message.setTimestamp(System.currentTimeMillis());
+        message.setMessageId(Utils.generateId());
+
+        message.setFromUser(fromUser);
+        message.setToUser(toUser);
+        message.setType(type);
+        message.setContent(content);
+        messageMapper.insertSelective(message);
+    }
 }

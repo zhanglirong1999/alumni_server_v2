@@ -33,6 +33,8 @@ import java.util.Map;
 @SuppressWarnings("ALL")
 @RestController
 public class V2ApiController {
+    String access_token = "";
+    long expireTime = 0l;
 
     @Autowired
     AccountMapper accountMapper;
@@ -56,6 +58,18 @@ public class V2ApiController {
     @Autowired
     HttpServletRequest request;
 
+    String getAccessToken(String openid) {
+        if (System.currentTimeMillis() > expireTime) {
+            // 使用appid和secret访问接口.获取公众号的access_token
+            String wxApiUrl = "https://api.weixin.qq.com/cgi-bin/token?" +
+                    "openid=" + openid +
+                    "&secret=" + CONST.appSecret +
+                    "&grant_type=client_credential";
+            String respronse = restTemplate.getForObject(wxApiUrl, String.class);
+
+        }
+        return access_token;
+    }
 
     /**
      * @param js_code
@@ -72,6 +86,7 @@ public class V2ApiController {
         String respronse = restTemplate.getForObject(wxApiUrl, String.class);
         Map res = new Gson().fromJson(respronse, Map.class);
         String openid = (String) res.get("openid");
+
         if (openid != null && !openid.equals("")) {
             LoginResTemp loginResTemp = new LoginResTemp();
             // 获取accountId,有则返回，无则新增（注册）
@@ -81,7 +96,7 @@ public class V2ApiController {
                             .build()
             );
             if (resAccount != null) {
-                org.springframework.beans.BeanUtils.copyProperties(resAccount,loginResTemp);
+                org.springframework.beans.BeanUtils.copyProperties(resAccount, loginResTemp);
                 loginResTemp.setToken(TokenUtil.createToken(resAccount.getAccountId().toString()));
                 return new WebResponse().success(loginResTemp);
             } else {

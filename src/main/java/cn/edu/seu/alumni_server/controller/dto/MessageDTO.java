@@ -10,7 +10,7 @@ public class MessageDTO {
 
     private Integer type;
 
-//    private String payload;
+    private String content;
 
     /**
      * 0未读1已读
