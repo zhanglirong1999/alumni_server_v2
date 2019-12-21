@@ -233,7 +233,12 @@ public class AlumniCircleController {
         alumniCircle.setCreatorId(accountId);
         alumniCircle.setAlumniCircleId(Utils.generateId());
         alumniCircleMapper.insertSelective(alumniCircle);
-        return new WebResponse();
+
+        AlumniCircleMember alumniCircleMember = new AlumniCircleMember();
+        alumniCircleMember.setAlumniCircleId(alumniCircle.getAlumniCircleId());
+        alumniCircleMember.setAccountId(accountId);
+        alumniCircleMemberMapper.insertSelective(alumniCircleMember);
+        return new WebResponse().success(alumniCircle.getAlumniCircleId());
     }
 
 
