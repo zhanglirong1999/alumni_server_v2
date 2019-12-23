@@ -43,9 +43,10 @@ public class FriendManageController {
     @PostMapping("/friend/apply")
     @Transactional
     public WebResponse friendApply(@RequestBody FriendApplyDTO friendApplyDTO) {
+        Long accountId = (Long) request.getAttribute(CONST.ACL_ACCOUNTID);
         Friend f = new Friend();
-        f.setAccountId(friendApplyDTO.getA());
-        f.setFriendAccountId(friendApplyDTO.getB());
+        f.setAccountId(accountId);
+        f.setFriendAccountId(friendApplyDTO.getFriendAccountId());
 
 
         Friend fRes = friendMapper.selectOne(f);
@@ -54,27 +55,20 @@ public class FriendManageController {
         }
 
         Friend A2B = new Friend();
-        A2B.setAccountId(friendApplyDTO.getA());
-        A2B.setFriendAccountId(friendApplyDTO.getB());
+        A2B.setAccountId(accountId);
+        A2B.setFriendAccountId(friendApplyDTO.getFriendAccountId());
         A2B.setStatus(FriendStatus.apply.getStatus());
 
         friendMapper.insertOnDuplicateKeyUpdate(A2B);
 
         Friend B2A = new Friend();
-        B2A.setAccountId(friendApplyDTO.getB());
-        B2A.setFriendAccountId(friendApplyDTO.getA());
+        B2A.setAccountId(friendApplyDTO.getFriendAccountId());
+        B2A.setFriendAccountId(accountId);
         B2A.setStatus(FriendStatus.todo.getStatus());
         friendMapper.insertOnDuplicateKeyUpdate(B2A);
 
-        //消息通知
-//        Message message = new Message();
-//        message.setMessageId(Utils.generateId());
-//        message.setFromUser(req.get("A"));
-//        message.setToUser(req.get("B"));
-//        message.setType(MessageType.APPLY.getValue());
-//        messageMapper.insertSelective(message);
-
-        messageService.newMessage(friendApplyDTO.getA(), friendApplyDTO.getB(),
+        //发消息
+        messageService.newMessage(accountId, friendApplyDTO.getFriendAccountId(),
                 MessageType.APPLY.getValue(), friendApplyDTO.getMessage());
 
         return new WebResponse();

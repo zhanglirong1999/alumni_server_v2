@@ -8,8 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FriendApplyDTO {
-    private Long A;
-    private Long B;
+    private Long friendAccountId;
     private String message;
-
 }
