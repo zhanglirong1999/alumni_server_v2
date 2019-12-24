@@ -9,7 +9,6 @@ import cn.edu.seu.alumni_server.controller.dto.*;
 import cn.edu.seu.alumni_server.controller.dto.enums.MessageType;
 import cn.edu.seu.alumni_server.dao.entity.Activity;
 import cn.edu.seu.alumni_server.dao.entity.ActivityMember;
-import cn.edu.seu.alumni_server.dao.entity.Favorite;
 import cn.edu.seu.alumni_server.dao.mapper.ActivityMapper;
 import cn.edu.seu.alumni_server.dao.mapper.ActivityMemberMapper;
 import cn.edu.seu.alumni_server.service.ActivityMemberService;
@@ -44,9 +43,9 @@ public class ActivityController {
     MessageService messageService;
 
     @Autowired
-	ActivityMapper activityMapper;
+    ActivityMapper activityMapper;
     @Autowired
-	ActivityMemberMapper activityMemberMapper;
+    ActivityMemberMapper activityMemberMapper;
 
     /**
      * 创建一个活动
@@ -59,6 +58,8 @@ public class ActivityController {
 
     /**
      * 创建一个活动
+     *
+     * @param visibleStatus 0圈内可见，1全部可见，默认1
      */
     @PostMapping("/activities/adapter")
     public WebResponse createActivityAdapter(
@@ -72,7 +73,9 @@ public class ActivityController {
             @RequestParam(required = false) String img3,
             @RequestParam(required = false) String img4,
             @RequestParam(required = false) String img5,
-            @RequestParam(required = false) String img6
+            @RequestParam(required = false) String img6,
+            @RequestParam(required = false) Boolean visibleStatus
+
     ) {
         ActivityDTO t = new ActivityDTO();
         t.setAlumniCircleId(alumniCircleId);
@@ -90,7 +93,11 @@ public class ActivityController {
         t.setImg5(img5);
         t.setImg6(img6);
         t.setValidStatus(true);
-        t.setVisibleStatus(true);
+
+        if (visibleStatus == null)
+            visibleStatus = true;
+
+        t.setVisibleStatus(visibleStatus);
         return createActivity(t);
     }
 
@@ -103,9 +110,9 @@ public class ActivityController {
             @RequestBody ActivityDTO activityDTO
     ) {
 
-		Long accountId = (Long) request.getAttribute("accountId");
-		activityDTO.setAccountId(accountId);
-		// 在这里完成对于创建活动的构建
+        Long accountId = (Long) request.getAttribute("accountId");
+        activityDTO.setAccountId(accountId);
+        // 在这里完成对于创建活动的构建
         try {
             Activity targetActivity = this.activityService.checkInputtedActivityForCreate(
                     activityDTO
@@ -286,7 +293,7 @@ public class ActivityController {
                                  @RequestParam int pageSize) {
         Long accountId = (Long) request.getAttribute("accountId");
 
-        PageResult res = activityService.recommend(pageIndex, pageSize,accountId);
+        PageResult res = activityService.recommend(pageIndex, pageSize, accountId);
         return new WebResponse().success(
                 res
         );
@@ -297,18 +304,18 @@ public class ActivityController {
     public WebResponse recommend(@RequestParam Long activityId) {
         Long accountId = (Long) request.getAttribute("accountId");
 
-		Example example = new Example(ActivityMember.class);
-		Example.Criteria criteria = example.createCriteria();
-		criteria.andEqualTo("activityId", activityId);
-		criteria.andEqualTo("accountId", accountId);
-		criteria.andEqualTo("isAvailable", true);
+        Example example = new Example(ActivityMember.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("activityId", activityId);
+        criteria.andEqualTo("accountId", accountId);
+        criteria.andEqualTo("isAvailable", true);
 
-		List<ActivityMember> activityMembers= activityMemberMapper.selectByExample(example);
+        List<ActivityMember> activityMembers = activityMemberMapper.selectByExample(example);
 
-		activityMembers.forEach((e)->{
-			messageService.newMessage(activityId, e.getAccountId(),
-					MessageType.ACTIVITY_NOTIFY.getValue());
-		});
+        activityMembers.forEach((e) -> {
+            messageService.newMessage(activityId, e.getAccountId(),
+                    MessageType.ACTIVITY_NOTIFY.getValue());
+        });
         return new WebResponse().success();
     }
 

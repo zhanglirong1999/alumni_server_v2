@@ -38,6 +38,6 @@ public interface AlumniCircleMapper extends Mapper<AlumniCircle> {
 
 	public List<AlumniCircleBasicInfoDTO> alumniCirclesRecommend();
 
-	public List<AlumniCircleMemberDTO> getAlumniCircleMembers(Long alumniCircleId);
+	public List<AlumniCircleMemberDTO> getAlumniCircleMembers(Long alumniCircleId,String query);
 
 }

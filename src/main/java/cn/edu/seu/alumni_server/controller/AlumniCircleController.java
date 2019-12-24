@@ -162,10 +162,11 @@ public class AlumniCircleController {
     public WebResponse members(
             @RequestParam Long alumniCircleId,
             @RequestParam int pageIndex,
-            @RequestParam int pageSize
+            @RequestParam int pageSize,
+            @RequestParam(required = false) String query
     ) {
         PageHelper.startPage(pageIndex, pageSize);
-        List<AlumniCircleMemberDTO> res = alumniCircleMapper.getAlumniCircleMembers(alumniCircleId);
+        List<AlumniCircleMemberDTO> res = alumniCircleMapper.getAlumniCircleMembers(alumniCircleId,query);
 
         return new WebResponse().success(
                 new PageResult<AlumniCircleMemberDTO>(((Page) res).getTotal(), res));

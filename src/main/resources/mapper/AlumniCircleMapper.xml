@@ -61,6 +61,11 @@
                            on ACM.account_id = EDU.account_id
         where AC.alumni_circle_id = #{alumniCircleId}
           and ACM.valid_status = true
+          and (
+                A.name like #{query}
+                or JOB.company like #{query}
+                or EDU.school like #{query}
+            )
 
     </select>
 
