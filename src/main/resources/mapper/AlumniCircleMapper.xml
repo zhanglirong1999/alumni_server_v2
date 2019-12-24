@@ -62,9 +62,9 @@
         where AC.alumni_circle_id = #{alumniCircleId}
           and ACM.valid_status = true
           and (
-                A.name like #{query}
-                or JOB.company like #{query}
-                or EDU.school like #{query}
+                A.name like CONCAT('%', #{query}, '%')
+                or JOB.company like CONCAT('%', #{query}, '%')
+                or EDU.school like CONCAT('%', #{query}, '%')
             )
 
     </select>
