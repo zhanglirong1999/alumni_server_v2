@@ -15,6 +15,7 @@ public class Message implements Serializable {
 
     private Integer type;
 
+    private String title;
     private String content;
 
     /**

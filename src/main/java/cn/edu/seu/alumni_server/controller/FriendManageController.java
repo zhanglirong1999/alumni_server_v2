@@ -69,7 +69,7 @@ public class FriendManageController {
 
         //发消息
         messageService.newMessage(accountId, friendApplyDTO.getFriendAccountId(),
-                MessageType.APPLY.getValue(), friendApplyDTO.getMessage());
+                MessageType.APPLY.getValue(),"", friendApplyDTO.getMessage());
 
         return new WebResponse();
     }

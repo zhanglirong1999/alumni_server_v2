@@ -16,4 +16,22 @@
         <result column="from" jdbcType="LONGVARCHAR" property="from"/>
         <result column="to" jdbcType="LONGVARCHAR" property="to"/>
     </resultMap>
+    <select id="getMessagesByAccountId" resultType="cn.edu.seu.alumni_server.controller.dto.MessageDTO">
+        select m.message_id,
+        m.type,
+        m.title,
+        m.content,
+        m.status,
+        m.timestamp,
+        m.from_user,
+        a.name as fromUserName,
+        m.to_user
+        from message m
+        left join account a on m.from_user = a.account_id
+        where m.to_user = #{accountId}
+        <if test="status != null">
+            and m.status = #{status}
+        </if>
+    </select>
+
 </mapper>

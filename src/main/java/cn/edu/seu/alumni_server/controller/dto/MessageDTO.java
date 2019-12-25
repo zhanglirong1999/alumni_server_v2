@@ -10,6 +10,7 @@ public class MessageDTO {
 
     private Integer type;
 
+    private String title;
     private String content;
 
     /**

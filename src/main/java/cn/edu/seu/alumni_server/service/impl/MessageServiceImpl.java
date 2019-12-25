@@ -28,7 +28,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public void newMessage(Long fromUser, Long toUser, Integer type, String content) {
+    public void newMessage(Long fromUser, Long toUser, Integer type,String title, String content) {
         //消息通知
         Message message = new Message();
         message.setTimestamp(System.currentTimeMillis());
@@ -38,6 +38,7 @@ public class MessageServiceImpl implements MessageService {
         message.setToUser(toUser);
         message.setType(type);
         message.setContent(content);
+        message.setTitle(title);
         messageMapper.insertSelective(message);
     }
 }

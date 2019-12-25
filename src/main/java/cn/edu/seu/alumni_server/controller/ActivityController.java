@@ -301,7 +301,10 @@ public class ActivityController {
 
 
     @GetMapping("/activity/notify")
-    public WebResponse recommend(@RequestParam Long activityId) {
+    public WebResponse recommend(@RequestParam Long activityId,
+                                 @RequestParam String title,
+                                 @RequestParam String content
+    ) {
         Long accountId = (Long) request.getAttribute("accountId");
 
         Example example = new Example(ActivityMember.class);
@@ -314,7 +317,8 @@ public class ActivityController {
 
         activityMembers.forEach((e) -> {
             messageService.newMessage(activityId, e.getAccountId(),
-                    MessageType.ACTIVITY_NOTIFY.getValue());
+                    MessageType.ACTIVITY_NOTIFY.getValue(),
+                    title, content);
         });
         return new WebResponse().success();
     }
