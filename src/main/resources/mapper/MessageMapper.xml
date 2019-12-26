@@ -19,16 +19,37 @@
     <select id="getMessagesByAccountId" resultType="cn.edu.seu.alumni_server.controller.dto.MessageDTO">
         select m.message_id,
         m.type,
+        '交换名片申请' as typeDesc,
         m.title,
         m.content,
         m.status,
         m.timestamp,
         m.from_user,
         a.name as fromUserName,
+        a.avatar,
         m.to_user
         from message m
         left join account a on m.from_user = a.account_id
-        where m.to_user = #{accountId}
+        where m.to_user = #{accountId} and m.type != 10
+        <if test="status != null">
+            and m.status = #{status}
+        </if>
+        union
+        select m.message_id,
+        m.type,
+        concat('活动通知:', ACT.activity_name) as typeDesc,
+        m.title,
+        m.content,
+        m.status,
+        m.timestamp,
+        m.from_user,
+        ac.alumni_circle_name as fromUserName,
+        ac.avatar,
+        m.to_user
+        from message m
+        left join activity ACT on m.from_user = ACT.activity_id
+        left join alumni_circle ac on ACT.alumni_circle_id = ac.alumni_circle_id
+        where m.to_user = #{accountId} and m.type = 10
         <if test="status != null">
             and m.status = #{status}
         </if>

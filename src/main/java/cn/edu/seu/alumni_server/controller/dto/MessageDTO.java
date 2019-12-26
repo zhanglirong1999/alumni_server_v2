@@ -9,6 +9,7 @@ public class MessageDTO {
     private Long messageId;
 
     private Integer type;
+    private String typeDesc;
 
     private String title;
     private String content;
@@ -22,8 +23,8 @@ public class MessageDTO {
     private Long timestamp;
 
     private Long fromUser;
-
     private String fromUserName;
+    private String avatar;
 
     private Long toUser;
 

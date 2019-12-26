@@ -14,6 +14,7 @@ public class Message implements Serializable {
     private Long messageId;
 
     private Integer type;
+    private String typeDesc;
 
     private String title;
     private String content;
