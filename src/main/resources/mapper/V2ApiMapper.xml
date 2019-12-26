@@ -284,9 +284,8 @@
                c.company,
                c.position,
                (CASE
-                    WHEN b.school = #{school} THEN '同学校'
+                    WHEN b.college = #{college} THEN '同学院'
                     WHEN a.city = #{city} THEN '同城市'
-                    WHEN c.company = #{company} THEN '同公司'
                     else ''
                    END)     as recommondReason
         from account a
@@ -303,7 +302,7 @@
                                      and d.status = 2)
           and a.account_id != #{accountId}
         <if test="filter == 0">
-            AND b.school = (select school from education e where account_id = #{accountId} order by e.start_time desc limit 1)
+            AND b.college = (select college from education e where account_id = #{accountId} order by e.start_time desc limit 1)
         </if>
         <if test="filter == 1">
             AND a.city = (select city from account aa where account_id = #{accountId} limit 1)

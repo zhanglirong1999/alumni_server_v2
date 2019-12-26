@@ -259,7 +259,7 @@ public class V2ApiController {
 
     /**
      * @param request
-     * @param filter    0 同学校
+     * @param filter    0 同学院
      *                  1 同城市
      *                  2 可能认识
      * @param pageSize
