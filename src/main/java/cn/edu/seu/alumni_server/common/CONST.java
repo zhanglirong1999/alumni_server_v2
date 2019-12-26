@@ -16,4 +16,8 @@ public class CONST {
     public static final String appId = "wxebacdf49b73f338b";
     public static final String appSecret = "4daee58bdef643b2ff1b29e8c219715a";
 
+    // ACL Key
+    public static final String ACL_ACCOUNTID = "accountId";
+
+
 }

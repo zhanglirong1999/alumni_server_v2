@@ -1,5 +1,6 @@
 package cn.edu.seu.alumni_server.controller;
 
+import cn.edu.seu.alumni_server.common.CONST;
 import cn.edu.seu.alumni_server.common.dto.WebResponse;
 import cn.edu.seu.alumni_server.common.token.Acl;
 import cn.edu.seu.alumni_server.controller.dto.FavoriteDTO;
@@ -30,7 +31,7 @@ public class FavoriteController {
     @GetMapping("/favorite")
     WebResponse getFavorite(@RequestParam int pageIndex,
                             @RequestParam int pageSize) {
-        Long accountId = (Long) request.getAttribute("accountId");
+        Long accountId = (Long) request.getAttribute(CONST.ACL_ACCOUNTID);
 
         Favorite favorite = new Favorite();
         favorite.setAccountId(accountId);
@@ -42,7 +43,7 @@ public class FavoriteController {
 
     @PostMapping("/favorite")
     WebResponse changeFavoriteStatus(@RequestBody Map req) {
-        Long accountId = (Long) req.get("accountId");
+        Long accountId = (Long) request.getAttribute(CONST.ACL_ACCOUNTID);
         Long favoriteAccountId = (Long) req.get("favoriteAccountId");
         Integer status = (Integer) req.get("status");
 

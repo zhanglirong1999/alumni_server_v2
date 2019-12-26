@@ -6,16 +6,15 @@ import cn.edu.seu.alumni_server.common.dto.WebResponse;
 import cn.edu.seu.alumni_server.common.token.Acl;
 import cn.edu.seu.alumni_server.common.token.TokenUtil;
 import cn.edu.seu.alumni_server.controller.dto.*;
-import cn.edu.seu.alumni_server.controller.dto.enums.FriendStatus;
 import cn.edu.seu.alumni_server.controller.dto.enums.SearchType;
-import cn.edu.seu.alumni_server.dao.entity.*;
+import cn.edu.seu.alumni_server.dao.entity.Account;
 import cn.edu.seu.alumni_server.dao.mapper.*;
-import cn.edu.seu.alumni_server.service.AccountService;
+import cn.edu.seu.alumni_server.service.CommonService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.google.gson.Gson;
 import lombok.Data;
-import org.springframework.beans.BeanUtils;
+import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,17 +25,16 @@ import tk.mybatis.mapper.entity.Example;
 import tk.mybatis.mapper.util.Sqls;
 
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @SuppressWarnings("ALL")
 @RestController
 public class V2ApiController {
-
-    @Autowired
-    AccountService accountService;
+    String access_token = "";
+    long expireTime = 0l;
 
     @Autowired
     AccountMapper accountMapper;
@@ -50,18 +48,35 @@ public class V2ApiController {
     FriendMapper friendMapper;
     @Autowired
     V2ApiMapper v2ApiMapper;
+    @Autowired
+    FavoriteMapper favoriteMapper;
 
     @Autowired
     RestTemplate restTemplate;
     @Autowired
-    FavoriteMapper favoriteMapper;
+    CommonService commonService;
+    @Autowired
+    HttpServletRequest request;
+
+    String getAccessToken(String openid) {
+        if (System.currentTimeMillis() > expireTime) {
+            // 使用appid和secret访问接口.获取公众号的access_token
+            String wxApiUrl = "https://api.weixin.qq.com/cgi-bin/token?" +
+                    "openid=" + openid +
+                    "&secret=" + CONST.appSecret +
+                    "&grant_type=client_credential";
+            String respronse = restTemplate.getForObject(wxApiUrl, String.class);
+
+        }
+        return access_token;
+    }
 
     /**
      * @param js_code
      * @return
      */
     @RequestMapping("/login/wechat")
-    public WebResponse login(@RequestParam String js_code) {
+    public WebResponse login(@RequestParam String js_code) throws InvocationTargetException, IllegalAccessException {
         // 微信登陆，获取openid
         String wxApiUrl = "https://api.weixin.qq.com/sns/jscode2session?" +
                 "appid=" + CONST.appId +
@@ -71,6 +86,7 @@ public class V2ApiController {
         String respronse = restTemplate.getForObject(wxApiUrl, String.class);
         Map res = new Gson().fromJson(respronse, Map.class);
         String openid = (String) res.get("openid");
+
         if (openid != null && !openid.equals("")) {
             LoginResTemp loginResTemp = new LoginResTemp();
             // 获取accountId,有则返回，无则新增（注册）
@@ -80,7 +96,7 @@ public class V2ApiController {
                             .build()
             );
             if (resAccount != null) {
-                BeanUtils.copyProperties(resAccount, loginResTemp);
+                org.springframework.beans.BeanUtils.copyProperties(resAccount, loginResTemp);
                 loginResTemp.setToken(TokenUtil.createToken(resAccount.getAccountId().toString()));
                 return new WebResponse().success(loginResTemp);
             } else {
@@ -125,7 +141,7 @@ public class V2ApiController {
         // account
         AccountDTO accountDTO = accountAllDTO.getAccount();
 
-        accountService.checkAccountInfo(accountDTO);
+//        accountService.checkAccountInfo(accountDTO);
 
         // education
         List<EducationDTO> educationDTOS = accountAllDTO.getEducations();
@@ -172,73 +188,6 @@ public class V2ApiController {
         return new WebResponse();
     }
 
-    @Autowired
-    HttpServletRequest request;
-
-    /**
-     * 获取个人信息大对象
-     *
-     * @param accountId
-     * @return
-     */
-    @Acl
-    @RequestMapping("/accountAll")
-    public WebResponse<AccountAllDTO> getAccountInfo(@RequestParam Long accountId) {
-
-        Long myAccountId = (Long) request.getAttribute("accountId");
-        AccountAllDTO accountAllDTO = getAccountAllDTOById(accountId);
-        if (!myAccountId.equals(accountId)) {
-            Friend relationShip = v2ApiMapper.getRelationShip(myAccountId, accountId);
-            if (relationShip != null) {
-                accountAllDTO.setRelationShip(relationShip.getStatus());
-                if (relationShip.getStatus() != FriendStatus.friend.getStatus()) {
-                    accountAllDTO.getAccount().setBirthday(null);
-                    accountAllDTO.getAccount().setWechat(null);
-                    accountAllDTO.getAccount().setPhone(null);
-                }
-            }
-            Favorite favorite = new Favorite();
-            favorite.setAccountId(myAccountId);
-            favorite.setFavoriteAccountId(accountId);
-            List<Favorite> temp = favoriteMapper.select(favorite);
-            if (temp.size() > 0) {
-                accountAllDTO.setFavorite(temp.get(0).getStatus());
-            }
-        }
-
-        return new WebResponse<AccountAllDTO>().success(accountAllDTO);
-    }
-
-    public AccountAllDTO getAccountAllDTOById(Long accountId) {
-
-        AccountAllDTO accountAllDTO = new AccountAllDTO();
-        // 查询 account 信息
-        accountAllDTO.setAccount(new AccountDTO(accountMapper.selectByPrimaryKey(accountId)));
-
-        // 查询 education 信息
-//        Education e = new Education();
-//        e.setAccountId(accountId);
-
-        Example example1 = new Example(Education.class);
-        example1.orderBy("endTime").desc();
-        example1.createCriteria().andEqualTo("accountId", accountId);
-        accountAllDTO.setEducations(educationMapper.selectByExample(example1)
-                .stream().map(education -> {
-                    return new EducationDTO(education);
-                }).collect(Collectors.toList()));
-
-        // 查询 job 信息
-//        Job j = new Job();
-//        j.setAccountId(accountId);
-        Example example2 = new Example(Job.class);
-        example2.orderBy("endTime").desc();
-        example2.createCriteria().andEqualTo("accountId", accountId);
-        accountAllDTO.setJobs(jobMapper.selectByExample(example2)
-                .stream().map(job -> {
-                    return new JobDTO(job);
-                }).collect(Collectors.toList()));
-        return accountAllDTO;
-    }
 
     @Acl
     @RequestMapping("/query")
@@ -308,15 +257,26 @@ public class V2ApiController {
         return new WebResponse().success(res);
     }
 
+    /**
+     * @param request
+     * @param filter    0 同学校
+     *                  1 同城市
+     *                  2 可能认识
+     * @param pageSize
+     * @param pageIndex
+     * @return
+     */
     @Acl
     @RequestMapping("/recommand")
     public WebResponse recommand(HttpServletRequest request,
-            @RequestParam int pageSize,
-                                 @RequestParam int pageIndex) {
+                                 @RequestParam int filter,
+                                 @RequestParam int pageSize,
+                                 @RequestParam int pageIndex)
+            throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         Long accountId = (Long) request.getAttribute("accountId");
 
         BriefInfo briefInfo = new BriefInfo();
-        AccountAllDTO accountAllDTO = getAccountAllDTOById(accountId);
+        AccountAllDTO accountAllDTO = commonService.getAccountAllDTOById(accountId);
         briefInfo.setAccountId(accountId);
         briefInfo.setCity(accountAllDTO.getAccount().getCity());
         if (accountAllDTO.getEducations() != null &&
@@ -327,8 +287,10 @@ public class V2ApiController {
                     accountAllDTO.getEducations().get(0).getCollege());
         }
 
+        Map filterMap = BeanUtils.describe(briefInfo);
+        filterMap.put("filter", filter);
         PageHelper.startPage(pageIndex, pageSize);
-        List<BriefInfo> temp = v2ApiMapper.recommand(briefInfo);
+        List<BriefInfo> temp = v2ApiMapper.recommandWithFilter(filterMap);
 
         return new WebResponse().success(
                 new PageResult<BriefInfo>(

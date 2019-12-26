@@ -4,6 +4,7 @@ public enum MessageType {
     /**
      *
      */
+    ACTIVITY_NOTIFY(10, "活动通知"),
     APPLY(0, "申请"),
     AGREE(1, "同意"),
     REJECT(2, "拒绝");

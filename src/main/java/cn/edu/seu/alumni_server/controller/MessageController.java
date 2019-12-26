@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 消息列表
@@ -44,20 +43,10 @@ public class MessageController {
         Message message = new Message();
         message.setToUser(accountId);
         message.setStatus(status);
-        List<Message> temp = messageMapper.select(message);
+        List<MessageDTO> res = messageMapper.getMessagesByAccountId(accountId, status);
 
-        List<MessageDTO> res = temp
-                .stream().map(m -> {
-                    MessageDTO messageDTO = new MessageDTO(m);
-                    messageDTO.setFromUserName(
-                            accountMapper.selectByPrimaryKey(
-                                    messageDTO.getFromUser()
-                            ).getName()
-                    );
-                    return messageDTO;
-                }).collect(Collectors.toList());
-        return new WebResponse().success(new PageResult<MessageDTO>(
-                ((Page) temp).getTotal(), res));
+        return new WebResponse().success(
+                new PageResult<MessageDTO>(((Page) res).getTotal(), res));
     }
 
     @PostMapping("/message/changeStatus")
