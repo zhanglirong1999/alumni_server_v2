@@ -222,6 +222,7 @@
                where AM2.account_id = #{accountId}
                  and AM2.is_available = true)
         group by ACT.activity_id
+        order by ACT.c_time desc
     </select>
 
 </mapper>
