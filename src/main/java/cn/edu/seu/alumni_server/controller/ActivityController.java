@@ -310,7 +310,7 @@ public class ActivityController {
         Example example = new Example(ActivityMember.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("activityId", activityId);
-        criteria.andEqualTo("accountId", accountId);
+//        criteria.andEqualTo("accountId", accountId);
         criteria.andEqualTo("isAvailable", true);
 
         List<ActivityMember> activityMembers = activityMemberMapper.selectByExample(example);
