@@ -33,3 +33,6 @@ UI：https://lanhuapp.com/url/hdUEK-VtbqL
 
 生产环境：https://www.seuclab.cn/v2/，数据库：alumnidb_prd;
 开发&测试环境：https://www.seuclab.cn/test/v2/，数据库：alumnidb_dev
+
+
+#实体表规范，参照阿里巴巴java开发手册
