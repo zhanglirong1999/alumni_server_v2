@@ -78,7 +78,7 @@ public class AlumniServerApplicationTests {
 	public void testCommonController() {
 		// 获取图片
 		File file = new File(
-			"F:\\JavaProjects\\AlumniServer\\doc\\demo1.jpg"
+			"F:\\JavaProjects\\AlumniServer\\doc\\demo.png"
 		);
 		try {
 			MultipartFile multipartFile = Utils.fileToMultipartFile(file);
