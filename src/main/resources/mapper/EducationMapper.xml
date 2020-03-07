@@ -16,4 +16,20 @@
         <result column="u_time" jdbcType="TIMESTAMP" property="uTime"/>
         <result column="valid_status" jdbcType="BIT" property="validStatus"/>
     </resultMap>
+	<update id="updateCollegeNames">
+        update education as E
+        set E.college = #{rs}
+        where E.college in
+        <foreach collection="cs" item="c" separator="," open="(" close=")">
+            #{c}
+        </foreach>
+    </update>
+	<select id="getSchoolNames" resultType="java.lang.String">
+        select school from education where valid_status = 1
+    </select>
+    <select id="getCollegeNamesByKeyWord" resultType="java.lang.String">
+        select distinct(E.college)
+        from education as E
+        where E.school = #{school} and instr(E.college, #{keyWord}) > 0
+    </select>
 </mapper>
