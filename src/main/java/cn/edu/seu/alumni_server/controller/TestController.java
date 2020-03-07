@@ -58,7 +58,8 @@ public class TestController {
     String demo(@RequestParam(required = false) String a,
                 @RequestBody(required = false) Map b) {
         System.out.println(a);
-        System.out.println(b.toString());
+        if (b != null)
+            System.out.println(b.toString());
         return "ok";
     }
 
