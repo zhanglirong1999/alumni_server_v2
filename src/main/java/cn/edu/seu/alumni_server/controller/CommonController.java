@@ -60,5 +60,4 @@ public class CommonController {
 			return new WebResponse().fail("删除失败.");
 		}
 	}
-
 }
