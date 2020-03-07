@@ -1,3 +1,4 @@
+git checkout devlop
 git pull
 mvn clean package
 
