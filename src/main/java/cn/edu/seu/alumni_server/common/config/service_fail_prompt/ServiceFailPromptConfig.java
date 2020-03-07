@@ -12,17 +12,19 @@ public class ServiceFailPromptConfig {
 
 	@Bean
 	public ActivityFailPrompt activityFailPrompt() throws IOException {
-		return new ActivityFailPrompt("config/activity-fail-prompt.properties");
+		return new ActivityFailPrompt("config/fail_prompt_config/activity-fail-prompt.properties");
 	}
 
 	@Bean
 	public ActivityMemberFailPrompt activityMemberFailPrompt() throws IOException {
-		return new ActivityMemberFailPrompt("config/activity-member-fail-prompt.properties");
+		return new ActivityMemberFailPrompt(
+			"config/fail_prompt_config/activity-member-fail-prompt.properties");
 	}
 
 	@Bean
 	public AlumniCircleFailPrompt alumniCircleFailPrompt() throws IOException {
-		return new AlumniCircleFailPrompt("config/alumni-circle-prompt.properties");
+		return new AlumniCircleFailPrompt(
+			"config/fail_prompt_config/alumni-circle-prompt.properties");
 	}
 
 }

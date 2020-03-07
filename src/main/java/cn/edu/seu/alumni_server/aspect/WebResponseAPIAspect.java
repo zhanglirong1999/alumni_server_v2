@@ -2,6 +2,7 @@ package cn.edu.seu.alumni_server.aspect;
 
 import cn.edu.seu.alumni_server.common.dto.WebResponseByObject;
 import cn.edu.seu.alumni_server.common.dto.WebServiceExceptionMessage;
+import cn.edu.seu.alumni_server.common.dto.WebServiceSuccessMessage;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -45,6 +46,10 @@ public class WebResponseAPIAspect {
 	private WebResponseByObject wrapWebResultToWebResponseByObject(Object ans) {
 		if (ans instanceof WebServiceExceptionMessage) {
 			return new WebResponseByObject().fail((WebServiceExceptionMessage) ans);
+		} else if (ans instanceof WebServiceSuccessMessage) {
+			return new WebResponseByObject().success(
+				(WebServiceSuccessMessage) ans
+			);
 		} else {
 			return new WebResponseByObject().success(ans);
 		}
