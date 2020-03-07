@@ -5,10 +5,14 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Id;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Activity implements Serializable {
 
 	@Id
@@ -51,4 +55,20 @@ public class Activity implements Serializable {
 	private Boolean isAvailable;  // 是否记录任然有效
 
 	private static final long serialVersionUID = 1L;
+
+	public boolean isValidActAndExpDateTime() {
+		return this.expirationTime.before(this.activityTime);
+	}
+
+	public boolean isActivityDateTimeBeforeNow() {
+		return this.activityTime.before(new Date());
+	}
+
+	public boolean isValidNewActivityDateTime() {
+		return this.isValidActAndExpDateTime() && this.isActivityDateTimeBeforeNow();
+	}
+
+	public void calculateValidStatus() {
+		this.validStatus = this.isActivityDateTimeBeforeNow();
+	}
 }
