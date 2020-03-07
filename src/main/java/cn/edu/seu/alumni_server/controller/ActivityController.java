@@ -107,9 +107,8 @@ public class ActivityController {
      */
     @PostMapping("/activities")
     public WebResponse createActivity(
-            @RequestBody ActivityDTO activityDTO
+    	@RequestBody ActivityDTO activityDTO
     ) {
-
         Long accountId = (Long) request.getAttribute("accountId");
         activityDTO.setAccountId(accountId);
         // 在这里完成对于创建活动的构建

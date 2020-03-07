@@ -8,9 +8,11 @@ import cn.edu.seu.alumni_server.common.exceptions.AlumniCircleServiceException;
 import cn.edu.seu.alumni_server.common.token.Acl;
 import cn.edu.seu.alumni_server.controller.dto.PageResult;
 import cn.edu.seu.alumni_server.controller.dto.StartedOrEnrolledActivityInfoDTO;
+import cn.edu.seu.alumni_server.controller.dto.alumnicircle.ActivityStateComparator;
 import cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleBasicInfoDTO;
 import cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleDTO;
 import cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleMemberDTO;
+import cn.edu.seu.alumni_server.controller.dto.enums.ActivityState;
 import cn.edu.seu.alumni_server.dao.entity.AlumniCircle;
 import cn.edu.seu.alumni_server.dao.entity.AlumniCircleMember;
 import cn.edu.seu.alumni_server.dao.mapper.ActivityMapper;
@@ -19,6 +21,9 @@ import cn.edu.seu.alumni_server.dao.mapper.AlumniCircleMemberMapper;
 import cn.edu.seu.alumni_server.service.AlumniCircleService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.*;
@@ -182,27 +187,16 @@ public class AlumniCircleController {
                                   @RequestParam int pageIndex,
                                   @RequestParam int pageSize
     ) {
-//        List<ActivityDTO> res = new ArrayList<>();
-//
-//        Activity activity = new Activity();
-//        activity.setAlumniCircleId(alumniCircleId);
-//
-//        PageHelper.startPage(pageIndex, pageSize);
-//        List<Activity> activities = activityMapper.select(activity);
-//        activities.forEach((e) -> {
-//            res.add(new ActivityDTO(e));
-//        });
-//
-//        return new WebResponse().success(
-//                new PageResult<>(((Page) activities).getTotal(), res)
-//        );
         PageHelper.startPage(pageIndex, pageSize);
         List<StartedOrEnrolledActivityInfoDTO> ans =
                 this.activityMapper.getActivitiesOfOneAlumniCircle(
                         alumniCircleId
                 );
-        for (StartedOrEnrolledActivityInfoDTO t : ans)
+        for (StartedOrEnrolledActivityInfoDTO t : ans) {
             t.calculateActivityState();
+        }
+        // 完成根据状态分类
+        Collections.sort(ans, new ActivityStateComparator());
         return new WebResponse().success(
                 new PageResult<>(((Page) ans).getTotal(), ans)
         );

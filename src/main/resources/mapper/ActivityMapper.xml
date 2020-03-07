@@ -175,7 +175,8 @@
             WHERE ACT2.is_available = 1
               AND ACT2.alumni_circle_id = #{alumniCircleId}
         )
-        GROUP BY ACT.activity_id
+        GROUP BY ACT.activity_id, ACT.expiration_time, ACT.activity_time
+        ORDER BY ACT.activity_time DESC, ACT.expiration_time DESC
     </select>
     <update id="deleteActivityLogically">
         UPDATE activity AS ACT
