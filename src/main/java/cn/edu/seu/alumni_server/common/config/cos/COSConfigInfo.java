@@ -1,14 +1,12 @@
-package cn.edu.seu.alumni_server.common.config.qcloud;
+package cn.edu.seu.alumni_server.common.config.cos;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
 @Configuration
-@PropertySource({"classpath:config/qcloud-config.properties"})
-public class QCloudCOSConfig {
+@PropertySource({"classpath:config/cos_config/qcloud-config.properties"})
+public class COSConfigInfo {
 
 	@Value("${qCloud.cos.appId}")
 	public Integer appId;
@@ -18,9 +16,4 @@ public class QCloudCOSConfig {
 	public String secretKey;
 	@Value("${qCloud.cos.regionString}")
 	public String regionString;
-
-//	@Bean
-//	public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
-//		return new PropertySourcesPlaceholderConfigurer();
-//	}
 }

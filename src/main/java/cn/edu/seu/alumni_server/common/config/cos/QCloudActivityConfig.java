@@ -1,4 +1,4 @@
-package cn.edu.seu.alumni_server.common.config.qcloud;
+package cn.edu.seu.alumni_server.common.config.cos;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,14 +9,14 @@ import org.springframework.context.annotation.Configuration;
 public class QCloudActivityConfig {
 
 	@Autowired
-	private QCloudCOSConfig qCloudCOSConfig;
+	private COSConfigInfo COSConfigInfo;
 	@Value("${qCloud.cos.activities.bucketName}")
 	private String bucketName;
 	@Value("${qCloud.cos.activities.bucketPath}")
 	private String bucketPath;
 
 	@Bean
-	public QCloudHolder qCloudCOSClientHolder() {
-		return new QCloudHolder(this.qCloudCOSConfig, this.bucketName, this.bucketPath);
+	public QCloudHolder qCloudHolder() {
+		return new QCloudHolder(this.COSConfigInfo, this.bucketName, this.bucketPath);
 	}
 }

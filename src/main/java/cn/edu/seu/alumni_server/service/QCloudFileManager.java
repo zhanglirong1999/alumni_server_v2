@@ -7,23 +7,17 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface QCloudFileManager {
 
-	Boolean isLegalMultipartFile(MultipartFile multipartFile);
+	// 构建新的名字
+	String buildNewFileNameWithType(
+		MultipartFile multipartFile,
+		String newFileNameWithoutType
+	);
 
 	// 将输入的文件转换成一个标准的文件用以之后的上传
-	File convertMultipartFileToFile(MultipartFile multipartFile, String newName)
-		throws IOException;
-
-	// 上传一个 file 到指定配置的 cos 的 bucket 中
-	String uploadFileToQCloudBySuffixes(File file, String suffixKey);
-
-	/**
-	 * 根据输入的后缀, 创建生成一个完整的 qcloud-url 地址 比如, /activities/imgs/123456.1.jpg =>
-	 * www.qcloud.xxx/activities/imgs/123456.1.jpg
-	 *
-	 * @param suffixKey /activities/imgs/123456.1.jpg
-	 * @return www.qcloud.xxx/activities/imgs/123456.1.jpg
-	 */
-	String makeUrlString(String suffixKey);
+	File convertMultipartFileToFile(
+		MultipartFile multipartFile,
+		String newName
+	) throws IOException;
 
 	/**
 	 * 完成对于一个文件的上传.
@@ -47,8 +41,4 @@ public interface QCloudFileManager {
 
 	// 删除一个对象
 	void deleteObject(String objectKey) throws IOException;
-
-	// 构建新的名字
-	public String buildNewFileNameWithType(MultipartFile multipartFile,
-		String newFileNameWithoutType);
 }

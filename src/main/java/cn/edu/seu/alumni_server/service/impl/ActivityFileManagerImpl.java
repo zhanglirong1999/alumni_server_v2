@@ -1,6 +1,6 @@
 package cn.edu.seu.alumni_server.service.impl;
 
-import cn.edu.seu.alumni_server.common.config.qcloud.QCloudHolder;
+import cn.edu.seu.alumni_server.common.config.cos.QCloudHolder;
 import cn.edu.seu.alumni_server.service.QCloudFileManager;
 import cn.edu.seu.alumni_server.service.fail.ActivityFailPrompt;
 import com.qcloud.cos.COSClient;
@@ -27,12 +27,6 @@ public class ActivityFileManagerImpl implements QCloudFileManager {
 	@Autowired
 	ActivityFailPrompt activityFailPrompt;
 
-
-	@Override
-	public Boolean isLegalMultipartFile(MultipartFile multipartFile) {
-		return multipartFile != null && !multipartFile.equals("") && multipartFile.getSize() > 0;
-	}
-
 	@Override
 	public File convertMultipartFileToFile(MultipartFile multipartFile, String newName)
 		throws IOException {
@@ -49,27 +43,6 @@ public class ActivityFileManagerImpl implements QCloudFileManager {
 		// 使用 commons-io
 		FileUtils.copyInputStreamToFile(multipartFile.getInputStream(), ansFile);
 		return ansFile;
-	}
-
-	@Override
-	public String uploadFileToQCloudBySuffixes(File file, String suffixKey) {
-		// 创建客户端
-		COSClient cosClient = this.qCloudHolder.newCOSClient();
-		// 上传图片文件到指定的桶中
-		PutObjectRequest putObjectRequest = new PutObjectRequest(
-			this.qCloudHolder.getBucketName(),
-			suffixKey,
-			file
-		);
-		cosClient.putObject(putObjectRequest);
-		// 关闭.
-		this.qCloudHolder.closeCOSClient(cosClient);
-		return putObjectRequest.getKey();
-	}
-
-	@Override
-	public String makeUrlString(String suffixKey) {
-		return this.qCloudHolder.getBaseUrl() + suffixKey;
 	}
 
 	@Override

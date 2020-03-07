@@ -1,4 +1,4 @@
-package cn.edu.seu.alumni_server.common.config.qcloud;
+package cn.edu.seu.alumni_server.common.config.cos;
 
 import com.qcloud.cos.COSClient;
 import com.qcloud.cos.ClientConfig;
@@ -12,7 +12,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class QCloudHolder {
 
-	private QCloudCOSConfig qCloudCOSConfig;
+	private COSConfigInfo COSConfigInfo;
 	private Region region;
 	private COSCredentials cred;
 	private ClientConfig clientConfig;
@@ -20,20 +20,21 @@ public class QCloudHolder {
 	private String baseUrl;
 
 	public QCloudHolder(
-		QCloudCOSConfig qCloudCOSConfig,
+		COSConfigInfo COSConfigInfo,
 		String bucketName,
 		String baseUrl
 	) {
-		this.init(qCloudCOSConfig, bucketName, baseUrl);
+		this.init(COSConfigInfo, bucketName, baseUrl);
 	}
 
-	public void init(QCloudCOSConfig qCloudCOSConfig,
+	public void init(
+		COSConfigInfo COSConfigInfo,
 		String bucketName,
 		String baseUrl
 	) {
-		this.qCloudCOSConfig = qCloudCOSConfig;
-		this.region = new Region(qCloudCOSConfig.regionString);
-		this.cred = new BasicCOSCredentials(qCloudCOSConfig.secretId, qCloudCOSConfig.secretKey);
+		this.COSConfigInfo = COSConfigInfo;
+		this.region = new Region(COSConfigInfo.regionString);
+		this.cred = new BasicCOSCredentials(COSConfigInfo.secretId, COSConfigInfo.secretKey);
 		this.clientConfig = new ClientConfig(this.region);
 		this.bucketName = bucketName;
 		this.baseUrl = baseUrl;
