@@ -39,7 +39,8 @@
           and a.wechat is not null
     </update>
 	<select id="getAccountNumber" resultType="java.lang.Long">
-        select count(*)
-        from account
+        SELECT table_rows
+        FROM information_schema.`TABLES`
+        WHERE table_name = 'account' AND TABLE_SCHEMA = 'alumnidb_prd';
     </select>
 </mapper>
