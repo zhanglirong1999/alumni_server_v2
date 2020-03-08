@@ -10,4 +10,6 @@ public interface AccountMapper extends Mapper<Account> {
      * 仅用做数据迁移用，补充部分字段
      */
     void dataSync();
+
+    Long getAccountNumber();
 }

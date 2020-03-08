@@ -38,4 +38,8 @@
           and a.wechat != ''
           and a.wechat is not null
     </update>
+	<select id="getAccountNumber" resultType="java.lang.Long">
+        select count(*)
+        from account
+    </select>
 </mapper>

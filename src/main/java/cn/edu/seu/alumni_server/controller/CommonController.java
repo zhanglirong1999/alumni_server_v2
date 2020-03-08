@@ -1,8 +1,10 @@
 package cn.edu.seu.alumni_server.controller;
 
+import cn.edu.seu.alumni_server.annotation.WebResponseAPIMethod;
 import cn.edu.seu.alumni_server.common.Utils;
 import cn.edu.seu.alumni_server.common.dto.WebResponse;
 import cn.edu.seu.alumni_server.common.token.Acl;
+import cn.edu.seu.alumni_server.service.AccountService;
 import cn.edu.seu.alumni_server.service.QCloudFileManager;
 import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,9 @@ public class CommonController {
 
 	@Autowired
 	QCloudFileManager qCloudFileManager;
+
+	@Autowired
+	AccountService accountService;
 
 	@PostMapping("/uploadFile")
 	public WebResponse uploadFile(
@@ -60,4 +65,12 @@ public class CommonController {
 			return new WebResponse().fail("删除失败.");
 		}
 	}
+
+	// 获取第几位用户
+	@GetMapping("/accountNumber")
+	@WebResponseAPIMethod
+	public Object getAccountNumber() {
+		return this.accountService.getAccountNumber();
+	}
+
 }
