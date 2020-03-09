@@ -13,6 +13,6 @@ public class AccountServiceImpl implements AccountService {
 
 	@Override
 	public Long getAccountNumber() {
-		return this.accountMapper.getAccountNumber() + 1;
+		return this.accountMapper.getAccountNumber() + 1 + 2000;  // 老板要求加两千
 	}
 }
