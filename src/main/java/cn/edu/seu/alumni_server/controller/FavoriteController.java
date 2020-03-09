@@ -1,8 +1,9 @@
 package cn.edu.seu.alumni_server.controller;
 
 import cn.edu.seu.alumni_server.common.CONST;
-import cn.edu.seu.alumni_server.common.dto.WebResponse;
-import cn.edu.seu.alumni_server.common.token.Acl;
+import cn.edu.seu.alumni_server.common.web_response_dto.WebResponse;
+import cn.edu.seu.alumni_server.interceptor.registration.RegistrationRequired;
+import cn.edu.seu.alumni_server.interceptor.token.Acl;
 import cn.edu.seu.alumni_server.controller.dto.FavoriteDTO;
 import cn.edu.seu.alumni_server.controller.dto.PageResult;
 import cn.edu.seu.alumni_server.dao.entity.Favorite;
@@ -41,6 +42,7 @@ public class FavoriteController {
                 new PageResult<FavoriteDTO>(favoriteMapper.selectCount(favorite), res));
     }
 
+    @RegistrationRequired
     @PostMapping("/favorite")
     WebResponse changeFavoriteStatus(@RequestBody Map req) {
         Long accountId = (Long) request.getAttribute(CONST.ACL_ACCOUNTID);

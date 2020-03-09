@@ -1,7 +1,7 @@
 package cn.edu.seu.alumni_server;
 
 import cn.edu.seu.alumni_server.common.Utils;
-import cn.edu.seu.alumni_server.common.dto.WebResponse;
+import cn.edu.seu.alumni_server.common.web_response_dto.WebResponse;
 import cn.edu.seu.alumni_server.controller.CommonController;
 import cn.edu.seu.alumni_server.service.ActivityService;
 import cn.edu.seu.alumni_server.service.AlumniCircleService;

@@ -2,8 +2,8 @@ package cn.edu.seu.alumni_server.controller;
 
 import cn.edu.seu.alumni_server.common.CONST;
 import cn.edu.seu.alumni_server.common.Utils;
-import cn.edu.seu.alumni_server.common.dto.WebResponse;
-import cn.edu.seu.alumni_server.common.token.Acl;
+import cn.edu.seu.alumni_server.common.web_response_dto.WebResponse;
+import cn.edu.seu.alumni_server.interceptor.token.Acl;
 import cn.edu.seu.alumni_server.controller.dto.AccountAllDTO;
 import cn.edu.seu.alumni_server.controller.dto.AccountDTO;
 import cn.edu.seu.alumni_server.controller.dto.EducationDTO;
@@ -12,8 +12,6 @@ import cn.edu.seu.alumni_server.controller.dto.enums.FriendStatus;
 import cn.edu.seu.alumni_server.dao.entity.*;
 import cn.edu.seu.alumni_server.dao.mapper.*;
 import cn.edu.seu.alumni_server.service.CommonService;
-import cn.edu.seu.alumni_server.service.impl.CommonServiceImpl;
-import org.apache.http.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

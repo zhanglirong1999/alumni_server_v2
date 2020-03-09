@@ -1,7 +1,7 @@
 package cn.edu.seu.alumni_server.controller.baseInfo;
 
-import cn.edu.seu.alumni_server.common.dto.WebResponse;
-import cn.edu.seu.alumni_server.common.token.Acl;
+import cn.edu.seu.alumni_server.common.web_response_dto.WebResponse;
+import cn.edu.seu.alumni_server.interceptor.token.Acl;
 import cn.edu.seu.alumni_server.controller.dto.ConstSchoolDTO;
 import cn.edu.seu.alumni_server.controller.dto.PageResult;
 import cn.edu.seu.alumni_server.dao.entity.ConstSchool;

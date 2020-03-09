@@ -1,7 +1,7 @@
 package cn.edu.seu.alumni_server.service.impl;
 
 import cn.edu.seu.alumni_server.common.Utils;
-import cn.edu.seu.alumni_server.common.exceptions.ActivityServiceException;
+import cn.edu.seu.alumni_server.exceptions.ActivityServiceException;
 import cn.edu.seu.alumni_server.controller.dto.ActivityBasicInfoDTO;
 import cn.edu.seu.alumni_server.controller.dto.ActivityDTO;
 import cn.edu.seu.alumni_server.controller.dto.PageResult;

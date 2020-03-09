@@ -1,6 +1,6 @@
 package cn.edu.seu.alumni_server.service.impl;
 
-import cn.edu.seu.alumni_server.common.exceptions.ActivityMemberServiceException;
+import cn.edu.seu.alumni_server.exceptions.ActivityMemberServiceException;
 import cn.edu.seu.alumni_server.controller.dto.ActivityMemberBasicInfoDTO;
 import cn.edu.seu.alumni_server.controller.dto.ActivityMemberDTO;
 import cn.edu.seu.alumni_server.dao.entity.ActivityMember;

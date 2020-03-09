@@ -1,8 +1,8 @@
-package cn.edu.seu.alumni_server.common.token;
+package cn.edu.seu.alumni_server.interceptor.token;
 
 import cn.edu.seu.alumni_server.common.CONST;
-import cn.edu.seu.alumni_server.common.dto.WebResponse;
-import cn.edu.seu.alumni_server.common.dto.WebResponseEnum;
+import cn.edu.seu.alumni_server.common.web_response_dto.WebResponse;
+import cn.edu.seu.alumni_server.common.web_response_dto.WebResponseEnum;
 import com.google.gson.Gson;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;

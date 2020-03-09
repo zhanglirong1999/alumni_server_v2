@@ -1,8 +1,9 @@
 package cn.edu.seu.alumni_server.controller;
 
 import cn.edu.seu.alumni_server.common.CONST;
-import cn.edu.seu.alumni_server.common.dto.WebResponse;
-import cn.edu.seu.alumni_server.common.token.Acl;
+import cn.edu.seu.alumni_server.common.web_response_dto.WebResponse;
+import cn.edu.seu.alumni_server.interceptor.registration.RegistrationRequired;
+import cn.edu.seu.alumni_server.interceptor.token.Acl;
 import cn.edu.seu.alumni_server.controller.dto.FriendApplyDTO;
 import cn.edu.seu.alumni_server.controller.dto.FriendDTO;
 import cn.edu.seu.alumni_server.controller.dto.PageResult;
@@ -40,6 +41,7 @@ public class FriendManageController {
     @Autowired
     V2ApiMapper v2ApiMapper;
 
+    @RegistrationRequired
     @PostMapping("/friend/apply")
     @Transactional
     public WebResponse friendApply(@RequestBody FriendApplyDTO friendApplyDTO) {

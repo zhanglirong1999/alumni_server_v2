@@ -1,7 +1,7 @@
 package cn.edu.seu.alumni_server.dataSync;
 
 import cn.edu.seu.alumni_server.common.Utils;
-import cn.edu.seu.alumni_server.common.dto.WebResponse;
+import cn.edu.seu.alumni_server.common.web_response_dto.WebResponse;
 import cn.edu.seu.alumni_server.dao.entity.Account;
 import cn.edu.seu.alumni_server.dao.entity.Job;
 import cn.edu.seu.alumni_server.dao.mapper.AccountMapper;

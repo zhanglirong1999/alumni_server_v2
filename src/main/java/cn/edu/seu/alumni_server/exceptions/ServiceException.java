@@ -1,4 +1,4 @@
-package cn.edu.seu.alumni_server.common.exceptions;
+package cn.edu.seu.alumni_server.exceptions;
 
 public class ServiceException extends Throwable {
     public ServiceException() {

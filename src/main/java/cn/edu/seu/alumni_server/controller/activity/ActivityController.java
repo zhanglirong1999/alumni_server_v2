@@ -1,12 +1,13 @@
-package cn.edu.seu.alumni_server.controller;
+package cn.edu.seu.alumni_server.controller.activity;
 
-import cn.edu.seu.alumni_server.annotation.WebResponseAPIMethod;
+import cn.edu.seu.alumni_server.annotation.web_response.WebResponseAPIMethod;
 import cn.edu.seu.alumni_server.common.Utils;
-import cn.edu.seu.alumni_server.common.dto.WebResponse;
-import cn.edu.seu.alumni_server.common.dto.WebServiceSuccessMessage;
-import cn.edu.seu.alumni_server.common.exceptions.ActivityMemberServiceException;
-import cn.edu.seu.alumni_server.common.exceptions.ActivityServiceException;
-import cn.edu.seu.alumni_server.common.token.Acl;
+import cn.edu.seu.alumni_server.common.web_response_dto.WebResponse;
+import cn.edu.seu.alumni_server.common.web_response_dto.WebServiceSuccessMessage;
+import cn.edu.seu.alumni_server.interceptor.registration.RegistrationRequired;
+import cn.edu.seu.alumni_server.exceptions.ActivityMemberServiceException;
+import cn.edu.seu.alumni_server.exceptions.ActivityServiceException;
+import cn.edu.seu.alumni_server.interceptor.token.Acl;
 import cn.edu.seu.alumni_server.controller.dto.ActivityBasicInfoDTO;
 import cn.edu.seu.alumni_server.controller.dto.ActivityBasicInfoWithCurrentAccountEnrollState;
 import cn.edu.seu.alumni_server.controller.dto.ActivityDTO;
@@ -74,6 +75,7 @@ public class ActivityController {
 	 *
 	 * @param visibleStatus 0圈内可见，1全部可见，默认1
 	 */
+	@RegistrationRequired
 	@PostMapping("/activities/adapter")
 	public WebResponse createActivityAdapter(
 		@RequestParam Long alumniCircleId,
@@ -88,7 +90,6 @@ public class ActivityController {
 		@RequestParam(required = false) String img5,
 		@RequestParam(required = false) String img6,
 		@RequestParam(required = false) Boolean visibleStatus
-
 	) {
 		ActivityDTO t = new ActivityDTO();
 		t.setAlumniCircleId(alumniCircleId);

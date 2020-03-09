@@ -1,4 +1,4 @@
-package cn.edu.seu.alumni_server.common.dto;
+package cn.edu.seu.alumni_server.common.web_response_dto;
 
 import cn.edu.seu.alumni_server.common.CONST;
 import lombok.AllArgsConstructor;

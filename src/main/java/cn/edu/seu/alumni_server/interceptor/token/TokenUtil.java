@@ -1,9 +1,8 @@
-package cn.edu.seu.alumni_server.common.token;
+package cn.edu.seu.alumni_server.interceptor.token;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.log4j.Log4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
 import java.security.Key;

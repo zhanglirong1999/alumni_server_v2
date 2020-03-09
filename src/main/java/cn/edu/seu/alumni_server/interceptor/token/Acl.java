@@ -1,4 +1,4 @@
-package cn.edu.seu.alumni_server.common.token;
+package cn.edu.seu.alumni_server.interceptor.token;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

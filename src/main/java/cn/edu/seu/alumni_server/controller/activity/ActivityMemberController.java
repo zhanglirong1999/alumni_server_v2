@@ -1,8 +1,9 @@
-package cn.edu.seu.alumni_server.controller;
+package cn.edu.seu.alumni_server.controller.activity;
 
-import cn.edu.seu.alumni_server.common.dto.WebResponse;
-import cn.edu.seu.alumni_server.common.exceptions.ActivityMemberServiceException;
-import cn.edu.seu.alumni_server.common.token.Acl;
+import cn.edu.seu.alumni_server.common.web_response_dto.WebResponse;
+import cn.edu.seu.alumni_server.interceptor.registration.RegistrationRequired;
+import cn.edu.seu.alumni_server.exceptions.ActivityMemberServiceException;
+import cn.edu.seu.alumni_server.interceptor.token.Acl;
 import cn.edu.seu.alumni_server.controller.dto.ActivityMemberBasicInfoDTO;
 import cn.edu.seu.alumni_server.controller.dto.ActivityMemberDTO;
 import cn.edu.seu.alumni_server.controller.dto.PageResult;
@@ -30,6 +31,7 @@ public class ActivityMemberController {
 	@Autowired
 	private ActivityMemberService activityMemberService;
 
+	@RegistrationRequired
 	@PostMapping("/activities/members")
 	public WebResponse addAccount2Activity(
 		@RequestParam(value = "activityId")

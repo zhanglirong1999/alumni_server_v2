@@ -1,8 +1,8 @@
-package cn.edu.seu.alumni_server.aspect;
+package cn.edu.seu.alumni_server.aspect.web_response;
 
-import cn.edu.seu.alumni_server.common.dto.WebResponseByObject;
-import cn.edu.seu.alumni_server.common.dto.WebServiceExceptionMessage;
-import cn.edu.seu.alumni_server.common.dto.WebServiceSuccessMessage;
+import cn.edu.seu.alumni_server.common.web_response_dto.WebResponseByObject;
+import cn.edu.seu.alumni_server.common.web_response_dto.WebServiceExceptionMessage;
+import cn.edu.seu.alumni_server.common.web_response_dto.WebServiceSuccessMessage;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -13,11 +13,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class WebResponseAPIAspect {
 
-	@Pointcut("@annotation(cn.edu.seu.alumni_server.annotation.WebResponseAPIMethod)")
+	@Pointcut("@annotation(cn.edu.seu.alumni_server.annotation.web_response.WebResponseAPIMethod)")
 	public void methodAPI() {
 	}
 
-	@Pointcut("@within(cn.edu.seu.alumni_server.annotation.WebResponseAPIController)")
+	@Pointcut("@within(cn.edu.seu.alumni_server.annotation.web_response.WebResponseAPIController)")
 	public void typeAPI() {
 	}
 

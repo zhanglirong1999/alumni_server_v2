@@ -1,18 +1,18 @@
-package cn.edu.seu.alumni_server.controller;
+package cn.edu.seu.alumni_server.controller.alumni_circle;
 
 
 import cn.edu.seu.alumni_server.common.CONST;
 import cn.edu.seu.alumni_server.common.Utils;
-import cn.edu.seu.alumni_server.common.dto.WebResponse;
-import cn.edu.seu.alumni_server.common.exceptions.AlumniCircleServiceException;
-import cn.edu.seu.alumni_server.common.token.Acl;
+import cn.edu.seu.alumni_server.common.web_response_dto.WebResponse;
+import cn.edu.seu.alumni_server.interceptor.registration.RegistrationRequired;
+import cn.edu.seu.alumni_server.exceptions.AlumniCircleServiceException;
+import cn.edu.seu.alumni_server.interceptor.token.Acl;
 import cn.edu.seu.alumni_server.controller.dto.PageResult;
 import cn.edu.seu.alumni_server.controller.dto.StartedOrEnrolledActivityInfoDTO;
 import cn.edu.seu.alumni_server.controller.dto.alumnicircle.ActivityStateComparator;
 import cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleBasicInfoDTO;
 import cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleDTO;
 import cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleMemberDTO;
-import cn.edu.seu.alumni_server.controller.dto.enums.ActivityState;
 import cn.edu.seu.alumni_server.dao.entity.AlumniCircle;
 import cn.edu.seu.alumni_server.dao.entity.AlumniCircleMember;
 import cn.edu.seu.alumni_server.dao.mapper.ActivityMapper;
@@ -22,8 +22,6 @@ import cn.edu.seu.alumni_server.service.AlumniCircleService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.*;
@@ -125,6 +123,7 @@ public class AlumniCircleController {
     }
 
 
+    @RegistrationRequired
     @GetMapping("/join")
     public WebResponse join(@RequestParam Long alumniCircleId,
                             @RequestParam(required = false) Long accountId) {

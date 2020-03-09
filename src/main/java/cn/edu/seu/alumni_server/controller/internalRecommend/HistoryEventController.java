@@ -1,7 +1,7 @@
 package cn.edu.seu.alumni_server.controller.internalRecommend;
 
 import cn.edu.seu.alumni_server.common.Utils;
-import cn.edu.seu.alumni_server.common.dto.WebResponse;
+import cn.edu.seu.alumni_server.common.web_response_dto.WebResponse;
 import cn.edu.seu.alumni_server.controller.dto.enums.EventType;
 import cn.edu.seu.alumni_server.dao.entity.HistoryEvent;
 import cn.edu.seu.alumni_server.dao.mapper.HistoryEventMapper;

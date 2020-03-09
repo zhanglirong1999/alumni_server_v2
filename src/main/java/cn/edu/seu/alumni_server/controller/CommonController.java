@@ -1,9 +1,9 @@
 package cn.edu.seu.alumni_server.controller;
 
-import cn.edu.seu.alumni_server.annotation.WebResponseAPIMethod;
+import cn.edu.seu.alumni_server.annotation.web_response.WebResponseAPIMethod;
 import cn.edu.seu.alumni_server.common.Utils;
-import cn.edu.seu.alumni_server.common.dto.WebResponse;
-import cn.edu.seu.alumni_server.common.token.Acl;
+import cn.edu.seu.alumni_server.common.web_response_dto.WebResponse;
+import cn.edu.seu.alumni_server.interceptor.token.Acl;
 import cn.edu.seu.alumni_server.service.AccountService;
 import cn.edu.seu.alumni_server.service.QCloudFileManager;
 import java.io.IOException;
