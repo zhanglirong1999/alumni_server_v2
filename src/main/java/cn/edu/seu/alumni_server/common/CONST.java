@@ -19,5 +19,11 @@ public class CONST {
     // ACL Key
     public static final String ACL_ACCOUNTID = "accountId";
 
-
+    /**
+     * 订阅消息提示类型
+     */
+    public static final String  ACTIVITY_MESSAGE = "活动消息";
+    public static final String  NEW_FRIEND_MESSAGE = "有新朋友请求交换名片";
+    public static final String  REJECT_MESSAGE = "拒绝添加朋友";
+    public static final String  AGREE_MESSAGE = "同意添加朋友";
 }

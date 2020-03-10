@@ -1,5 +1,6 @@
 package cn.edu.seu.alumni_server.common;
 
+import cn.edu.seu.alumni_server.common.config.AccessTokenConfig;
 import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockMultipartFile;
@@ -42,10 +43,14 @@ public class Utils {
         return targetFile.delete();
     }
 
-    public String getAccessToken() {
-        if (System.currentTimeMillis() > expireTime) {
+//    public String getAccessToken() {
+//        if (System.currentTimeMillis() > expireTime) {
+//
+//        }
+//        return access_token;
+//    }
 
-        }
-        return access_token;
+    public static String getAccessToken() {
+        return AccessTokenConfig.getAccessToken();
     }
 }
