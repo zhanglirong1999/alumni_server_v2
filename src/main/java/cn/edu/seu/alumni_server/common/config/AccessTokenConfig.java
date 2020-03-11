@@ -18,10 +18,10 @@ public class AccessTokenConfig {
     private static String ACCESS_TOKEN = "";
 
     /**
-     * 自获取access_token算起，7200（两小时）后access_token失效，
+     * 自获取access_token算起，7200s（两小时）后access_token失效，
      * 利用spring boot的定时器，定期在失效前五分钟再次获取access_token,防止access_token失效
      */
-    @Scheduled(initialDelay=1000, fixedDelay=431700000)
+    @Scheduled(initialDelay=1000, fixedDelay=7150000)
     private void updateAccessToken() {
 //        System.out.println("定时任务启动");
         RestTemplate restTemplate = new RestTemplate();
