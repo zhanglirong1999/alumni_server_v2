@@ -1,9 +1,9 @@
 ### 发布
 优化了一下发布
 ```shell script
-ssh root@62.234.134.210
-Seu@Zimotion6102
-cd /root/dev/alumni_server/
+ssh ubuntu@152.136.34.23
+wzh@112386
+cd /home/ubuntu/dev/alumni_server
 
 git checkout develop
 
@@ -18,12 +18,12 @@ sh start-prd.sh
 ### 备忘
 
 ```shell script
-#查看日志 /root/dev/alumni_server/
+#查看日志 
 tail -f nohup.out
 ``` 
 
 ```查看nginx配置
-vim /etc/nginx/conf.d/weapp.conf
+less /etc/nginx/conf.d/alumni.conf
 
 ```
 
