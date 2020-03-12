@@ -29,6 +29,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 @SuppressWarnings("ALL")
 @RestController
@@ -289,6 +290,9 @@ public class V2ApiController {
 
         Map filterMap = BeanUtils.describe(briefInfo);
         filterMap.put("filter", filter);
+        Random random=new Random();
+        pageIndex=pageIndex+random.nextInt(100);
+        pageSize=pageSize+random.nextInt(100);
         PageHelper.startPage(pageIndex, pageSize);
         List<BriefInfo> temp = v2ApiMapper.recommandWithFilter(filterMap);
         for(int i=0;i<temp.size();++i){
@@ -309,9 +313,6 @@ public class V2ApiController {
                 str4=accountAllDTO.getJobs().toString();
                 is3= CharacterStringAcquaintanceDegree.levenshtein(str1,str4);
             }catch (Exception e){}
-            System.out.println(is1);
-            System.out.println(is2);
-            System.out.println(is3);
             if(is1+is2+is3>=0.0){continue;}
             else{temp.remove(i);}
         }
