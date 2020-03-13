@@ -35,7 +35,7 @@
     </select>
 
     <!--    TODO -->
-    <select id="alumniCirclesRecommend" parameterType="java.lang.Long"
+    <select id="alumniCirclesRecommend"
             resultType="cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleBasicInfoDTO">
         SELECT ALC.*
         FROM alumni_circle ALC
@@ -46,6 +46,7 @@
             where account_id = #{accountId}
         )
     </select>
+
 
     <select id="getAlumniCircleMembers"
             resultType="cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleMemberDTO">
