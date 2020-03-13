@@ -83,6 +83,7 @@ public class AlumniCircleServiceImpl implements AlumniCircleService {
     @Override
     public List<AlumniCircleBasicInfoDTO> alumniCirclesRecommend() {
 //        alumniCircleMapper.alumniCirclesRecommend();
-        return alumniCircleMapper.alumniCirclesRecommend();
+        // TODO 测试用，后续删掉
+        return alumniCircleMapper.alumniCirclesRecommend(122122l);
     }
 }

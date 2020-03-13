@@ -36,7 +36,8 @@ public interface AlumniCircleMapper extends Mapper<AlumniCircle> {
 	 */
 	public List<AlumniCircleBasicInfoDTO> queryAlumniCircleInfosByAluCirName(String name);
 
-	public List<AlumniCircleBasicInfoDTO> alumniCirclesRecommend();
+//	public List<AlumniCircleBasicInfoDTO> alumniCirclesRecommend();
+	public List<AlumniCircleBasicInfoDTO> alumniCirclesRecommend(Long accountId);
 
 	public List<AlumniCircleMemberDTO> getAlumniCircleMembers(Long alumniCircleId,String query);
 

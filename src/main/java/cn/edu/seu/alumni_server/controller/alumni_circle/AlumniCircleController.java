@@ -99,12 +99,12 @@ public class AlumniCircleController {
                                  @RequestParam int pageSize) {
         Long accountId = (Long) request.getAttribute("accountId");
         PageHelper.startPage(pageIndex, pageSize);
-        List<AlumniCircleBasicInfoDTO> res = alumniCircleMapper.alumniCirclesRecommend();
-        res.forEach(alumniCircleBasicInfoDTO -> {
-            alumniCircleBasicInfoDTO.setIsJoined(
-                    alumniCircleMemberMapper.isJoined(alumniCircleBasicInfoDTO.getAlumniCircleId(), accountId)
-            );
-        });
+        List<AlumniCircleBasicInfoDTO> res = alumniCircleMapper.alumniCirclesRecommend(accountId);
+//        res.forEach(alumniCircleBasicInfoDTO -> {
+//            alumniCircleBasicInfoDTO.setIsJoined(
+//                    alumniCircleMemberMapper.isJoined(alumniCircleBasicInfoDTO.getAlumniCircleId(), accountId)
+//            );
+//        });
         return new WebResponse().success(
                         new PageResult<AlumniCircleBasicInfoDTO>(((Page)res).getTotal(),res)
         );

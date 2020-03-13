@@ -57,7 +57,7 @@ public class AlumniServerApplicationTests {
 
 	@Test
 	public void testAlumniCircleRecommand() {
-		System.out.println(alumniCircleService.alumniCirclesRecommend());
+//		System.out.println(alumniCircleService.alumniCirclesRecommend());
 	}
 
 	@Test
