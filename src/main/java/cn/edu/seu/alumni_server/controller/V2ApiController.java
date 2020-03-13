@@ -32,6 +32,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 @SuppressWarnings("ALL")
 @RestController
@@ -303,9 +304,32 @@ public class V2ApiController {
 
         Map filterMap = BeanUtils.describe(briefInfo);
         filterMap.put("filter", filter);
+        Random random=new Random();
+        pageIndex=pageIndex+random.nextInt(100);
+        pageSize=pageSize+random.nextInt(100);
         PageHelper.startPage(pageIndex, pageSize);
         List<BriefInfo> temp = v2ApiMapper.recommandWithFilter(filterMap);
-
+        for(int i=0;i<temp.size();++i){
+            String str1=temp.get(i).toString();
+            // String str2=accountAllDTO.getAccount().getCity();
+                    //  city, college, school
+            String str2="",str3="",str4="";
+            double is1=0.0,is2=0.0,is3=0.0;
+            try {
+                str2 = accountAllDTO.getEducations().toString();
+                is1= CharacterStringAcquaintanceDegree.levenshtein(str1,str2);
+            }catch (Exception e){}
+            try{
+                str3=accountAllDTO.getFavorite().toString();
+                is2= CharacterStringAcquaintanceDegree.levenshtein(str1,str3);
+            }catch (Exception e){}
+            try{
+                str4=accountAllDTO.getJobs().toString();
+                is3= CharacterStringAcquaintanceDegree.levenshtein(str1,str4);
+            }catch (Exception e){}
+            if(is1+is2+is3>=0.0){continue;}
+            else{temp.remove(i);}
+        }
         return new WebResponse().success(
                 new PageResult<BriefInfo>(
                         ((Page) temp).getTotal(),

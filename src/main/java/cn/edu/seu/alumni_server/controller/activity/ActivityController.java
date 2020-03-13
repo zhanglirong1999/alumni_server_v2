@@ -1,6 +1,7 @@
 package cn.edu.seu.alumni_server.controller.activity;
 
 import cn.edu.seu.alumni_server.annotation.web_response.WebResponseAPIMethod;
+import cn.edu.seu.alumni_server.common.CONST;
 import cn.edu.seu.alumni_server.common.Utils;
 import cn.edu.seu.alumni_server.common.web_response_dto.WebResponse;
 import cn.edu.seu.alumni_server.common.web_response_dto.WebServiceSuccessMessage;
@@ -23,6 +24,7 @@ import cn.edu.seu.alumni_server.dao.mapper.ActivityMemberMapper;
 import cn.edu.seu.alumni_server.service.ActivityMemberService;
 import cn.edu.seu.alumni_server.service.ActivityService;
 import cn.edu.seu.alumni_server.service.MessageService;
+import cn.edu.seu.alumni_server.service.SubscribeMessageService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import java.util.Date;
@@ -60,7 +62,8 @@ public class ActivityController {
 	ActivityMapper activityMapper;
 	@Autowired
 	ActivityMemberMapper activityMemberMapper;
-
+	@Autowired
+	SubscribeMessageService subscribeMessageService;
 	/**
 	 * 创建一个活动
 	 */
@@ -317,6 +320,7 @@ public class ActivityController {
 			messageService.newMessage(activityId, e.getAccountId(),
 				MessageType.ACTIVITY_NOTIFY.getValue(),
 				title, content);
+			subscribeMessageService.sendSubscribeMessage(e.getAccountId(),activityId,CONST.ACTIVITY_MESSAGE);
 		});
 		return new WebResponse().success();
 	}

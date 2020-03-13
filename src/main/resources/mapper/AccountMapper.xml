@@ -43,4 +43,11 @@
         FROM information_schema.`TABLES`
         WHERE table_name = 'account' AND TABLE_SCHEMA = 'alumnidb_prd';
     </select>
+
+    <select id="selectByAccountId"
+            resultType="cn.edu.seu.alumni_server.dao.entity.Account">
+        SELECT account_id,name,gender,birthday,self_desc,avatar,city,openid,phone,wechat,email,industry,type,registered,c_time,u_time,valid_status
+        FROM account
+        WHERE account_id = #{accountId}
+    </select>
 </mapper>

@@ -13,6 +13,7 @@ import cn.edu.seu.alumni_server.dao.entity.Friend;
 import cn.edu.seu.alumni_server.dao.mapper.FriendMapper;
 import cn.edu.seu.alumni_server.dao.mapper.V2ApiMapper;
 import cn.edu.seu.alumni_server.service.MessageService;
+import cn.edu.seu.alumni_server.service.SubscribeMessageService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,9 @@ public class FriendManageController {
 
     @Autowired
     V2ApiMapper v2ApiMapper;
+
+    @Autowired
+    SubscribeMessageService subscribeMessageService;
 
     @RegistrationRequired
     @PostMapping("/friend/apply")
@@ -73,6 +77,8 @@ public class FriendManageController {
         messageService.newMessage(accountId, friendApplyDTO.getFriendAccountId(),
                 MessageType.APPLY.getValue(),"", friendApplyDTO.getMessage());
 
+        //发送推送
+        subscribeMessageService.sendSubscribeMessage(friendApplyDTO.getFriendAccountId(),accountId,CONST.NEW_FRIEND_MESSAGE);
         return new WebResponse();
     }
 
@@ -114,6 +120,8 @@ public class FriendManageController {
 
             messageService.newMessage(req.get("A"), req.get("B"),
                     MessageType.AGREE.getValue());
+            //发送推送
+            subscribeMessageService.sendSubscribeMessage(req.get("B"),req.get("A"),CONST.AGREE_MESSAGE);
         }
 
         if (req.get("action") == CONST.FRIEND_ACTION_N) {

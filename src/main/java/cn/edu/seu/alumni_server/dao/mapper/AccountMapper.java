@@ -12,4 +12,11 @@ public interface AccountMapper extends Mapper<Account> {
     void dataSync();
 
     Long getAccountNumber();
+
+    /**
+     * 通过accountId查询acount信息
+     * @param accountId
+     * @return
+     */
+    Account selectByAccountId(long accountId);
 }
