@@ -19,20 +19,14 @@ public interface QCloudFileManager {
 		String newName
 	) throws IOException;
 
-	/**
-	 * 完成对于一个文件的上传.
-	 *
-	 * @param multipartFile 原始文件.
-	 * @param newFileNameWithoutType 无类型的新名字, e.g. "new-name-file"
-	 * @param subDirs url 子目录, e.g. "test", "imgs", 注意没有 "/"
-	 * @return "https://root-test-bucket-1258701411.cos.ap-shanghai.myqcloud.com/test/imgs/test-img-02.png"
-	 * @throws IOException 不完整的异常处理.
-	 */
-	String uploadOneFile(
-		MultipartFile multipartFile,
-		String newFileNameWithoutType,
+	String uploadFile(
+		File file,
 		String... subDirs
-	) throws IOException;
+	);
+
+	String uploadAndDeleteFile(
+		File file, String... subDirs
+	);
 
 	String getBaseUrl();
 
@@ -41,4 +35,10 @@ public interface QCloudFileManager {
 
 	// 删除一个对象
 	void deleteObject(String objectKey) throws IOException;
+
+	String saveAccountAvatar(
+		String oAvatar,
+		String newFileName,
+		String... subDirs
+	) throws IOException;
 }
