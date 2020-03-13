@@ -1,6 +1,7 @@
 package cn.edu.seu.alumni_server.dao.mapper;
 
 import cn.edu.seu.alumni_server.dao.entity.Account;
+import java.util.List;
 import org.springframework.stereotype.Repository;
 import tk.mybatis.mapper.common.Mapper;
 
@@ -19,4 +20,8 @@ public interface AccountMapper extends Mapper<Account> {
      * @return
      */
     Account selectByAccountId(long accountId);
+
+	void updateAccountAvatar(Long accountId, String ans);
+
+	List<Account> selectAllValidAccounts();
 }

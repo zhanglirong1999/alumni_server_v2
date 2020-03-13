@@ -1,5 +1,6 @@
 package cn.edu.seu.alumni_server.controller;
 
+import cn.edu.seu.alumni_server.annotation.web_response.WebResponseAPIMethod;
 import cn.edu.seu.alumni_server.common.CONST;
 import cn.edu.seu.alumni_server.common.Utils;
 import cn.edu.seu.alumni_server.common.web_response_dto.WebResponse;
@@ -11,13 +12,16 @@ import cn.edu.seu.alumni_server.controller.dto.JobDTO;
 import cn.edu.seu.alumni_server.controller.dto.enums.FriendStatus;
 import cn.edu.seu.alumni_server.dao.entity.*;
 import cn.edu.seu.alumni_server.dao.mapper.*;
+import cn.edu.seu.alumni_server.service.AccountService;
 import cn.edu.seu.alumni_server.service.CommonService;
+import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @SuppressWarnings("ALL")
@@ -31,6 +35,9 @@ public class AccountAllController {
     V2ApiMapper v2ApiMapper;
     @Autowired
     CommonService commonService;
+
+    @Autowired
+    AccountService accountService;
 
     @Autowired
     AccountMapper accountMapper;
@@ -162,5 +169,27 @@ public class AccountAllController {
         return new WebResponse();
     }
 
+    @WebResponseAPIMethod
+    @PostMapping("/account/fileAvatar")
+    public Object updateAccountAvatarByFile(
+        @RequestParam MultipartFile multipartFile
+    ) throws IOException {
+        // 使用文件修改用户的头像
+        return this.accountService.updateAccountAvatarByFile(
+            (Long) request.getAttribute(CONST.ACL_ACCOUNTID),
+            multipartFile
+        );
+    }
 
+    @WebResponseAPIMethod
+    @PostMapping("/account/urlAvatar")
+    public Object updateAccountAvatarByURL(
+        @RequestParam String url
+    ) throws IOException {
+        // 使用 url 修改用户的头像
+        return this.accountService.updateAccountAvatarByURL(
+            (Long) request.getAttribute(CONST.ACL_ACCOUNTID),
+            url
+        );
+    }
 }
