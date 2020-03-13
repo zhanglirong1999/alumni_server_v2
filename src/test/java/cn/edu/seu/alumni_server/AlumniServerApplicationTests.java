@@ -2,6 +2,7 @@ package cn.edu.seu.alumni_server;
 
 import cn.edu.seu.alumni_server.common.Utils;
 import cn.edu.seu.alumni_server.controller.CommonController;
+import cn.edu.seu.alumni_server.service.AccountService;
 import cn.edu.seu.alumni_server.service.ActivityService;
 import cn.edu.seu.alumni_server.service.AlumniCircleService;
 import cn.edu.seu.alumni_server.service.QCloudFileManager;
@@ -18,6 +19,9 @@ import org.springframework.web.multipart.MultipartFile;
 @SpringBootTest(classes = {
 	AlumniServerApplication.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class AlumniServerApplicationTests {
+
+	@Autowired
+	AccountService accountService;
 
 	@Autowired
 	QCloudFileManager fileManager;
@@ -67,6 +71,11 @@ public class AlumniServerApplicationTests {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Test
+	public void testTransAvatar() throws IOException {
+		this.accountService.transAccountAvatarFromURLToURL();
 	}
 
 }
