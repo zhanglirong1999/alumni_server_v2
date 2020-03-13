@@ -29,7 +29,7 @@ public class CommonController {
 	@WebResponseAPIMethod
 	@PostMapping("/uploadFile")
 	public Object uploadFile(
-		@RequestParam MultipartFile multipartFile
+		@RequestParam(name = "file") MultipartFile multipartFile
 	) throws IOException {
 		// 首先获取 newName
 		String newNameWithoutType = String.valueOf(Utils.generateId());
