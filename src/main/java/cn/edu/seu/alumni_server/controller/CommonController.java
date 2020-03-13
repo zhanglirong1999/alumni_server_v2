@@ -6,6 +6,7 @@ import cn.edu.seu.alumni_server.common.web_response_dto.WebResponse;
 import cn.edu.seu.alumni_server.interceptor.token.Acl;
 import cn.edu.seu.alumni_server.service.AccountService;
 import cn.edu.seu.alumni_server.service.QCloudFileManager;
+import java.io.File;
 import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,30 +26,24 @@ public class CommonController {
 	@Autowired
 	AccountService accountService;
 
+	@WebResponseAPIMethod
 	@PostMapping("/uploadFile")
-	public WebResponse uploadFile(
-		@RequestParam MultipartFile file
-	) {
+	public Object uploadFile(
+		@RequestParam MultipartFile multipartFile
+	) throws IOException {
 		// 首先获取 newName
 		String newNameWithoutType = String.valueOf(Utils.generateId());
+		// 尽量保证上传的图片格式与原来的图片格式相匹配
 		String newNameWithType = this.qCloudFileManager.buildNewFileNameWithType(
-			file, newNameWithoutType
+			multipartFile, newNameWithoutType
 		);
-		String ansUrl = null;
-		try {
-			ansUrl = qCloudFileManager.uploadOneFile(
-				file,
-				newNameWithoutType
-			);
-		} catch (IOException e) {
-			return new WebResponse().fail("上传文件失败.");
-		}
-		// 要删除文件
-		Utils.deleteFileUnderProjectDir(newNameWithType);
-		// 返回最终结果
-		return new WebResponse().success(
-			ansUrl
+		// 转换为可上传文件
+		File file = this.qCloudFileManager.convertMultipartFileToFile(
+			multipartFile, newNameWithType
 		);
+		// 上传并删除
+		// 返回最终结果到 data 中
+		return this.qCloudFileManager.uploadAndDeleteFile(file);
 	}
 
 	@DeleteMapping("/deleteFile")
