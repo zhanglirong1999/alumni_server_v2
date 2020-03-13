@@ -1,7 +1,6 @@
 package cn.edu.seu.alumni_server;
 
 import cn.edu.seu.alumni_server.common.Utils;
-import cn.edu.seu.alumni_server.common.web_response_dto.WebResponse;
 import cn.edu.seu.alumni_server.controller.CommonController;
 import cn.edu.seu.alumni_server.service.ActivityService;
 import cn.edu.seu.alumni_server.service.AlumniCircleService;
@@ -30,32 +29,14 @@ public class AlumniServerApplicationTests {
 	AlumniCircleService alumniCircleService;
 
 	@Test
-	public void testUploadOneFile() {
-		// 获取图片
-		File file = new File(
-			"F:\\JavaProjects\\AlumniServer\\doc\\demo.png"
-		);
-		try {
-			MultipartFile multipartFile = Utils.fileToMultipartFile(file);
-			String ansUrl = this.fileManager.uploadOneFile(
-				multipartFile, "test-img-02",
-				"test", "imgs"
-			);
-			System.out.println(ansUrl);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	@Test
 	public void testCommonController() {
 		// 获取图片
 		File file = new File(
-			"F:\\JavaProjects\\AlumniServer\\doc\\demo.png"
+			"F:\\JavaProjects\\AlumniServer\\test.jpg"
 		);
 		try {
 			MultipartFile multipartFile = Utils.fileToMultipartFile(file);
-			WebResponse ansUrl = this.commonController.uploadFile(
+			Object ansUrl = this.commonController.uploadFile(
 				multipartFile
 			);
 			System.out.println(ansUrl);
@@ -73,6 +54,19 @@ public class AlumniServerApplicationTests {
 	@Test
 	public void testAlumniCircleRecommand() {
 		System.out.println(alumniCircleService.alumniCirclesRecommend());
+	}
+
+	@Test
+	public void testUploadFile() {
+		try {
+			String s = fileManager.saveAccountAvatar(
+				"https://wx.qlogo.cn/mmopen/vi_32/O6qftWBakkgESo8qNUDjTMa5FQbAzC0nibIQxJTjxnXickWE7iaVm1tgCuQz198FTC8k2zeHicOlYv9tmld9v9o55Q/132",
+				Utils.generateId() + ".png"
+			);
+			System.out.println(s);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
