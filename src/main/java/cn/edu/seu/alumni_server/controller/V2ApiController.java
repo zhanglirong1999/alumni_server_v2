@@ -1,5 +1,6 @@
 package cn.edu.seu.alumni_server.controller;
 
+import cn.edu.seu.alumni_server.annotation.web_response.WebResponseAPIMethod;
 import cn.edu.seu.alumni_server.common.CONST;
 import cn.edu.seu.alumni_server.common.Utils;
 import cn.edu.seu.alumni_server.common.web_response_dto.WebResponse;
@@ -10,9 +11,11 @@ import cn.edu.seu.alumni_server.controller.dto.enums.SearchType;
 import cn.edu.seu.alumni_server.dao.entity.Account;
 import cn.edu.seu.alumni_server.dao.mapper.*;
 import cn.edu.seu.alumni_server.service.CommonService;
+import cn.edu.seu.alumni_server.service.QCloudFileManager;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.google.gson.Gson;
+import java.io.IOException;
 import lombok.Data;
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +38,9 @@ import java.util.Map;
 public class V2ApiController {
     String access_token = "";
     long expireTime = 0l;
+
+    @Autowired
+    QCloudFileManager qCloudFileManager;
 
     @Autowired
     AccountMapper accountMapper;
@@ -126,13 +132,21 @@ public class V2ApiController {
 
     @Acl
     @RequestMapping("/account/step1")
-    public WebResponse createAccount(@RequestBody AccountDTO accountDTO) {
-
+    @WebResponseAPIMethod
+    public Object createAccount(
+        @RequestBody AccountDTO accountDTO
+    ) throws IOException {
         Account account = accountDTO.toAccount();
+        if (null != account.getAvatar() && !account.getAvatar().equals("")) {
+            String avartar = this.qCloudFileManager.saveAccountAvatar(
+                account.getAvatar(),
+                Utils.generateId() + ".png"
+            );
+            account.setAvatar(avartar);
+        }
         account.setStep1Finished(true);
         accountMapper.updateByPrimaryKeySelective(account);
-
-        return new WebResponse().success(account.getAccountId());
+        return account.getAccountId();
     }
 
     @Acl
