@@ -5,6 +5,7 @@ import lombok.Data;
 
 /**
  * controller 统一返回，包装对象.
+ *
  * @param <T>
  */
 @Data

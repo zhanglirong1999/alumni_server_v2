@@ -38,10 +38,16 @@
           and a.wechat != ''
           and a.wechat is not null
     </update>
-	<select id="getAccountNumber" resultType="java.lang.Long">
-        SELECT table_rows
-        FROM information_schema.`TABLES`
-        WHERE table_name = 'account' AND TABLE_SCHEMA = 'alumnidb_prd';
+    <update id="updateAccountAvatar">
+        update account
+        set avatar = #{ans}
+        where account.account_id = #{accountId}
+        and account.valid_status = 1
+    </update>
+    <select id="getAccountNumber" resultType="java.lang.Long">
+        select count(*)
+        from account
+        where registered = 1 and valid_status = 1
     </select>
 
     <select id="selectByAccountId"
@@ -49,5 +55,12 @@
         SELECT account_id,name,gender,birthday,self_desc,avatar,city,openid,phone,wechat,email,industry,type,registered,c_time,u_time,valid_status
         FROM account
         WHERE account_id = #{accountId}
+    </select>
+    <select id="selectAllValidAccounts"
+        resultType="cn.edu.seu.alumni_server.dao.entity.Account">
+        select *
+        from account
+        where registered = 1
+        and valid_status = 1
     </select>
 </mapper>

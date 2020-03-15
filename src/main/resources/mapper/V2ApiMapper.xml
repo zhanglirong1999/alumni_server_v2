@@ -17,10 +17,12 @@
         from (
               (account a left join (select max(account_id) as account_id, school, college
                                     from education
+                                    where valid_status = 1
                                     group by account_id) b on a.account_id = b.account_id)
                  left join
              (select max(account_id) as account_id, company, position
               from job
+              where valid_status = 1
               group by account_id) c on a.account_id = c.account_id
                  )
         where a.account_id in (
@@ -44,10 +46,12 @@
         from (
               (account a left join (select max(account_id) as account_id, school, college
                                     from education
+                                    where valid_status = 1
                                     group by account_id) b on a.account_id = b.account_id)
                  left join
              (select max(account_id) as account_id, company, position
               from job
+              where valid_status = 1
               group by account_id) c on a.account_id = c.account_id
                  )
         where a.account_id in (
@@ -72,10 +76,12 @@
         from (
               (account a left join (select max(account_id) as account_id, school, college
                                     from education
+                                    where valid_status = 1
                                     group by account_id) b on a.account_id = b.account_id)
                  left join
              (select max(account_id) as account_id, company, position
               from job
+              where valid_status = 1
               group by account_id) c on a.account_id = c.account_id
                  )
         where a.account_id in (
@@ -99,10 +105,12 @@
         from (
               (account a left join (select max(account_id) as account_id, school, college
                                     from education
+                                    where valid_status = 1
                                     group by account_id) b on a.account_id = b.account_id)
                  left join
              (select max(account_id) as account_id, company, position
               from job
+              where valid_status = 1
               group by account_id) c on a.account_id = c.account_id
                  )
         where a.account_id in (
@@ -126,10 +134,12 @@
         from (
               (account a left join (select max(account_id) as account_id, school, college
                                     from education
+                                    where valid_status = 1
                                     group by account_id) b on a.account_id = b.account_id)
                  left join
              (select max(account_id) as account_id, company, position
               from job
+              where valid_status = 1
               group by account_id) c on a.account_id = c.account_id
                  )
         where a.account_id in (
@@ -153,10 +163,12 @@
         from (
               (account a left join (select max(account_id) as account_id, school, college
                                     from education
+                                    where valid_status = 1
                                     group by account_id) b on a.account_id = b.account_id)
                  left join
              (select max(account_id) as account_id, company, position
               from job
+              where valid_status = 1
               group by account_id) c on a.account_id = c.account_id
                  )
         where a.account_id in (
@@ -180,10 +192,12 @@
         from (
               (account a left join (select max(account_id) as account_id, school, college
                                     from education
+                                    where valid_status = 1
                                     group by account_id) b on a.account_id = b.account_id)
                  left join
              (select max(account_id) as account_id, company, position
               from job
+              where valid_status = 1
               group by account_id) c on a.account_id = c.account_id
                  )
         where a.account_id in (
@@ -256,8 +270,12 @@
         from account a
                  left join (select max(account_id) as account_id, school, college, start_time
                             from education
+                            where valid_status = 1
                             group by account_id) b on a.account_id = b.account_id
-                 left join (select max(account_id) as account_id, company, position from job group by account_id) c
+                 left join (select max(account_id) as account_id, company, position
+                            from job
+                            where valid_status = 1
+                            group by account_id) c
                            on a.account_id = c.account_id
         where a.account_id NOT in
               (select distinct d.friend_account_id
@@ -291,11 +309,14 @@
         from account a
         -- education
         left join
-        (select max(account_id) as account_id, school, college, start_time from education group by account_id) b
+        (select max(account_id) as account_id, school, college, start_time
+        from education
+        where valid_status=1 group by account_id) b
         on a.account_id = b.account_id
         -- job
         left join
-        (select max(account_id) as account_id, company, position from job group by account_id) c
+        (select max(account_id) as account_id, company, position from job where valid_status=1
+        group by account_id) c
         on a.account_id = c.account_id
 
         where

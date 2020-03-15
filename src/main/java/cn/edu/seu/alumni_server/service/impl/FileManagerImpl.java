@@ -1,5 +1,6 @@
 package cn.edu.seu.alumni_server.service.impl;
 
+import cn.edu.seu.alumni_server.common.Utils;
 import cn.edu.seu.alumni_server.common.config.cos.QCloudHolder;
 import cn.edu.seu.alumni_server.service.QCloudFileManager;
 import cn.edu.seu.alumni_server.service.fail.ActivityFailPrompt;
@@ -8,7 +9,10 @@ import com.qcloud.cos.model.ObjectMetadata;
 import com.qcloud.cos.model.PutObjectRequest;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.Objects;
+import javax.net.ssl.HttpsURLConnection;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.io.FileUtils;
@@ -19,7 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 @Getter
 @Setter
-public class ActivityFileManagerImpl implements QCloudFileManager {
+public class FileManagerImpl implements QCloudFileManager {
 
 	@Autowired
 	QCloudHolder qCloudHolder;
@@ -32,12 +36,13 @@ public class ActivityFileManagerImpl implements QCloudFileManager {
 		throws IOException {
 		// 获取到文件源路径
 		String originalFilename = multipartFile.getOriginalFilename();
-		if (originalFilename == null)
+		if (originalFilename == null) {
 			throw new IOException(
 				this.activityFailPrompt.getUserPrompt(
 					"将原图片转换成为可上传文件", 8
 				)
 			);
+		}
 		// 配置结果.
 		File ansFile = new File(newName == null ? originalFilename : newName);
 		// 使用 commons-io
@@ -46,28 +51,20 @@ public class ActivityFileManagerImpl implements QCloudFileManager {
 	}
 
 	@Override
-	public String uploadOneFile(
-		MultipartFile multipartFile,
-		String newFileNameWithoutType,
-		String ... subDirs
-	) throws IOException {
+	public String uploadFile(
+		File file,
+		String... subDirs
+	) {
 		// 首先获取到
 		String ansFileUrl = this.getBaseUrl();
-		String newFileNameWithType = buildNewFileNameWithType(
-			multipartFile,
-			newFileNameWithoutType
-		);
-		// 创建文件
-		File uploadFile = this.convertMultipartFileToFile(
-			multipartFile, newFileNameWithType
-		);
 		// 创建新的文件路径
 		StringBuilder bucketNameBuilder = new StringBuilder();
-		for (String subDir: subDirs)
+		for (String subDir : subDirs) {
 			bucketNameBuilder.append("/").append(subDir);
+		}
 		String uploadFileKey =
 			bucketNameBuilder.append("/").append(
-				uploadFile.getName()
+				file.getName()
 			).toString();
 		// 上传文件
 		// 创建客户端
@@ -76,7 +73,7 @@ public class ActivityFileManagerImpl implements QCloudFileManager {
 		PutObjectRequest putObjectRequest = new PutObjectRequest(
 			this.qCloudHolder.getBucketName(),
 			uploadFileKey,
-			uploadFile
+			file
 		);
 		cosClient.putObject(putObjectRequest);
 		// 关闭
@@ -84,8 +81,18 @@ public class ActivityFileManagerImpl implements QCloudFileManager {
 		return ansFileUrl + putObjectRequest.getKey();
 	}
 
+	@Override
+	public String uploadAndDeleteFile(
+		File file, String... subDirs
+	) {
+		String ans = this.uploadFile(file, subDirs);
+		Utils.deleteFileUnderProjectDir(file.getName());
+		return ans;
+	}
+
 	public String buildNewFileNameWithType(MultipartFile multipartFile,
-		String newFileNameWithoutType) {
+		String newFileNameWithoutType
+	) {
 		// 获取到原始文件的类型
 		return newFileNameWithoutType + Objects.requireNonNull(
 			multipartFile.getOriginalFilename()
@@ -113,8 +120,9 @@ public class ActivityFileManagerImpl implements QCloudFileManager {
 		} catch (Exception any) {
 			ans = false;
 		} finally {
-			if (cosClient != null)
+			if (cosClient != null) {
 				cosClient.shutdown();
+			}
 		}
 		return ans;
 	}
@@ -126,6 +134,25 @@ public class ActivityFileManagerImpl implements QCloudFileManager {
 		if (cosClient != null) {
 			cosClient.deleteObject(this.qCloudHolder.getBucketName(), objectKey);
 			cosClient.shutdown();
-		} else throw new IOException("创建客户端失败.");
+		} else {
+			throw new IOException("创建客户端失败.");
+		}
+	}
+
+	@Override
+	public String saveAccountAvatar(
+		String oAvatar,
+		String newFileName,
+		String... subDirs
+	) throws IOException {
+		// 获取 inputstream
+		URL url = new URL(oAvatar);
+		HttpsURLConnection httpsURLConnection =
+			(HttpsURLConnection) url.openConnection();
+		InputStream in = httpsURLConnection.getInputStream();
+		// 转成 file 上传
+		File file = new File(newFileName);
+		FileUtils.copyInputStreamToFile(in, file);
+		return this.uploadAndDeleteFile(file, subDirs);
 	}
 }

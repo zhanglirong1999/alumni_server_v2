@@ -105,13 +105,4 @@ public class TestController {
         System.out.println(new Gson().toJson(req));
         return "{\"error\":0}";
     }
-
-    @PostMapping("/file")
-    public String fileDemo(
-            @RequestParam MultipartFile demo
-    ) throws IOException {
-        return qCloudFileManager.uploadOneFile(
-                demo,
-                String.valueOf(Utils.generateId()) + "." + demo.getOriginalFilename());
-    }
 }
