@@ -42,6 +42,8 @@ public class SubscribeMessageServiceImpl implements SubscribeMessageService {
             //拼接推送的模版
             SubscribeMessage subscribeMessage = new SubscribeMessage();
             //根据用户的id查表获得openid
+
+            log.info(url);
             log.info(id);
             subscribeMessage.setTouser(accountMapper.selectByAccountId(id).getOpenid());//用户的openid（要发送给那个用户，通常这里应该动态传进来的）
             subscribeMessage.setTemplate_id("b4KhLPwI1zJIq5KmZ0IzCV_TD9nS3CS3MEzjf8i0McA");//订阅消息模板id
