@@ -11,5 +11,5 @@ if [  -n  "$pid"  ];  then
     kill  -9  $pid;
 fi
 #
-nohup java -jar target/alumni_server-0.0.1-SNAPSHOT.jar --spring.profiles.active=prd &
+nohup java -jar target/alumni_server-0.0.1-SNAPSHOT.jar -DLOG_HOME=./log/prd --spring.profiles.active=prd &
 
