@@ -1,6 +1,5 @@
 package cn.edu.seu.alumni_server.controller;
 
-import cn.edu.seu.alumni_server.annotation.web_response.WebResponseAPIMethod;
 import cn.edu.seu.alumni_server.common.CONST;
 import cn.edu.seu.alumni_server.common.Utils;
 import cn.edu.seu.alumni_server.common.web_response_dto.WebResponse;
@@ -11,11 +10,9 @@ import cn.edu.seu.alumni_server.controller.dto.enums.SearchType;
 import cn.edu.seu.alumni_server.dao.entity.Account;
 import cn.edu.seu.alumni_server.dao.mapper.*;
 import cn.edu.seu.alumni_server.service.CommonService;
-import cn.edu.seu.alumni_server.service.QCloudFileManager;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.google.gson.Gson;
-import java.io.IOException;
 import lombok.Data;
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,9 +33,6 @@ import java.util.*;
 public class V2ApiController {
     String access_token = "";
     long expireTime = 0l;
-
-    @Autowired
-    QCloudFileManager qCloudFileManager;
 
     @Autowired
     AccountMapper accountMapper;
@@ -130,21 +124,13 @@ public class V2ApiController {
 
     @Acl
     @RequestMapping("/account/step1")
-    @WebResponseAPIMethod
-    public Object createAccount(
-        @RequestBody AccountDTO accountDTO
-    ) throws IOException {
+    public WebResponse createAccount(@RequestBody AccountDTO accountDTO) {
+
         Account account = accountDTO.toAccount();
-        if (null != account.getAvatar() && !account.getAvatar().equals("")) {
-            String avartar = this.qCloudFileManager.saveAccountAvatar(
-                account.getAvatar(),
-                Utils.generateId() + ".png"
-            );
-            account.setAvatar(avartar);
-        }
         account.setStep1Finished(true);
         accountMapper.updateByPrimaryKeySelective(account);
-        return account.getAccountId();
+
+        return new WebResponse().success(account.getAccountId());
     }
 
     @Acl
@@ -347,13 +333,16 @@ public class V2ApiController {
         PageHelper.startPage(pageIndex, pageSize);
         List<BriefInfo> temp = v2ApiMapper.recommandWithFilter(filterMap);
         List<BriefInfo> res=new Page<BriefInfo>();
-        while(temp.size()<10){
+        int times=0;
+        while(temp.size()<10&&times<100){
+            times+=1;
             pageIndex=pageIndex+random.nextInt(100);
             pageSize=pageSize+random.nextInt(200);
             PageHelper.startPage(pageIndex, pageSize);
             temp = v2ApiMapper.recommandWithFilter(filterMap);
         }
-        while(res.size()<20){
+        while(res.size()<20&&times<100){
+            times+=1;
             pageIndex=pageIndex+random.nextInt(100);
             pageSize=pageSize+random.nextInt(200);
             PageHelper.startPage(pageIndex, pageSize);
