@@ -26,10 +26,7 @@ import tk.mybatis.mapper.util.Sqls;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 @SuppressWarnings("ALL")
 @RestController
@@ -267,6 +264,46 @@ public class V2ApiController {
      * @param pageIndex
      * @return
      */
+    private void addRecommandHelper(List<BriefInfo> res,List<BriefInfo> temp,AccountAllDTO accountAllDTO){
+        for (int i = 0; i < temp.size(); ++i) {
+            /**
+             * 城市   str1
+             * 公司   str2
+             * 职位   str3
+             * 专业   str4
+             */
+            String city=temp.get(i).getCity();
+            String company=temp.get(i).getCompany();
+            String position=temp.get(i).getPosition();
+            String college=temp.get(i).getCollege();
+            String str2="",str3="",str4="",str5="";
+            double is1=0.0,is2=0.0,is3=0.0,is4=0.0;
+            try {
+                str2 = accountAllDTO.getAccount().getCity();
+                is1= CharacterStringAcquaintanceDegree.levenshtein(city,str2);
+            }catch (Exception e){}
+            for(int j=0;j<accountAllDTO.getJobs().size();++i) {
+                try {
+                    str3 = accountAllDTO.getJobs().get(j).getCompany();
+                    is2 = (is2+CharacterStringAcquaintanceDegree.levenshtein(company, str3))/2;
+                } catch (Exception e) {
+                }
+                try {
+                    str4 = accountAllDTO.getJobs().get(j).getPosition();
+                    is3 = (is2+CharacterStringAcquaintanceDegree.levenshtein(position, str4))/2;
+                } catch (Exception e) {
+                }
+            }
+            for(int j=0;j<accountAllDTO.getEducations().size();++j) {
+                try {
+                    str4 = accountAllDTO.getEducations().get(i).getCollege();
+                    is4 = (is3+CharacterStringAcquaintanceDegree.levenshtein(college, str4))/2;
+                } catch (Exception e) {
+                }
+            }
+            if(is1+is2+is3+is4>=0.0){res.add(temp.get(i));}
+        }
+    }
     @Acl
     @RequestMapping("/recommand")
     public WebResponse recommand(HttpServletRequest request,
@@ -292,34 +329,27 @@ public class V2ApiController {
         filterMap.put("filter", filter);
         Random random=new Random();
         pageIndex=pageIndex+random.nextInt(100);
-        pageSize=pageSize+random.nextInt(100);
+        pageSize=pageSize+random.nextInt(200);
         PageHelper.startPage(pageIndex, pageSize);
         List<BriefInfo> temp = v2ApiMapper.recommandWithFilter(filterMap);
-        for(int i=0;i<temp.size();++i){
-            String str1=temp.get(i).toString();
-            // String str2=accountAllDTO.getAccount().getCity();
-                    //  city, college, school
-            String str2="",str3="",str4="";
-            double is1=0.0,is2=0.0,is3=0.0;
-            try {
-                str2 = accountAllDTO.getEducations().toString();
-                is1= CharacterStringAcquaintanceDegree.levenshtein(str1,str2);
-            }catch (Exception e){}
-            try{
-                str3=accountAllDTO.getFavorite().toString();
-                is2= CharacterStringAcquaintanceDegree.levenshtein(str1,str3);
-            }catch (Exception e){}
-            try{
-                str4=accountAllDTO.getJobs().toString();
-                is3= CharacterStringAcquaintanceDegree.levenshtein(str1,str4);
-            }catch (Exception e){}
-            if(is1+is2+is3>=0.0){continue;}
-            else{temp.remove(i);}
+        List<BriefInfo> res=new Page<BriefInfo>();
+        while(temp.size()<10){
+            pageIndex=pageIndex+random.nextInt(100);
+            pageSize=pageSize+random.nextInt(200);
+            PageHelper.startPage(pageIndex, pageSize);
+            temp = v2ApiMapper.recommandWithFilter(filterMap);
+        }
+        while(res.size()<20){
+            pageIndex=pageIndex+random.nextInt(100);
+            pageSize=pageSize+random.nextInt(200);
+            PageHelper.startPage(pageIndex, pageSize);
+            temp = v2ApiMapper.recommandWithFilter(filterMap);
+            addRecommandHelper(res,temp,accountAllDTO);
         }
         return new WebResponse().success(
                 new PageResult<BriefInfo>(
-                        ((Page) temp).getTotal(),
-                        temp));
+                        ((Page) res).getTotal(),
+                        res));
     }
 
 }
