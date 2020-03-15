@@ -332,27 +332,27 @@ public class V2ApiController {
         pageSize=pageSize+random.nextInt(200);
         PageHelper.startPage(pageIndex, pageSize);
         List<BriefInfo> temp = v2ApiMapper.recommandWithFilter(filterMap);
-        List<BriefInfo> res=new Page<BriefInfo>();
+//        List<BriefInfo> res=new Page<BriefInfo>();
         int times=0;
-        while(temp.size()<10&&times<100){
+        while(temp.size()<10&&times<10){
             times+=1;
             pageIndex=pageIndex+random.nextInt(100);
             pageSize=pageSize+random.nextInt(200);
             PageHelper.startPage(pageIndex, pageSize);
             temp = v2ApiMapper.recommandWithFilter(filterMap);
         }
-        while(res.size()<20&&times<100){
-            times+=1;
-            pageIndex=pageIndex+random.nextInt(100);
-            pageSize=pageSize+random.nextInt(200);
-            PageHelper.startPage(pageIndex, pageSize);
-            temp = v2ApiMapper.recommandWithFilter(filterMap);
-            addRecommandHelper(res,temp,accountAllDTO);
-        }
+//        while(res.size()<20&&times<10){
+//            times+=1;
+//            pageIndex=pageIndex+random.nextInt(100);
+//            pageSize=pageSize+random.nextInt(200);
+//            PageHelper.startPage(pageIndex, pageSize);
+//            temp = v2ApiMapper.recommandWithFilter(filterMap);
+//            addRecommandHelper(res,temp,accountAllDTO);
+//        }
         return new WebResponse().success(
                 new PageResult<BriefInfo>(
-                        ((Page) res).getTotal(),
-                        res));
+                        ((Page) temp).getTotal(),
+                        temp));
     }
 
 }
