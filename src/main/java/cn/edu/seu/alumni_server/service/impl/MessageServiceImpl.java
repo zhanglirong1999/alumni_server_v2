@@ -1,11 +1,14 @@
 package cn.edu.seu.alumni_server.service.impl;
 
 import cn.edu.seu.alumni_server.common.Utils;
+import cn.edu.seu.alumni_server.controller.dto.MessageTemp;
 import cn.edu.seu.alumni_server.dao.entity.Message;
 import cn.edu.seu.alumni_server.dao.mapper.MessageMapper;
 import cn.edu.seu.alumni_server.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class MessageServiceImpl implements MessageService {
@@ -40,5 +43,21 @@ public class MessageServiceImpl implements MessageService {
         message.setContent(content);
         message.setTitle(title);
         messageMapper.insertSelective(message);
+    }
+
+    @Override
+    public void newMessageBatch(List<MessageTemp> temp) {
+        //TODO
+        //消息通知
+//        Message message = new Message();
+//        message.setTimestamp(System.currentTimeMillis());
+//        message.setMessageId(Utils.generateId());
+//
+//        message.setFromUser(fromUser);
+//        message.setToUser(toUser);
+//        message.setType(type);
+//        message.setContent(content);
+//        message.setTitle(title);
+//        messageMapper.insertSelective(message);
     }
 }

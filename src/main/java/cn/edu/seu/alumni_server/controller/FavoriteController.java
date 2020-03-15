@@ -55,10 +55,11 @@ public class FavoriteController {
         Favorite favorite = new Favorite();
         favorite.setAccountId(accountId);
         favorite.setFavoriteAccountId(favoriteAccountId);
-        favorite.setStatus(status);
         if (favoriteMapper.select(favorite).size() == 0) {
+            favorite.setStatus(status);
             favoriteMapper.insertSelective(favorite);
         } else {
+            favorite.setStatus(status);
             Example example = new Example(Favorite.class);
             Example.Criteria criteria = example.createCriteria();
             criteria.andEqualTo("accountId", accountId);
