@@ -19,7 +19,8 @@ sh start-prd.sh
 
 ```shell script
 #查看日志 
-tail -f nohup.out
+tail -f log/dev/app.log
+
 ``` 
 
 ```查看nginx配置
