@@ -35,7 +35,7 @@ public class TokenUtil {
     }
 
     static {
-        log.info("dev token : " + createToken("3245005322240"));
+        log.info("dev token : " + createToken("19884396940288"));
     }
 
 
