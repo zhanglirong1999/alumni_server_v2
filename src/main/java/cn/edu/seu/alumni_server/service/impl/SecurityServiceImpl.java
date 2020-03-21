@@ -1,10 +1,12 @@
 package cn.edu.seu.alumni_server.service.impl;
 
 import cn.edu.seu.alumni_server.common.Utils;
+import cn.edu.seu.alumni_server.common.config.AccessTokenConfig;
 import cn.edu.seu.alumni_server.controller.dto.ActivityDTO;
 import cn.edu.seu.alumni_server.service.SecurityService;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -25,15 +27,18 @@ import java.util.UUID;
 @Service
 @Slf4j
 public class SecurityServiceImpl implements SecurityService {
+    @Autowired
+    AccessTokenConfig accessTokenConfig;
+
     @Override
     public boolean checkoutActivityContentSecurity(ActivityDTO activityDTO) {
-        return  checkoutText(activityDTO.getActivityName()) |
-                checkoutText(activityDTO.getActivityDesc()) |
-                checkoutPicture(activityDTO.getImg1())|
-                checkoutPicture(activityDTO.getImg2())|
-                checkoutPicture(activityDTO.getImg3())|
-                checkoutPicture(activityDTO.getImg4())|
-                checkoutPicture(activityDTO.getImg5())|
+        return  checkoutText(activityDTO.getActivityName()) &&
+                checkoutText(activityDTO.getActivityDesc()) &&
+                checkoutPicture(activityDTO.getImg1())&&
+                checkoutPicture(activityDTO.getImg2())&&
+                checkoutPicture(activityDTO.getImg3())&&
+                checkoutPicture(activityDTO.getImg4())&&
+                checkoutPicture(activityDTO.getImg5())&&
                 checkoutPicture(activityDTO.getImg6());
     }
 
@@ -51,10 +56,14 @@ public class SecurityServiceImpl implements SecurityService {
         param.put("content", text);
         String response = rest.postForObject(url, param, String.class);
         String code = JSONObject.parseObject(response).getString("errcode");
-        if(code.equals("87014"))
-            return false;
         log.info("文字或图片敏感检测，" + text + ": " + response);
-        return true;
+        if (code.equals("40001")){
+            accessTokenConfig.regainAccessToken();
+            response = rest.postForObject(url, param, String.class);
+            code = JSONObject.parseObject(response).getString("errcode");
+            log.info("文字或图片敏感检测，" + text + ": " + response);
+        }
+        return !code.equals("87014");
     }
 
     /**
@@ -92,10 +101,14 @@ public class SecurityServiceImpl implements SecurityService {
             String code = JSONObject.parseObject(response).getString("errcode");
             //删除图片
             new File(picturePath).delete();
-            if(code.equals("87014"))
-                return false;
             log.info("文字或图片敏感检测，" + path + ": " + response);
-            return true;
+            if (code.equals("40001")){
+                accessTokenConfig.regainAccessToken();
+                response = rest.postForObject(url, param, String.class);
+                code = JSONObject.parseObject(response).getString("errcode");
+                log.info("文字或图片敏感检测，" + path + ": " + response);
+            }
+            return !code.equals("87014");
         } catch (IOException e) {
             e.printStackTrace();
         }
