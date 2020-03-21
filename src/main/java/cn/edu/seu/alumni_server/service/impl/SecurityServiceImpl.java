@@ -101,30 +101,4 @@ public class SecurityServiceImpl implements SecurityService {
         }
         return true;
     }
-
-    public static void main(String[] args) {
-        String url = "https://api.weixin.qq.com/wxa/img_sec_check?access_token=" + Utils.getAccessToken();
-
-        InputStream headimgIs = null;
-        String pictureName = null;
-        try {
-            URL pictureUrl = new URL("https://alumni-circle-1257046110.cos.ap-beijing.myqcloud.com/20022156083200.jpg");
-            URLConnection con = pictureUrl.openConnection();
-            headimgIs = con.getInputStream();
-            byte[] bytes = new byte[1024];
-            pictureName = "msg" + UUID.randomUUID() + ".jpg";
-            URL x = ClassLoader.getSystemClassLoader().getResource("./");
-            String rootDirectory = System.getProperty("user.dir");
-            FileOutputStream downloadFile = new FileOutputStream(rootDirectory + "/src/main/resources/picture/" +pictureName);
-            int index;
-            while ((index = headimgIs.read(bytes)) != -1) {
-                downloadFile.write(bytes, 0, index);
-                downloadFile.flush();
-            }
-            downloadFile.close();
-            headimgIs.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }
