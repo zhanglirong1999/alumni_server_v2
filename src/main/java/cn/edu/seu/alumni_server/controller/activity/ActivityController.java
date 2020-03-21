@@ -15,10 +15,7 @@ import cn.edu.seu.alumni_server.exceptions.ActivityMemberServiceException;
 import cn.edu.seu.alumni_server.exceptions.ActivityServiceException;
 import cn.edu.seu.alumni_server.interceptor.registration.RegistrationRequired;
 import cn.edu.seu.alumni_server.interceptor.token.Acl;
-import cn.edu.seu.alumni_server.service.ActivityMemberService;
-import cn.edu.seu.alumni_server.service.ActivityService;
-import cn.edu.seu.alumni_server.service.MessageService;
-import cn.edu.seu.alumni_server.service.SubscribeMessageService;
+import cn.edu.seu.alumni_server.service.*;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +51,8 @@ public class ActivityController {
     ActivityMemberMapper activityMemberMapper;
     @Autowired
     SubscribeMessageService subscribeMessageService;
-
+    @Autowired
+    SecurityService securityService;
 
     /**
      * 创建一个活动
@@ -119,6 +117,10 @@ public class ActivityController {
     public WebResponse createActivity(
             @RequestBody ActivityDTO activityDTO
     ) {
+        //检验用户创建的活动的文字和图片有没有敏感内容
+        boolean isLegal = securityService.checkoutActivityContentSecurity(activityDTO);
+        if (!isLegal)
+            return new WebResponse().fail("文字或图片含有敏感信息");
         Long accountId = (Long) request.getAttribute("accountId");
         activityDTO.setAccountId(accountId);
         // 在这里完成对于创建活动的构建
@@ -164,6 +166,21 @@ public class ActivityController {
             @RequestParam(required = false) String img5,
             @RequestParam(required = false) String img6
     ) throws ActivityServiceException {
+        //检验用户创建的活动的文字和图片有没有敏感内容
+        ActivityDTO t = new ActivityDTO();
+        t.setActivityName(activityName);
+        t.setActivityDesc(activityDesc);
+        t.setImg1(img1);
+        t.setImg2(img2);
+        t.setImg3(img3);
+        t.setImg4(img4);
+        t.setImg5(img5);
+        t.setImg6(img6);
+        boolean isLegal = securityService.checkoutActivityContentSecurity(t);
+
+        if (!isLegal)
+            return new WebResponse().fail("文字或图片含有敏感信息");
+
         this.activityService.updateActivity(
                 activityId, activityName, activityDesc,
                 activityTime, expirationTime,
