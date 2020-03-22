@@ -10,5 +10,10 @@ public interface MessageService {
 
     void newMessage(Long fromUser, Long toUser, Integer type, String title, String content);
 
+    void newMessage(
+        Long fromUser, Long toUser, Integer type, String title, String content,
+        String img
+    );
+
     void newMessageBatch(List<MessageTemp> messageTemps);
 }
