@@ -36,7 +36,7 @@ public class MessageController {
                                    @RequestParam Integer pageSize) {
         Long accountId = (Long) request.getAttribute("accountId");
         if (status != null && status != 0 && status != 1) {
-            return new WebResponse().fail("status只能为0，1");
+            return new WebResponse().fail("status只能为0, 1");
         }
         PageHelper.startPage(pageIndex, pageSize);
 

@@ -28,6 +28,8 @@ public class MessageDTO {
 
     private Long toUser;
 
+    private String img;
+
     MessageDTO() {
 
     }

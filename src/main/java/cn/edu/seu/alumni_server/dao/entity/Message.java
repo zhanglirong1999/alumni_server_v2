@@ -42,6 +42,9 @@ public class Message implements Serializable {
     @Column(name = "to_user")
     private Long toUser;
 
+    @Column(name = "img")
+    private String img;
+
     private static final long serialVersionUID = 1L;
 
 }
