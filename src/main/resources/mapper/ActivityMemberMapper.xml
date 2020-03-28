@@ -84,4 +84,11 @@
           AND ACT.is_available = 1
           AND ACT.activity_id = #{activityId}
     </select>
+    <select id="getActivityAvailableMemberId" resultType="java.lang.Long">
+        SELECT account_id
+        FROM activity_member
+        WHERE activity_id = #{activityId}
+        and is_available = 1
+    </select>
+
 </mapper>

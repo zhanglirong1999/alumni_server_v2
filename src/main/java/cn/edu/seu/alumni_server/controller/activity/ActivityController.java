@@ -15,6 +15,7 @@ import cn.edu.seu.alumni_server.controller.dto.StartedOrEnrolledActivityInfoDTO;
 import cn.edu.seu.alumni_server.controller.dto.enums.MessageType;
 import cn.edu.seu.alumni_server.dao.entity.Activity;
 import cn.edu.seu.alumni_server.dao.entity.ActivityMember;
+import cn.edu.seu.alumni_server.dao.mapper.AccountMapper;
 import cn.edu.seu.alumni_server.dao.mapper.ActivityMapper;
 import cn.edu.seu.alumni_server.dao.mapper.ActivityMemberMapper;
 import cn.edu.seu.alumni_server.exceptions.ActivityMemberServiceException;
@@ -68,7 +69,8 @@ public class ActivityController {
 	SubscribeMessageService subscribeMessageService;
 	@Autowired
 	SecurityService securityService;
-
+	@Autowired
+	AccountMapper accountMapper;
 	/**
 	 * 创建一个活动
 	 */
@@ -340,26 +342,36 @@ public class ActivityController {
 	) {
 		Long accountId = (Long) request.getAttribute("accountId");
 
-		Example example = new Example(ActivityMember.class);
-		Example.Criteria criteria = example.createCriteria();
-		criteria.andEqualTo("activityId", activityId);
-		criteria.andEqualTo("isAvailable", true);
+		List<Long> result;
+		String messageType;
 
-		List<ActivityMember> activityMembers = activityMemberMapper.selectByExample(example);
+		ActivityBasicInfoDTO basicInfoDTO = activityMapper.getBasicInfosByActivityId(activityId);
+		//发送系统消息，条件是活动的名称是seuAlumni系统活动并且发起人是王宗辉
+		if(basicInfoDTO.getActivityName().equals("seuAlumni系统活动") && basicInfoDTO.getStarterName().equals("王宗辉")){
+			result = accountMapper.selectAllValidAccountsId();
+			messageType = CONST.SYSTEM_MESSAGE;
+		}
+		//普通的系统通知
+		else{
+			result = activityMemberMapper.getActivityAvailableMemberId(activityId);
+			messageType = CONST.ACTIVITY_MESSAGE;
+		}
 
+		List<Long> finalResult = result;
+		String finalMessageType = messageType;
 		executor.execute(
 			() -> {
-				activityMembers.forEach(
+				finalResult.forEach(
 					(e) -> {
 						messageService.newMessage(
-							activityId, e.getAccountId(),
+							activityId, e,
 							MessageType.ACTIVITY_NOTIFY.getValue(),
 							title, content, img
 						);
 						subscribeMessageService.sendSubscribeMessage(
-							e.getAccountId(),
+							e,
 							activityId,
-							CONST.ACTIVITY_MESSAGE
+								finalMessageType
 						);
 					}
 				);

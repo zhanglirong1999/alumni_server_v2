@@ -24,4 +24,6 @@ public interface AccountMapper extends Mapper<Account> {
 	void updateAccountAvatar(Long accountId, String ans);
 
 	List<Account> selectAllValidAccounts();
+
+    List<Long> selectAllValidAccountsId();
 }
