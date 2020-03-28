@@ -6,8 +6,13 @@ import cn.edu.seu.alumni_server.service.AccountService;
 import cn.edu.seu.alumni_server.service.ActivityService;
 import cn.edu.seu.alumni_server.service.AlumniCircleService;
 import cn.edu.seu.alumni_server.service.QCloudFileManager;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.Arrays;
+import javax.net.ssl.HttpsURLConnection;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,7 +80,10 @@ public class AlumniServerApplicationTests {
 
 	@Test
 	public void testTransAvatar() throws IOException {
-		this.accountService.transAccountAvatarFromURLToURL();
+		System.out.println(Utils.isSameAvatar(
+			"https://alumni-circle-1257046110.cos.ap-beijing.myqcloud.com/20789435961344.png",
+			"https://wx.qlogo.cn/mmopen/vi_32/3TQeYlqJrbpsvCib5BNKic3AYuxdBnX68hAibibJRtNAnFQPJvetJEj7CQ7r8yg1ciav7t6RNBxUPicAJnuTSf3v2oSg/132"
+		));
 	}
 
 }

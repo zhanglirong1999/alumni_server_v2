@@ -170,7 +170,7 @@ public class AccountAllController {
     }
 
     @WebResponseAPIMethod
-    @PostMapping("/account/fileAvatar")
+    @GetMapping("/account/fileAvatar")
     public Object updateAccountAvatarByFile(
         @RequestParam MultipartFile multipartFile
     ) throws IOException {
@@ -182,7 +182,7 @@ public class AccountAllController {
     }
 
     @WebResponseAPIMethod
-    @PostMapping("/account/urlAvatar")
+    @GetMapping("/account/urlAvatar")
     public Object updateAccountAvatarByURL(
         @RequestParam String url
     ) throws IOException {

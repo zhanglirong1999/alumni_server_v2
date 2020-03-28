@@ -70,11 +70,18 @@ public class AccountServiceImpl implements AccountService {
 		@ValidWebParameter
 			String url
 	) throws IOException {
-		String ans = this.qCloudFileManager.saveAccountAvatar(
-			url, Utils.generateId() + ".png"
-		);
-		this.accountMapper.updateAccountAvatar(accountId, ans);
-		return ans;
+		// 每次传过来的是微信 url
+		Account account = accountMapper.selectByAccountId(accountId);
+		String avatar = account.getAvatar();
+		if (avatar == null || !avatar.startsWith("https://alumni-circle-") || !Utils.isSameAvatar(avatar, url)) {
+			String ans = this.qCloudFileManager.saveAccountAvatar(
+				url, Utils.generateId() + ".png"
+			);
+			this.accountMapper.updateAccountAvatar(accountId, ans);
+			return ans;
+		} else {
+			return avatar;
+		}
 	}
 
 	@Override
