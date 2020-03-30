@@ -32,3 +32,5 @@ build/
 
 log
 *.log
+
+src/main/java/cn/edu/seu/alumni_server/demo
