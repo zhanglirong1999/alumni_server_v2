@@ -7,7 +7,7 @@
 
         <RollingFile name="RollingFile" fileName="log/app.log"
                      filePattern="log/$${date:yyyyMMdd}/app.log.%d{yyyyMMdd}.%i.gz">
-            <PatternLayout pattern="%d %p %t [%c{1.} %M] : %m%n"/>
+            <PatternLayout pattern="%d %p %t [%c{1.} %M %L] : %m%n"/>
             <Policies>
                 <TimeBasedTriggeringPolicy/>
                 <SizeBasedTriggeringPolicy size="100MB"/>
