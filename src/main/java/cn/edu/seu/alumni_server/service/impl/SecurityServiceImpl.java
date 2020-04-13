@@ -59,6 +59,7 @@ public class SecurityServiceImpl implements SecurityService {
         log.info("文字或图片敏感检测，" + text + ": " + response);
         if (code.equals("40001")){
             accessTokenConfig.regainAccessToken();
+            url = "https://api.weixin.qq.com/wxa/msg_sec_check?access_token=" + Utils.getAccessToken();
             response = rest.postForObject(url, param, String.class);
             code = JSONObject.parseObject(response).getString("errcode");
             log.info("文字或图片敏感检测，" + text + ": " + response);
@@ -104,6 +105,7 @@ public class SecurityServiceImpl implements SecurityService {
             log.info("文字或图片敏感检测，" + path + ": " + response);
             if (code.equals("40001")){
                 accessTokenConfig.regainAccessToken();
+                url = "https://api.weixin.qq.com/wxa/img_sec_check?access_token=" + Utils.getAccessToken();
                 response = rest.postForObject(url, param, String.class);
                 code = JSONObject.parseObject(response).getString("errcode");
                 log.info("文字或图片敏感检测，" + path + ": " + response);

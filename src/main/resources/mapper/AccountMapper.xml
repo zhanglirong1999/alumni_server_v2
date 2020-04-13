@@ -64,4 +64,12 @@
         where registered = 1
         and valid_status = 1
     </select>
+    <select id="selectAllValidAccountsId"
+            resultType="java.lang.Long">
+        select account_id
+        from account
+        where registered = 1
+        and valid_status = 1
+    </select>
+
 </mapper>

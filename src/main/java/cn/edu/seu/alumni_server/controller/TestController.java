@@ -63,6 +63,12 @@ public class TestController {
         return "ok";
     }
 
+    @RequestMapping("log")
+    String log() {
+        log.info("log ok");
+        return "log";
+    }
+
     @Autowired
     HttpServletRequest request;
 

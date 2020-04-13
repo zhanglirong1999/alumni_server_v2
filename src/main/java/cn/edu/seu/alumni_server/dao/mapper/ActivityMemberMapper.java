@@ -19,6 +19,13 @@ public interface ActivityMemberMapper extends Mapper<ActivityMember> {
 	public List<ActivityMemberBasicInfoDTO> getActivityMemberInfosByActivityId(Long activityId);
 
 	/**
+	 * 根据活动的id获得所有isAvailable为1的成员的id
+	 * @param activityId
+	 * @return
+	 */
+	public List<Long> getActivityAvailableMemberId(Long activityId);
+
+	/**
 	 * 跟新一个活动所有成员的已读状态.
 	 *
 	 * @param activityId 活动 id.

@@ -67,11 +67,17 @@ public class SubscribeMessageServiceImpl implements SubscribeMessageService {
             //发送人
             //从数据库中根据id查询发送者的名字，名字要求：10个以内纯汉字或20个以内纯字母或符号
             String name;
-            if (messageType.equals(CONST.ACTIVITY_MESSAGE)) {
-                name = activityMapper.getBasicInfosByActivityId(sender).getStarterName();
-            } else {
-                //现有四种推送信息，除了if中的活动信息的推送的发送者是活动，剩下的三个发送者都是人，从数据库中找出人的名字
-                name = accountMapper.selectByAccountId(sender).getName();
+            switch (messageType) {
+                case CONST.ACTIVITY_MESSAGE:
+                    name = activityMapper.getBasicInfosByActivityId(sender).getStarterName();
+                    break;
+                case CONST.SYSTEM_MESSAGE:
+                    name = "校友圈官方";
+                    break;
+                default:
+                    //现有四种推送信息，除了if中的活动信息的推送的发送者是活动，剩下的三个发送者都是人，从数据库中找出人的名字
+                    name = accountMapper.selectByAccountId(sender).getName();
+                    break;
             }
             name = isLetterOrChinese(name)? name : "某用户";
             m.put("name1", new TemplateData(name));
