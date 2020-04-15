@@ -10,9 +10,11 @@ import cn.edu.seu.alumni_server.controller.dto.enums.SearchType;
 import cn.edu.seu.alumni_server.dao.entity.Account;
 import cn.edu.seu.alumni_server.dao.mapper.*;
 import cn.edu.seu.alumni_server.service.CommonService;
+import cn.edu.seu.alumni_server.service.QCloudFileManager;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.google.gson.Gson;
+import java.io.IOException;
 import lombok.Data;
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +57,9 @@ public class V2ApiController {
     CommonService commonService;
     @Autowired
     HttpServletRequest request;
+
+    @Autowired
+    QCloudFileManager qCloudFileManager;
 
     String getAccessToken(String openid) {
         if (System.currentTimeMillis() > expireTime) {
@@ -128,6 +133,15 @@ public class V2ApiController {
 
         Account account = accountDTO.toAccount();
         account.setStep1Finished(true);
+        // 注册就完成头像转化
+        try {
+            String newAvatar = qCloudFileManager.saveAccountAvatar(
+                account.getAvatar(), Utils.generateId() + ".png"
+            );
+            account.setAvatar(newAvatar);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         accountMapper.updateByPrimaryKeySelective(account);
 
         return new WebResponse().success(account.getAccountId());
