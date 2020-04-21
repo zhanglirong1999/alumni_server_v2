@@ -63,6 +63,9 @@ public class Account implements Serializable {
     @Column(name = "valid_status", insertable = false)
     private Boolean validStatus;
 
+    // 补充验证字段
+    private Boolean verified;
+
     private static final long serialVersionUID = 1L;
 
 }

@@ -64,26 +64,4 @@ public class AlumniServerApplicationTests {
 	public void testAlumniCircleRecommand() {
 //		System.out.println(alumniCircleService.alumniCirclesRecommend());
 	}
-
-	@Test
-	public void testUploadFile() {
-		try {
-			String s = fileManager.saveAccountAvatar(
-				"https://wx.qlogo.cn/mmopen/vi_32/O6qftWBakkgESo8qNUDjTMa5FQbAzC0nibIQxJTjxnXickWE7iaVm1tgCuQz198FTC8k2zeHicOlYv9tmld9v9o55Q/132",
-				Utils.generateId() + ".png"
-			);
-			System.out.println(s);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	@Test
-	public void testTransAvatar() throws IOException {
-		System.out.println(Utils.isSameAvatar(
-			"https://alumni-circle-1257046110.cos.ap-beijing.myqcloud.com/20789435961344.png",
-			"https://wx.qlogo.cn/mmopen/vi_32/3TQeYlqJrbpsvCib5BNKic3AYuxdBnX68hAibibJRtNAnFQPJvetJEj7CQ7r8yg1ciav7t6RNBxUPicAJnuTSf3v2oSg/132"
-		));
-	}
-
 }
