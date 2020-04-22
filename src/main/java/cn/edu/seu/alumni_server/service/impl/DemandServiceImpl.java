@@ -13,6 +13,8 @@ import org.springframework.util.StringUtils;
 
 import java.util.List;
 
+import static cn.edu.seu.alumni_server.common.CONST.ALL_DEMAND_TYPE;
+
 @Service
 public class DemandServiceImpl implements DemandService {
 
@@ -61,7 +63,9 @@ public class DemandServiceImpl implements DemandService {
 
     @Override
     public List<DemandListDTO> queryDemandList(String t, String name) {
-        int type = Integer.parseInt(t);
+        String type = null;
+        if (!t.equals(ALL_DEMAND_TYPE))
+            type = t;
         List<DemandListDTO> demandListDTOList = demandMapper.queryDemandList(type,name);
         for (DemandListDTO x: demandListDTOList){
             x.calculateStarterEducationGrade();

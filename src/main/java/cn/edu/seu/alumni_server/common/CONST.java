@@ -27,4 +27,10 @@ public class CONST {
     public static final String  NEW_FRIEND_MESSAGE = "有新朋友请求交换名片";
     public static final String  REJECT_MESSAGE = "拒绝添加朋友";
     public static final String  AGREE_MESSAGE = "同意添加朋友";
+
+    //需求类型
+    public static final String  ALL_DEMAND_TYPE = "0";
+    public static final String  JOBS_DEMAND_TYPE = "1";
+    public static final String  PARTNER_DEMAND_TYPE = "2";
+    public static final String  INFO_PUBLISH_DEMAND_TYPE = "3";
 }

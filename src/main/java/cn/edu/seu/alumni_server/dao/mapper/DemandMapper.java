@@ -12,5 +12,5 @@ import java.util.List;
 @Repository
 public interface DemandMapper extends Mapper<Demand> {
     DemandDetailDTO selectDetailDemandByDemandId(String demandId);
-    List<DemandListDTO> queryDemandList(@Param("type") int t,@Param("name")String name);
+    List<DemandListDTO> queryDemandList(@Param("type") String t,@Param("name")String name);
 }

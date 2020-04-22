@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.seu.alumni_server.dao.mapper.BannerMapper">
+    <resultMap id="BaseResultMap" type="cn.edu.seu.alumni_server.dao.entity.Banner">
+        <result column="banner_id" jdbcType="BIGINT" property="bannerId"/>
+        <result column="img" jdbcType="VARCHAR" property="img"/>
+        <result column="valid_status" jdbcType="TINYINT" property="validStatus"/>
+        <result column="c_time" jdbcType="TIMESTAMP" property="cTime"/>
+        <result column="u_time" jdbcType="TIMESTAMP" property="uTime"/>
+    </resultMap>
+</mapper>

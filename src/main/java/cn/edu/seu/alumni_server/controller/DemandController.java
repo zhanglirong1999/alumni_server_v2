@@ -22,25 +22,8 @@ public class DemandController {
     @Autowired
     DemandService demandService;
 
-
     @Autowired
     HttpServletRequest request;
-//
-//    @PostMapping("/demand/create")
-//    public WebResponse create(
-//            @RequestParam String demandName,
-//            @RequestParam String type,
-//            @RequestParam String tags,
-//            @RequestParam(required = false) String img1,
-//            @RequestParam(required = false) String img2,
-//            @RequestParam(required = false) String img3,
-//            @RequestParam(required = false) String img4,
-//            @RequestParam(required = false) String img5,
-//            @RequestParam(required = false) String img6,
-//            @RequestParam String details
-//    ){
-//        DemandCreateDTO
-//    }
 
     @PostMapping("/demand/create")
     public WebResponse create1(@RequestBody DemandCreateDTO demandCreateDTO){
