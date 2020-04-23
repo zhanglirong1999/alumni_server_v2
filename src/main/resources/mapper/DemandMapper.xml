@@ -25,7 +25,7 @@
 
 
     <select id="selectDetailDemandByDemandId" resultType="cn.edu.seu.alumni_server.controller.dto.DemandDetailDTO">
-        select DMD.demand_id,
+        select distinct DMD.demand_id,
         DMD.demand_name,
         DMD.type,
         DMD.tag1,
