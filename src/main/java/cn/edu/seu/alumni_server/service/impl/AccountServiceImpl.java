@@ -8,15 +8,12 @@ import cn.edu.seu.alumni_server.service.QCloudFileManager;
 import cn.edu.seu.alumni_server.validation.annotaion.ValidWebParameter;
 import java.io.File;
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
-import tk.mybatis.mapper.entity.Example;
-import tk.mybatis.mapper.util.Sqls;
 
 @Service
 @Validated
@@ -45,22 +42,34 @@ public class AccountServiceImpl implements AccountService {
 		@ValidWebParameter
 			MultipartFile multipartFile
 	) throws IOException {
-		// 首先获取 newName
-		String newNameWithoutType = String.valueOf(Utils.generateId());
-		// 尽量保证上传的图片格式与原来的图片格式相匹配
-		String newNameWithType = this.qCloudFileManager.buildNewFileNameWithType(
-			multipartFile, newNameWithoutType
-		);
-		// 转换为可上传文件
-		File file = this.qCloudFileManager.convertMultipartFileToFile(
-			multipartFile, newNameWithType
-		);
-		// 上传并删除
-		// 返回最终结果到 data 中
-		String ans = this.qCloudFileManager.uploadAndDeleteFile(file);
-		// 开始修改 account
-		this.accountMapper.updateAccountAvatar(accountId, ans);
-		return ans;
+		Account account = accountMapper.selectByPrimaryKey(accountId);
+		String avatar = account.getAvatar();
+		if (avatar == null || !avatar.startsWith("https://alumni-circle-")) {
+			// 首先获取 newName
+			String newNameWithoutType = String.valueOf(Utils.generateId());
+			// 尽量保证上传的图片格式与原来的图片格式相匹配
+			String newNameWithType = this.qCloudFileManager.buildNewFileNameWithType(
+				multipartFile, newNameWithoutType
+			);
+			// 转换为可上传文件
+			File file = this.qCloudFileManager.convertMultipartFileToFile(
+				multipartFile, newNameWithType
+			);
+			// 上传并删除
+			// 返回最终结果到 data 中
+			String ans = this.qCloudFileManager.uploadAndDeleteFile(file);
+			// 开始修改 account
+			this.accountMapper.updateAccountAvatar(accountId, ans);
+			return ans;
+		} else {
+			// 只需要修改 cos
+			String key = avatar.substring(avatar.lastIndexOf("/") + 1);
+			File file = this.qCloudFileManager.convertMultipartFileToFile(
+				multipartFile, key
+			);
+			// 返回最终结果到 data 中
+			return this.qCloudFileManager.uploadAndDeleteFile(file);
+		}
 	}
 
 	@Override
@@ -73,13 +82,19 @@ public class AccountServiceImpl implements AccountService {
 		// 每次传过来的是微信 url
 		Account account = accountMapper.selectByAccountId(accountId);
 		String avatar = account.getAvatar();
-		if (avatar == null || !avatar.startsWith("https://alumni-circle-") || !Utils.isSameAvatar(avatar, url)) {
+		if (avatar == null || !avatar.startsWith("https://alumni-circle-")) {
+			// 直接覆盖
 			String ans = this.qCloudFileManager.saveAccountAvatar(
 				url, Utils.generateId() + ".png"
 			);
 			this.accountMapper.updateAccountAvatar(accountId, ans);
 			return ans;
 		} else {
+			// 之前已经有了, 就修改 COS
+			String key = avatar.substring(avatar.lastIndexOf("/") + 1);
+			qCloudFileManager.saveAccountAvatar(
+				url, key
+			);
 			return avatar;
 		}
 	}
