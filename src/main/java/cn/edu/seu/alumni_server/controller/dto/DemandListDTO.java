@@ -15,6 +15,7 @@ public class DemandListDTO {
     private String tag4;
     private String tag5;
     private String accountId;
+    private String type;
     private String accountName;
     private long accountStartEducationYear;
     private String accountEducationCollege;

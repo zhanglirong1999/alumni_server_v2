@@ -43,7 +43,7 @@
         DMD.c_time,
         DMD.account_id,
         ACC.name as account_name,
-        ACC.avatar as account_avator,
+        ACC.avatar as account_avatar,
         EDU.education as account_education_level,
         EDU.school as account_education_school,
         EDU.college as account_education_college,
@@ -62,6 +62,7 @@
     <select id="queryDemandList" resultType="cn.edu.seu.alumni_server.controller.dto.DemandListDTO">
         select DISTINCT DMD.demand_id,
         DMD.demand_name,
+        DMD.type,
         DMD.tag1,
         DMD.tag2,
         DMD.tag3,
