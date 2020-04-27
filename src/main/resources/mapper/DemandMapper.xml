@@ -25,7 +25,7 @@
 
 
     <select id="selectDetailDemandByDemandId" resultType="cn.edu.seu.alumni_server.controller.dto.DemandDetailDTO">
-        select distinct DMD.demand_id,
+        select DMD.demand_id,
         DMD.demand_name,
         DMD.type,
         DMD.tag1,
@@ -55,12 +55,15 @@
         education as EDU on ACC.account_id = EDU.account_id
         where
           ACC.valid_status = 1
-          AND EDU.valid_status = 1
+          AND (EDU.valid_status = 1 OR ISNULL(EDU.valid_status))
           AND DMD.demand_id = #{demandId}
+        ORDER BY EDU.end_time DESC
+               , EDU.u_time DESC
+        LIMIT 1
     </select>
 
     <select id="queryDemandList" resultType="cn.edu.seu.alumni_server.controller.dto.DemandListDTO">
-        select DISTINCT DMD.demand_id,
+        select DMD.demand_id,
         DMD.demand_name,
         DMD.type,
         DMD.tag1,
@@ -77,10 +80,14 @@
         left join
         account as ACC on DMD.account_id = ACC.account_id
         left join
-        education as EDU on ACC.account_id = EDU.account_id
+        (
+        select account_id,college, max(start_time) as start_time ,valid_status
+        from education
+        where (education.valid_status = 1 or ISNULL(education.valid_status))
+        GROUP BY education.account_id)
+        as EDU on ACC.account_id = EDU.account_id
         where
           ACC.valid_status = 1
-        AND EDU.valid_status = 1
         <if test="type != null">
         AND DMD.type = #{type}
         </if>
