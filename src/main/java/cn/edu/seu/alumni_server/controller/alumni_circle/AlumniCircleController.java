@@ -19,6 +19,7 @@ import cn.edu.seu.alumni_server.dao.mapper.ActivityMapper;
 import cn.edu.seu.alumni_server.dao.mapper.AlumniCircleMapper;
 import cn.edu.seu.alumni_server.dao.mapper.AlumniCircleMemberMapper;
 import cn.edu.seu.alumni_server.service.AlumniCircleService;
+import cn.edu.seu.alumni_server.service.SecurityService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import java.util.Collections;
@@ -49,6 +50,9 @@ public class AlumniCircleController {
 
     @Autowired
     AlumniCircleMemberMapper alumniCircleMemberMapper;
+
+    @Autowired
+    SecurityService securityService;
 
     @GetMapping("/enrolledAlumniCircles")
     public WebResponse getEnrolledAlumniCirclesByAccountId(
@@ -211,13 +215,20 @@ public class AlumniCircleController {
     @PostMapping("")
     public WebResponse create(@RequestBody AlumniCircleDTO alumniCircleDTO,
                               @RequestParam(required = false) Long accountId) {
-        // TODO 仅测试用
+         //TODO 仅测试用
         if (accountId == null)
             accountId = (Long) request.getAttribute(CONST.ACL_ACCOUNTID);
 
         if (accountId == null) {
             return new WebResponse().fail("accountId is null");
         }
+
+        //检验用户创建的文字和图片有没有敏感内容
+        boolean isLegal = securityService.checkoutAlumniCircleDTOSecurity(alumniCircleDTO);
+        if (!isLegal) {
+            return new WebResponse().fail("文字或图片含有敏感信息");
+        }
+
         AlumniCircle alumniCircle = new AlumniCircle();
         alumniCircle.setAlumniCircleDesc(alumniCircleDTO.getAlumniCircleDesc());
         alumniCircle.setAlumniCircleName(alumniCircleDTO.getAlumniCircleName());

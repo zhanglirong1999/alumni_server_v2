@@ -2,7 +2,8 @@ package cn.edu.seu.alumni_server.service.impl;
 
 import cn.edu.seu.alumni_server.common.Utils;
 import cn.edu.seu.alumni_server.common.config.AccessTokenConfig;
-import cn.edu.seu.alumni_server.controller.dto.ActivityDTO;
+import cn.edu.seu.alumni_server.controller.dto.*;
+import cn.edu.seu.alumni_server.controller.dto.alumnicircle.AlumniCircleDTO;
 import cn.edu.seu.alumni_server.service.SecurityService;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +41,52 @@ public class SecurityServiceImpl implements SecurityService {
                 checkoutPicture(activityDTO.getImg4())&&
                 checkoutPicture(activityDTO.getImg5())&&
                 checkoutPicture(activityDTO.getImg6());
+    }
+
+    @Override
+    public boolean checkoutDemandContentSecurity(DemandCreateDTO demandCreateDTO) {
+        return  checkoutText(demandCreateDTO.getDemandName()) &&
+                checkoutText(demandCreateDTO.getTags()) &&
+                checkoutText(demandCreateDTO.getDetails()) &&
+                checkoutPicture(demandCreateDTO.getImg1())&&
+                checkoutPicture(demandCreateDTO.getImg2())&&
+                checkoutPicture(demandCreateDTO.getImg3())&&
+                checkoutPicture(demandCreateDTO.getImg4())&&
+                checkoutPicture(demandCreateDTO.getImg5())&&
+                checkoutPicture(demandCreateDTO.getImg6());
+    }
+
+    @Override
+    public boolean checkoutAlumniCircleDTOSecurity(AlumniCircleDTO alumniCircleDTO) {
+        return  checkoutText(alumniCircleDTO.getAlumniCircleName()) &&
+                checkoutText(alumniCircleDTO.getAlumniCircleDesc()) &&
+                checkoutText(alumniCircleDTO.getAlumniCircleAnnouncement()) &&
+                checkoutPicture(alumniCircleDTO.getAvatar());
+    }
+
+    @Override
+    public boolean checkoutAccountDTOSecurity(AccountDTO accountDTO) {
+        return  checkoutText(accountDTO.getName()) &&
+                checkoutText(accountDTO.getSelfDesc()) &&
+                checkoutText(accountDTO.getCity()) &&
+                checkoutText(accountDTO.getPhone()) &&
+                checkoutText(accountDTO.getWechat()) &&
+                checkoutText(accountDTO.getEmail()) &&
+                checkoutText(accountDTO.getIndustry()) &&
+                checkoutPicture(accountDTO.getAvatar());
+    }
+
+    @Override
+    public boolean checkoutEducationDTOSecurity(EducationDTO educationDTO) {
+        return  checkoutText(educationDTO.getEducation()) &&
+                checkoutText(educationDTO.getSchool()) &&
+                checkoutText(educationDTO.getCollege());
+    }
+
+    @Override
+    public boolean checkoutJobDTOSecurity(JobDTO obDTO) {
+        return  checkoutText(obDTO.getCompany()) &&
+                checkoutText(obDTO.getPosition());
     }
 
     /**
@@ -85,7 +132,7 @@ public class SecurityServiceImpl implements SecurityService {
             headimgIs = con.getInputStream();
             byte[] bytes = new byte[1024];
             String rootDirectory = System.getProperty("user.dir");
-            picturePath = rootDirectory + "/src/main/resources/picture/msg" + UUID.randomUUID() + ".jpg";
+            picturePath = rootDirectory + "\\src\\main\\resources\\picture\\msg" + UUID.randomUUID() + ".jpg";
             FileOutputStream downloadFile = new FileOutputStream(picturePath);
             int index;
             while ((index = headimgIs.read(bytes)) != -1) {

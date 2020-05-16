@@ -8,6 +8,7 @@ import cn.edu.seu.alumni_server.controller.dto.PageResult;
 import cn.edu.seu.alumni_server.dao.entity.Demand;
 import cn.edu.seu.alumni_server.interceptor.token.Acl;
 import cn.edu.seu.alumni_server.service.DemandService;
+import cn.edu.seu.alumni_server.service.SecurityService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +26,17 @@ public class DemandController {
     @Autowired
     HttpServletRequest request;
 
+    @Autowired
+    SecurityService securityService;
+
     @PostMapping("/demand/create")
     public WebResponse create1(@RequestBody DemandCreateDTO demandCreateDTO){
         try {
+            boolean isLegal = securityService.checkoutDemandContentSecurity(demandCreateDTO);
+            if (!isLegal) {
+                return new WebResponse().fail("文字或图片含有敏感信息");
+            }
+
             Demand demand = demandService.checkInputtedDemandForCreate(demandCreateDTO);
             demand.setAccountId((Long) request.getAttribute("accountId"));
             demandService.insertDemand(demand);

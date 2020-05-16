@@ -15,6 +15,8 @@ import cn.edu.seu.alumni_server.dao.mapper.*;
 import cn.edu.seu.alumni_server.service.AccountService;
 import cn.edu.seu.alumni_server.service.CommonService;
 import java.io.IOException;
+
+import cn.edu.seu.alumni_server.service.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,6 +57,9 @@ public class AccountAllController {
     @Autowired
     HttpServletResponse httpServletResponse;
 
+    @Autowired
+    SecurityService securityService;
+
     @GetMapping("/account")
     public WebResponse getAccount() {
         Long accountId = (Long) request.getAttribute(CONST.ACL_ACCOUNTID);
@@ -64,6 +69,11 @@ public class AccountAllController {
 
     @PostMapping("/account")
     public WebResponse changeAccount(@RequestBody AccountDTO accountDTO) {
+        //检验用户创建的文字和图片有没有敏感内容
+        boolean isLegal = securityService.checkoutAccountDTOSecurity(accountDTO);
+        if (!isLegal) {
+            return new WebResponse().fail("文字或图片含有敏感信息");
+        }
         if (accountDTO.getAccountId() != null &&
                 !accountDTO.getAccountId().equals("")) {
             accountMapper.
@@ -121,6 +131,12 @@ public class AccountAllController {
 
     @PostMapping("/education")
     public WebResponse changeEducation(@RequestBody EducationDTO educationDTO) {
+        //检验用户创建的文字和图片有没有敏感内容
+        boolean isLegal = securityService.checkoutEducationDTOSecurity(educationDTO);
+        if (!isLegal) {
+            return new WebResponse().fail("文字或图片含有敏感信息");
+        }
+
         if (educationDTO.getEducationId() != null &&
                 !educationDTO.getEducationId().equals("")) {
             educationMapper.
@@ -150,6 +166,12 @@ public class AccountAllController {
 
     @PostMapping("/job")
     public WebResponse changeJobExperience(@RequestBody JobDTO jobDTO) {
+        //检验用户创建的文字和图片有没有敏感内容
+        boolean isLegal = securityService.checkoutJobDTOSecurity(jobDTO);
+        if (!isLegal) {
+            return new WebResponse().fail("文字或图片含有敏感信息");
+        }
+
         if (jobDTO.getJobId() != null &&
                 !jobDTO.getJobId().equals("")) {
             jobMapper.updateByPrimaryKeySelective(jobDTO.toJob());

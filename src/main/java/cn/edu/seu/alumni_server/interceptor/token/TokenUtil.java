@@ -35,7 +35,9 @@ public class TokenUtil {
     }
 
     static {
-        log.info("dev token : " + createToken("19884396940288"));
+        String a = createToken("19884396940288");
+        log.info("dev token : " + a);
+        System.out.println("dev token:" + a);
     }
 
 
