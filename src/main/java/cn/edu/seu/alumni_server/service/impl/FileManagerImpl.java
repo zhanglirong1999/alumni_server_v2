@@ -90,8 +90,9 @@ public class FileManagerImpl implements QCloudFileManager {
 		return ans;
 	}
 
-	public String buildNewFileNameWithType(MultipartFile multipartFile,
-		String newFileNameWithoutType
+	@Override
+    public String buildNewFileNameWithType(MultipartFile multipartFile,
+                                           String newFileNameWithoutType
 	) {
 		// 获取到原始文件的类型
 		return newFileNameWithoutType + Objects.requireNonNull(
@@ -154,5 +155,45 @@ public class FileManagerImpl implements QCloudFileManager {
 		File file = new File(newFileName);
 		FileUtils.copyInputStreamToFile(in, file);
 		return this.uploadAndDeleteFile(file, subDirs);
+	}
+
+	@Override
+	public String uploadOneFile(
+			MultipartFile multipartFile,
+			String newFileNameWithoutType,
+			String ... subDirs
+	) throws IOException {
+		// 首先获取到
+		String ansFileUrl = this.getBaseUrl();
+		String newFileNameWithType = buildNewFileNameWithType(
+				multipartFile,
+				newFileNameWithoutType
+		);
+		// 创建文件
+		File uploadFile = this.convertMultipartFileToFile(
+				multipartFile, newFileNameWithType
+		);
+		// 创建新的文件路径
+		StringBuilder bucketNameBuilder = new StringBuilder();
+		for (String subDir: subDirs) {
+			bucketNameBuilder.append("/").append(subDir);
+		}
+		String uploadFileKey =
+				bucketNameBuilder.append("/").append(
+						uploadFile.getName()
+				).toString();
+		// 上传文件
+		// 创建客户端
+		COSClient cosClient = this.qCloudHolder.newCOSClient();
+		// 上传图片文件到指定的桶中
+		PutObjectRequest putObjectRequest = new PutObjectRequest(
+				this.qCloudHolder.getBucketName(),
+				uploadFileKey,
+				uploadFile
+		);
+		cosClient.putObject(putObjectRequest);
+		// 关闭
+		this.qCloudHolder.closeCOSClient(cosClient);
+		return ansFileUrl + putObjectRequest.getKey();
 	}
 }

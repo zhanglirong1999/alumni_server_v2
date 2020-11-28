@@ -41,4 +41,10 @@ public interface QCloudFileManager {
 		String newFileName,
 		String... subDirs
 	) throws IOException;
+
+	String uploadOneFile(
+			MultipartFile multipartFile,
+			String newFileNameWithoutType,
+			String... subDirs
+	) throws IOException;
 }

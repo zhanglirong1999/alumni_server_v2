@@ -1,5 +1,5 @@
 git checkout develop
-git pull
+#git pull
 mvn clean package
 
 #
