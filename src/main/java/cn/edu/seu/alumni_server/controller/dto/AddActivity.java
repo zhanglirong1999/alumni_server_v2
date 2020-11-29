@@ -28,5 +28,5 @@ public class AddActivity {
 
     String tag;
 
-    MultipartFile[] img;
+    String[] img;
 }

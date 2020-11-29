@@ -48,9 +48,15 @@ public class Activity2ServiceImpl implements Activity2Service {
         String type=addActivity.getType();
         String location=addActivity.getLocation();
         String cost=addActivity.getCost();
-        Integer visible=addActivity.getVisible();
+        Integer visible;
+        if (addActivity.getVisible()==null)
+        {
+            visible=1;
+        }else {
+            visible=addActivity.getVisible();
+        }
         String tag=addActivity.getTag();
-        MultipartFile[] imgs=addActivity.getImg();
+        String[] imgs=addActivity.getImg();
 
         Long aid = Utils.generateId();
         Activity2 activity = new Activity2();
@@ -68,7 +74,7 @@ public class Activity2ServiceImpl implements Activity2Service {
         activity2Mapper.insert(activity);
         if(imgs!=null) {
             for (int i = 0; i < imgs.length; i++) {
-                String img = uploadFile(imgs[i]);
+                String img = imgs[i];
                 ActivityImg activityImg = new ActivityImg();
                 activityImg.setAid(aid);
                 activityImg.setImg(img);
