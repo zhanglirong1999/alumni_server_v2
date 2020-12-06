@@ -17,6 +17,7 @@ public interface ActivityMemberMapper extends Mapper<ActivityMember> {
 	 * @return 参与人员的信息列表.
 	 */
 	public List<ActivityMemberBasicInfoDTO> getActivityMemberInfosByActivityId(Long activityId);
+	public List<ActivityMemberBasicInfoDTO> getActivity2MemberInfosByActivityId(Long activityId);
 
 	/**
 	 * 根据活动的id获得所有isAvailable为1的成员的id
@@ -47,6 +48,7 @@ public interface ActivityMemberMapper extends Mapper<ActivityMember> {
 
 	// 选出当前存在的一个参与活动信息
 	public Integer getExistedEnrolledMember(Long activityId, Long accountId);
+	public Integer getExistedEnrolledMember2(Long activityId, Long accountId);
 
 	// 选出曾经存在的一个参与活动信息
 	public Integer getRecordNumberByPrimaryKey(Long activityId, Long accountId);

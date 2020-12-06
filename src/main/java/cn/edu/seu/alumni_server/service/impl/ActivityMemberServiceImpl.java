@@ -124,6 +124,25 @@ public class ActivityMemberServiceImpl implements ActivityMemberService {
 	}
 
 	@Override
+	public List<ActivityMemberBasicInfoDTO> queryActivity2MemberAccountInfosByAccountId(
+		Long activityId)
+		throws ActivityMemberServiceException {
+		if (activityId == null || activityId.equals("")) {
+			throw new ActivityMemberServiceException(
+				this.activityMemberFailPrompt.getUserPrompt(
+					"查询活动参与成员的信息", 5
+				)
+			);
+		}
+		List<ActivityMemberBasicInfoDTO> ans =
+			this.activityMemberMapper.getActivity2MemberInfosByActivityId(activityId);
+		for (ActivityMemberBasicInfoDTO t : ans) {
+			t.calculateStarterEducationGrade();
+		}
+		return ans;
+	}
+
+	@Override
 	public void updateAllActivityMembersReadStatus(Long activityId, Boolean readStatus)
 		throws ActivityMemberServiceException {
 		if (activityId == null || activityId.equals("")) {
@@ -232,6 +251,13 @@ public class ActivityMemberServiceImpl implements ActivityMemberService {
 	@Override
 	public Boolean hasEnrolledInto(Long activityId, Long accountId) {
 		Integer legalMemberRecordNumber = this.activityMemberMapper.getExistedEnrolledMember(
+			activityId, accountId
+		);
+		return legalMemberRecordNumber > 0;
+	}
+	@Override
+	public Boolean hasEnrolledInto2(Long activityId, Long accountId) {
+		Integer legalMemberRecordNumber = this.activityMemberMapper.getExistedEnrolledMember2(
 			activityId, accountId
 		);
 		return legalMemberRecordNumber > 0;

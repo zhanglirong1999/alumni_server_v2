@@ -17,11 +17,23 @@ import cn.edu.seu.alumni_server.service.CommonService;
 import java.io.IOException;
 
 import cn.edu.seu.alumni_server.service.SecurityService;
+import com.qcloud.cos.utils.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.AlgorithmParameterSpec;
 import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -214,4 +226,27 @@ public class AccountAllController {
             url
         );
     }
+
+    @PostMapping("/getPhoneNumber")
+    public String getPhoneNumber(String encryptedData, String iv, String sessionKey) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, UnsupportedEncodingException, InvalidKeyException {
+
+        System.out.println(encryptedData + "-------" + iv + "-------" + sessionKey);
+
+        byte[] encData = Base64.decode(encryptedData);
+        byte[] keyByte = Base64.decode(iv);
+        byte[] key = Base64.decode(sessionKey);
+
+        AlgorithmParameterSpec ivSpec = new IvParameterSpec(keyByte);
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        SecretKeySpec keySpec = new SecretKeySpec(key, "AES");
+        cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);// 初始化
+        byte[] resultByte = cipher.doFinal(encData);
+        if (null != resultByte && resultByte.length > 0) {
+            String result = new String(resultByte, "UTF-8");
+            System.out.println(result);
+            return result;
+        }
+        return null;
+    }
+
 }

@@ -1,16 +1,12 @@
 package cn.edu.seu.alumni_server.service.impl;
 
 import cn.edu.seu.alumni_server.controller.dto.AddActivity;
-import cn.edu.seu.alumni_server.dao.entity.Account;
-import cn.edu.seu.alumni_server.dao.entity.Activity2;
-import cn.edu.seu.alumni_server.dao.entity.ActivityImg;
-import cn.edu.seu.alumni_server.dao.entity.ActivityMember;
-import cn.edu.seu.alumni_server.dao.mapper.AccountMapper;
-import cn.edu.seu.alumni_server.dao.mapper.Activity2Mapper;
-import cn.edu.seu.alumni_server.dao.mapper.ActivityImgMapper;
-import cn.edu.seu.alumni_server.dao.mapper.ActivityMemberMapper;
+import cn.edu.seu.alumni_server.dao.entity.*;
+import cn.edu.seu.alumni_server.dao.mapper.*;
 import cn.edu.seu.alumni_server.service.Activity2Service;
+import cn.edu.seu.alumni_server.service.ActivityMemberService;
 import cn.edu.seu.alumni_server.service.QCloudFileManager;
+import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,7 +33,34 @@ public class Activity2ServiceImpl implements Activity2Service {
     private AccountMapper accountMapper;
 
     @Autowired
+    private EducationMapper educationMapper;
+
+    @Autowired
     private ActivityMemberMapper activityMemberMapper;
+
+    @Autowired
+    private ActivityMemberService activityMemberService;
+    private String accountStartEducationGrade;
+    private long accountStartEducationYear;
+
+    public void calculateStarterEducationGrade() {
+        System.out.println(accountStartEducationYear);
+        Date date = new Date(accountStartEducationYear);
+        System.out.println(date);
+        if (date.getTime() <= 0) {
+            this.accountStartEducationGrade = null;
+        } else {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            Integer y = calendar.get(Calendar.YEAR);
+            String sy = String.valueOf(y);
+            if (sy.length() != 4) {
+                accountStartEducationGrade = sy;
+            } else {
+                accountStartEducationGrade = sy.substring(2) + "级";
+            }
+        }
+    }
 
     @Override
     public void addActivity(AddActivity addActivity, Long accountId) {
@@ -107,7 +130,7 @@ public class Activity2ServiceImpl implements Activity2Service {
     }
 
     @Override
-    public Object getActivityDetail(Long id) {
+    public Object getActivityDetail(Long id,Long accountId) {
         Activity2 activity = activity2Mapper.selectOneByExample(
                 Example.builder(Activity2.class).where(Sqls.custom().andEqualTo("id", id))
                         .build()
@@ -120,10 +143,22 @@ public class Activity2ServiceImpl implements Activity2Service {
         String location = activity.getLocation();
         String cost = activity.getCost();
         String tag = activity.getTag();
-        String name = accountMapper.selectOneByExample(
+        Account account = accountMapper.selectOneByExample(
                 Example.builder(Account.class).where(Sqls.custom().andEqualTo("accountId", activity.getAccountId()))
                         .build()
-        ).getName();
+        );
+        Education education = educationMapper.selectOneByExample(
+                Example.builder(Education.class).where(Sqls.custom().andEqualTo("accountId", activity.getAccountId()))
+                        .build()
+        );
+        String name = account.getName();
+        String avatar = account.getAvatar();
+        String educationLevel = education.getEducation();
+        String educationCollege = education.getCollege();
+        String educationSchool = education.getSchool();
+        accountStartEducationYear= education.getStartTime();
+        calculateStarterEducationGrade();
+        String educationGrade = accountStartEducationGrade;
         Integer visible = activity.getVisible();
         Iterator<ActivityImg> activityImgList = activityImgMapper.selectByExample(
                 Example.builder(ActivityImg.class).where(Sqls.custom().andEqualTo("aid", id))
@@ -135,6 +170,11 @@ public class Activity2ServiceImpl implements Activity2Service {
             imgs.add(activityImg.getImg());
         }
         Map<String,Object> map = new HashMap<>();
+        map.put("avatar",avatar);
+        map.put("educationLevel",educationLevel);
+        map.put("educationCollege",educationCollege);
+        map.put("educationSchool",educationSchool);
+        map.put("educationGrade",educationGrade);
         map.put("id",id);
         map.put("title",title);
         map.put("type",type);
@@ -152,46 +192,139 @@ public class Activity2ServiceImpl implements Activity2Service {
                         .build()
         ).size();
         map.put("count",count);
+        Boolean hasEnrolled = this.activityMemberService.hasEnrolledInto2(
+                id, accountId
+        );
+        map.put("hasEnrolled",hasEnrolled);
         return map;
     }
 
     @Override
-    public Object getList() {
-        Iterator<Activity2> iterator = activity2Mapper.selectByExample(
-                Example.builder(Activity2.class).where(Sqls.custom().andEqualTo("visible", 1))
-                        .build()
-        ).iterator();
-        List list = new LinkedList();
-        while (iterator.hasNext()){
-            Activity2 activity = iterator.next();
-            Map<String,Object> map = new HashMap<>();
-            String title = activity.getTitle();
-            String type = activity.getType();
-            String time = activity.getTime();
-            String expiration = activity.getExpirationTime();
-            String description = activity.getDescription();
-            String location = activity.getLocation();
-            String cost = activity.getCost();
-            String tag = activity.getTag();
-            String name = accountMapper.selectOneByExample(
-                    Example.builder(Account.class).where(Sqls.custom().andEqualTo("accountId", activity.getAccountId()))
+    public Object getList(int pageIndex,int pageSize,int tags) throws Exception {
+        Map<String, Object> result = new HashMap<>();
+        if(tags==3) {
+            PageHelper.startPage(pageIndex, pageSize);
+            Iterator<Activity2> iterator = activity2Mapper.selectByExample(
+                    Example.builder(Activity2.class).where(Sqls.custom().andEqualTo("visible", 1))
                             .build()
-            ).getName();
-            map.put("id",activity.getId());
-            map.put("title",title);
-            map.put("type",type);
-            map.put("time",time);
-            map.put("expiration",expiration);
-            map.put("description",description);
-            map.put("location",location);
-            map.put("cost",cost);
-            map.put("tag",tag);
-            map.put("name",name);
-            map.put("distance",0);
-            list.add(map);
+            ).iterator();
+            List list = new LinkedList();
+            while (iterator.hasNext()) {
+                Activity2 activity = iterator.next();
+                Map<String, Object> map = new HashMap<>();
+                String title = activity.getTitle();
+                String type = activity.getType();
+                String time = activity.getTime();
+                String expiration = activity.getExpirationTime();
+                String description = activity.getDescription();
+                String location = activity.getLocation();
+                String cost = activity.getCost();
+                String tag = activity.getTag();
+                Account account = accountMapper.selectOneByExample(
+                        Example.builder(Account.class).where(Sqls.custom().andEqualTo("accountId", activity.getAccountId()))
+                                .build()
+                );
+                Education education = educationMapper.selectOneByExample(
+                        Example.builder(Education.class).where(Sqls.custom().andEqualTo("accountId", activity.getAccountId()))
+                                .build()
+                );
+                String name = account.getName();
+                String avatar = account.getAvatar();
+                String educationLevel = education.getEducation();
+                String educationCollege = education.getCollege();
+                String educationSchool = education.getSchool();
+                accountStartEducationYear = education.getStartTime();
+                calculateStarterEducationGrade();
+                String educationGrade = accountStartEducationGrade;
+                map.put("avatar", avatar);
+                map.put("educationLevel", educationLevel);
+                map.put("educationCollege", educationCollege);
+                map.put("educationSchool", educationSchool);
+                map.put("educationGrade", educationGrade);
+                map.put("id", activity.getId());
+                map.put("title", title);
+                map.put("type", type);
+                map.put("time", time);
+                map.put("expiration", expiration);
+                map.put("description", description);
+                map.put("location", location);
+                map.put("cost", cost);
+                map.put("tag", tag);
+                map.put("name", name);
+                map.put("distance", 0);
+                list.add(map);
+            }
+            Integer count = activity2Mapper.selectCountByExample(
+                    Example.builder(Activity2.class).where(Sqls.custom().andEqualTo("visible", 1))
+                            .build()
+            );
+            result.put("list", list);
+            result.put("count", count);
+        }else if(tags==0||tags==1||tags==2){
+            PageHelper.startPage(pageIndex, pageSize);
+            Iterator<Activity2> iterator = activity2Mapper.selectByExample(
+                    Example.builder(Activity2.class).where(Sqls.custom().andEqualTo("visible", 1)
+                    .andEqualTo("type",tags))
+                            .build()
+            ).iterator();
+            List list = new LinkedList();
+            while (iterator.hasNext()) {
+                Activity2 activity = iterator.next();
+                Map<String, Object> map = new HashMap<>();
+                String title = activity.getTitle();
+                String type = activity.getType();
+                String time = activity.getTime();
+                String expiration = activity.getExpirationTime();
+                String description = activity.getDescription();
+                String location = activity.getLocation();
+                String cost = activity.getCost();
+                String tag = activity.getTag();
+                Account account = accountMapper.selectOneByExample(
+                        Example.builder(Account.class).where(Sqls.custom().andEqualTo("accountId", activity.getAccountId()))
+                                .build()
+                );
+                Education education = educationMapper.selectOneByExample(
+                        Example.builder(Education.class).where(Sqls.custom().andEqualTo("accountId", activity.getAccountId()))
+                                .build()
+                );
+                String name = account.getName();
+                String avatar = account.getAvatar();
+                String educationLevel = education.getEducation();
+                String educationCollege = education.getCollege();
+                String educationSchool = education.getSchool();
+                accountStartEducationYear = education.getStartTime();
+                calculateStarterEducationGrade();
+                String educationGrade = accountStartEducationGrade;
+                map.put("avatar", avatar);
+                map.put("educationLevel", educationLevel);
+                map.put("educationCollege", educationCollege);
+                map.put("educationSchool", educationSchool);
+                map.put("educationGrade", educationGrade);
+                map.put("id", activity.getId());
+                map.put("title", title);
+                map.put("type", type);
+                map.put("time", time);
+                map.put("expiration", expiration);
+                map.put("description", description);
+                map.put("location", location);
+                map.put("cost", cost);
+                map.put("tag", tag);
+                map.put("name", name);
+                map.put("distance", 0);
+                list.add(map);
+            }
+            Integer count = activity2Mapper.selectCountByExample(
+                    Example.builder(Activity2.class).where(Sqls.custom().andEqualTo("visible", 1)
+                            .andEqualTo("type",tags))
+                            .build()
+            );
+            result.put("list", list);
+            result.put("count", count);
+        }else {
+            throw new Exception("类型错误");
         }
+        return result;
 
-        return list;
     }
 
     @Override
@@ -217,7 +350,8 @@ public class Activity2ServiceImpl implements Activity2Service {
     }
 
     @Override
-    public Object getPeopleList(Long id) {
+    public Object getPeopleList(Long id,int pageIndex,int pageSize) {
+        PageHelper.startPage(pageIndex, pageSize);
         Iterator<ActivityMember> iterator = activityMemberMapper.selectByExample(
                 Example.builder(ActivityMember.class).where(Sqls.custom().andEqualTo("activityId", id))
                         .build()
@@ -235,6 +369,16 @@ public class Activity2ServiceImpl implements Activity2Service {
             list.add(map);
         }
         return list;
+    }
+
+    @Override
+    public void cancelActivity(Long id, Long accountId) throws Exception {
+        Integer count = activity2Mapper.getActivityMember(accountId,id);
+        if(count==0)
+        {
+            throw new Exception("未加入活动");
+        }
+        activity2Mapper.deleteActivityMember(accountId,id);
     }
 
 

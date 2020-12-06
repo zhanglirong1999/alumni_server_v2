@@ -13,8 +13,8 @@ public class CONST {
     public static final int FRIEND_ACTION_N = 0;
 
     // wx 参数
-    public static final String appId = "wxebacdf49b73f338b";
-    public static final String appSecret = "4daee58bdef643b2ff1b29e8c219715a";
+    public static final String appId = "wx517c42c8b9dd029e";
+    public static final String appSecret = "183737ca41a053d8f8bcf7cd558e3e2e";
 
     // ACL Key
     public static final String ACL_ACCOUNTID = "accountId";

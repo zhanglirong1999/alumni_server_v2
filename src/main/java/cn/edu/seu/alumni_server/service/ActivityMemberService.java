@@ -43,6 +43,9 @@ public interface ActivityMemberService {
 		Long activityId)
 		throws ActivityMemberServiceException;
 
+	public List<ActivityMemberBasicInfoDTO> queryActivity2MemberAccountInfosByAccountId(
+		Long activityId)
+		throws ActivityMemberServiceException;
 	/**
 	 * 根据活动的 id 来设置所有这个活动的成员的状态为未读.
 	 *
@@ -73,6 +76,7 @@ public interface ActivityMemberService {
 
 	// 判断一个用户是不是一个存在于一个活动中.
 	public Boolean hasEnrolledInto(Long activityId, Long accountId);
+	public Boolean hasEnrolledInto2(Long activityId, Long accountId);
 
 	// 判断一个参与记录是否已经有了
 	public Boolean hasPrimaryKeyInActivityMember(Long activityId, Long accountId);
