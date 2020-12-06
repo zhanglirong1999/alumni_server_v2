@@ -39,7 +39,7 @@ public class Activity2Controller {
 
     @PostMapping("/getToken")
     public Object getToken(){
-        String accountId = "42995297217536";
+        String accountId = "27509995628544";
         return TokenUtil.createToken(accountId);
     }
 

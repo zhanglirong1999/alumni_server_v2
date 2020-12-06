@@ -203,11 +203,15 @@ public class Activity2ServiceImpl implements Activity2Service {
     public Object getList(int pageIndex,int pageSize,int tags) throws Exception {
         Map<String, Object> result = new HashMap<>();
         if(tags==3) {
+
             PageHelper.startPage(pageIndex, pageSize);
-            Iterator<Activity2> iterator = activity2Mapper.selectByExample(
-                    Example.builder(Activity2.class).where(Sqls.custom().andEqualTo("visible", 1))
-                            .build()
-            ).iterator();
+//            Iterator<Activity2> iterator = activity2Mapper.selectByExample(
+////                    Example.builder(Activity2.class).where(Sqls.custom().andEqualTo("visible", 1))
+////                            .orderBy("create")
+////                            .build()
+//                    example
+//            ).iterator();
+            Iterator<Activity2> iterator = activity2Mapper.getAllActivity().iterator();
             List list = new LinkedList();
             while (iterator.hasNext()) {
                 Activity2 activity = iterator.next();
@@ -264,7 +268,7 @@ public class Activity2ServiceImpl implements Activity2Service {
             PageHelper.startPage(pageIndex, pageSize);
             Iterator<Activity2> iterator = activity2Mapper.selectByExample(
                     Example.builder(Activity2.class).where(Sqls.custom().andEqualTo("visible", 1)
-                    .andEqualTo("type",tags))
+                    .andEqualTo("type",tags)).orderByDesc("creating")
                             .build()
             ).iterator();
             List list = new LinkedList();

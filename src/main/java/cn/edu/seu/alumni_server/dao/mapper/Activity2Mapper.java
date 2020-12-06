@@ -58,4 +58,10 @@ public interface Activity2Mapper extends Mapper<Activity2> {
             "        GROUP BY ACT.id")
     List<StartedOrEnrolledActivityInfoDTO2> getEnrolled(Long accountId);
 
+    @Select("SELECT * FROM activity2 WHERE visible=1 ORDER BY creating DESC")
+    List<Activity2> getAllActivity();
+
+    @Select("SELECT * FROM activity2 WHERE visible=1 and type='#{type}' ORDER BY creating")
+    List<Activity2> getActivityByTag(String type);
+
 }
