@@ -1,4 +1,4 @@
-#git pull
+git pull origin v2
 mvn clean package
 #
 #pkill -f alumni
