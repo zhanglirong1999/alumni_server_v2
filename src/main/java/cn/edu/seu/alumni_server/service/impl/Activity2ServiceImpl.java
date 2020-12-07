@@ -232,6 +232,10 @@ public class Activity2ServiceImpl implements Activity2Service {
                         Example.builder(Education.class).where(Sqls.custom().andEqualTo("accountId", activity.getAccountId()))
                                 .build()
                 );
+                if(account==null||education==null){
+                    //创建者账号已被删除
+                    continue;
+                }
                 String name = account.getName();
                 String avatar = account.getAvatar();
                 String educationLevel = education.getEducation();
