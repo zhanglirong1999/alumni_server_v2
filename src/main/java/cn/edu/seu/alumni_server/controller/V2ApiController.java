@@ -15,13 +15,13 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.google.gson.Gson;
 import java.io.IOException;
+
+import jdk.nashorn.internal.ir.RuntimeNode;
 import lombok.Data;
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import tk.mybatis.mapper.entity.Example;
 import tk.mybatis.mapper.util.Sqls;
@@ -64,14 +64,26 @@ public class V2ApiController {
     String getAccessToken(String openid) {
         if (System.currentTimeMillis() > expireTime) {
             // 使用appid和secret访问接口.获取公众号的access_token
-            String wxApiUrl = "https://api.weixin.qq.com/cgi-bin/token?" +
-                    "openid=" + openid +
-                    "&secret=" + CONST.appSecret +
-                    "&grant_type=client_credential";
+            String wxApiUrl = "https://api.weixin.qq.com/cgi-bin/token?grant_type=" +
+                    "client_credential" +
+                    "&appid=" +CONST.appId+
+                    "&secret="+CONST.appSecret;
             String respronse = restTemplate.getForObject(wxApiUrl, String.class);
-
+            System.out.println(respronse);
         }
         return access_token;
+    }
+
+    @PostMapping("/test")
+    public WebResponse getContent(){
+        String openid = "onsrA4vktY91Rr0kxHhyQFlsDs1g";
+        String access_token = getAccessToken(openid);
+        System.out.println(access_token);
+        String content ="东南大学";
+        String url = "https://api.weixin.qq.com/wxa/msg_sec_check?access_token="+"40_cmD1XzqPmMDJNsyEbu9A0vxMM9meert46q-uDOyVylWTgAvbA3rKGp8IzAB5XKZpumut5LL1yp20xBf1Tbx3LI9RfgKWdlUpHTpf_oUZnYpw7SfHTUNb2vpW2EBPaz9pI65DtUtDJfeNUKryWXDiADAKLR"+"&content"+content;
+//        String respronse = restTemplate.postForObject(url, RuntimeNode.Request.p);
+//        System.out.println(respronse);
+        return null;
     }
 
     /**

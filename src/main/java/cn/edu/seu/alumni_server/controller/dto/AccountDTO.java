@@ -1,6 +1,7 @@
 package cn.edu.seu.alumni_server.controller.dto;
 
 import cn.edu.seu.alumni_server.dao.entity.Account;
+import com.vdurmont.emoji.EmojiParser;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
 
@@ -32,6 +33,7 @@ public class AccountDTO {
         Account account = new Account();
         BeanUtils.copyProperties(this, account);
         account.setBirthday(this.getBirthday());
+        account.setSelfDesc(EmojiParser.removeAllEmojis(this.getSelfDesc()));
         return account;
     }
 }

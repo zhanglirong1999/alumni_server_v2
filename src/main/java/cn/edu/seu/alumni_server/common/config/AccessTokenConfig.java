@@ -24,8 +24,8 @@ public class AccessTokenConfig {
     private void updateAccessToken() {
         RestTemplate restTemplate = new RestTemplate();
         Map<String, String> params = new HashMap<>();
-        params.put("APPID", "wxebacdf49b73f338b");
-        params.put("APPSECRET", "4daee58bdef643b2ff1b29e8c219715a");
+        params.put("APPID", "wx517c42c8b9dd029e");
+        params.put("APPSECRET", "183737ca41a053d8f8bcf7cd558e3e2e");
         ResponseEntity<String> responseEntity = restTemplate.getForEntity(
                 "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={APPID}&secret={APPSECRET}", String.class, params);
         String body = responseEntity.getBody();
