@@ -78,7 +78,9 @@ public class AccountAllController {
         Long accountId = (Long) request.getAttribute(CONST.ACL_ACCOUNTID);
         Account account = accountMapper.selectByPrimaryKey(accountId);
         String selfDesc = account.getSelfDesc();
-        account.setSelfDesc(EmojiParser.parseToUnicode(selfDesc));
+        if(selfDesc!=null) {
+            account.setSelfDesc(EmojiParser.parseToUnicode(selfDesc));
+        }
         return new WebResponse().success(new AccountDTO(account));
     }
 
@@ -89,6 +91,7 @@ public class AccountAllController {
         if (!isLegal) {
             return new WebResponse().fail("文字或图片含有敏感信息");
         }
+        System.out.println("111112222HHH");
         if (accountDTO.getAccountId() != null &&
                 !accountDTO.getAccountId().equals("")) {
             accountMapper.
