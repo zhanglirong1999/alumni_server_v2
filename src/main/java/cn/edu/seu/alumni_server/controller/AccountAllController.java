@@ -18,6 +18,7 @@ import java.io.IOException;
 
 import cn.edu.seu.alumni_server.service.SecurityService;
 import com.qcloud.cos.utils.Base64;
+import com.vdurmont.emoji.EmojiParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -76,6 +77,8 @@ public class AccountAllController {
     public WebResponse getAccount() {
         Long accountId = (Long) request.getAttribute(CONST.ACL_ACCOUNTID);
         Account account = accountMapper.selectByPrimaryKey(accountId);
+        String selfDesc = account.getSelfDesc();
+        account.setSelfDesc(EmojiParser.parseToUnicode(selfDesc));
         return new WebResponse().success(new AccountDTO(account));
     }
 

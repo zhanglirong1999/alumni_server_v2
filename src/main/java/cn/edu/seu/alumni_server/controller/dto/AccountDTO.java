@@ -33,7 +33,7 @@ public class AccountDTO {
         Account account = new Account();
         BeanUtils.copyProperties(this, account);
         account.setBirthday(this.getBirthday());
-        account.setSelfDesc(EmojiParser.removeAllEmojis(this.getSelfDesc()));
+        account.setSelfDesc(EmojiParser.parseToAliases(this.getSelfDesc()));
         return account;
     }
 }
