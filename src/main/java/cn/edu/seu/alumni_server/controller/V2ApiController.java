@@ -20,13 +20,22 @@ import jdk.nashorn.internal.ir.RuntimeNode;
 import lombok.Data;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.entity.FileEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 import tk.mybatis.mapper.entity.Example;
 import tk.mybatis.mapper.util.Sqls;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
@@ -75,14 +84,20 @@ public class V2ApiController {
     }
 
     @PostMapping("/test")
-    public WebResponse getContent(){
+    public WebResponse getContent(
+            @RequestParam(name = "file") MultipartFile multipartFile
+    ) throws UnsupportedEncodingException {
         String openid = "onsrA4vktY91Rr0kxHhyQFlsDs1g";
         String access_token = getAccessToken(openid);
         System.out.println(access_token);
-        String content ="东南大学";
-        String url = "https://api.weixin.qq.com/wxa/msg_sec_check?access_token="+"40_cmD1XzqPmMDJNsyEbu9A0vxMM9meert46q-uDOyVylWTgAvbA3rKGp8IzAB5XKZpumut5LL1yp20xBf1Tbx3LI9RfgKWdlUpHTpf_oUZnYpw7SfHTUNb2vpW2EBPaz9pI65DtUtDJfeNUKryWXDiADAKLR"+"&content"+content;
-//        String respronse = restTemplate.postForObject(url, RuntimeNode.Request.p);
-//        System.out.println(respronse);
+        String url = "https://api.weixin.qq.com/wxa/msg_sec_check?access_token="+
+                "40_I2HcIxuPwFd7OPgvMM-5wojxjB9VTxKI7qKkyzi6mq6uxVmQ6z3-axiIjJWhO9YrSOzsaJ9et8JFESmgdbvCD0-_wH0YD3Jvy65zZOLsXJD_9SUO4PHCeR-ohVySGIsuIo8cCNK4svvVpUsvNMKjACAYXV";
+        Map<String, Object> map = new HashMap<>();
+        map.put("media", multipartFile);
+
+        String respronse = restTemplate.postForObject(url,map,String.class);
+        System.out.println(respronse);
+
         return null;
     }
 
