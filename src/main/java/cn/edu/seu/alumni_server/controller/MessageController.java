@@ -1,5 +1,6 @@
 package cn.edu.seu.alumni_server.controller;
 
+import cn.edu.seu.alumni_server.common.logAspect.annotation.LogController;
 import cn.edu.seu.alumni_server.common.web_response_dto.WebResponse;
 import cn.edu.seu.alumni_server.interceptor.token.Acl;
 import cn.edu.seu.alumni_server.controller.dto.MessageDTO;
@@ -18,6 +19,7 @@ import java.util.List;
 /**
  * 消息列表
  */
+@LogController
 @RestController
 @SuppressWarnings("ALL")
 @Acl

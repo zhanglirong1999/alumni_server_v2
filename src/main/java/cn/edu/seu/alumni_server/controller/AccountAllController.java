@@ -3,6 +3,7 @@ package cn.edu.seu.alumni_server.controller;
 import cn.edu.seu.alumni_server.annotation.web_response.WebResponseAPIMethod;
 import cn.edu.seu.alumni_server.common.CONST;
 import cn.edu.seu.alumni_server.common.Utils;
+import cn.edu.seu.alumni_server.common.logAspect.annotation.LogController;
 import cn.edu.seu.alumni_server.common.web_response_dto.WebResponse;
 import cn.edu.seu.alumni_server.interceptor.token.Acl;
 import cn.edu.seu.alumni_server.controller.dto.AccountAllDTO;
@@ -39,6 +40,7 @@ import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 
+@LogController
 @SuppressWarnings("ALL")
 @RestController
 @Acl

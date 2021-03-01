@@ -1,6 +1,7 @@
 package cn.edu.seu.alumni_server.controller;
 
 import cn.edu.seu.alumni_server.common.Utils;
+import cn.edu.seu.alumni_server.common.logAspect.annotation.LogController;
 import cn.edu.seu.alumni_server.common.web_response_dto.WebResponse;
 import cn.edu.seu.alumni_server.interceptor.token.TokenUtil;
 import cn.edu.seu.alumni_server.dao.entity.Account;
@@ -25,6 +26,7 @@ import java.util.Map;
 /**
  * 系统测试用
  */
+@LogController
 @RestController
 @RequestMapping("/test")
 @Slf4j
