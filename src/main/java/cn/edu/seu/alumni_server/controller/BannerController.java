@@ -1,5 +1,6 @@
 package cn.edu.seu.alumni_server.controller;
 
+import cn.edu.seu.alumni_server.common.logAspect.annotation.LogController;
 import cn.edu.seu.alumni_server.common.web_response_dto.WebResponse;
 import cn.edu.seu.alumni_server.controller.dto.BannerDTO;
 import cn.edu.seu.alumni_server.dao.entity.Banner;
@@ -13,6 +14,7 @@ import tk.mybatis.mapper.entity.Example;
 import java.util.ArrayList;
 import java.util.List;
 
+@LogController
 @RestController
 @Acl
 public class BannerController {

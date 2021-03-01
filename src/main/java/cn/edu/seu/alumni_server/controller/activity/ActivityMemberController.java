@@ -1,5 +1,6 @@
 package cn.edu.seu.alumni_server.controller.activity;
 
+import cn.edu.seu.alumni_server.common.logAspect.annotation.LogController;
 import cn.edu.seu.alumni_server.common.web_response_dto.WebResponse;
 import cn.edu.seu.alumni_server.interceptor.registration.RegistrationRequired;
 import cn.edu.seu.alumni_server.exceptions.ActivityMemberServiceException;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@LogController
 @RestController
 @Acl
 public class ActivityMemberController {

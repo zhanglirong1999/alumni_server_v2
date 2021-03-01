@@ -1,5 +1,6 @@
 package cn.edu.seu.alumni_server.controller;
 
+import cn.edu.seu.alumni_server.common.logAspect.annotation.LogController;
 import cn.edu.seu.alumni_server.common.web_response_dto.WebResponse;
 import cn.edu.seu.alumni_server.dao.entity.MyCollection;
 import cn.edu.seu.alumni_server.dao.mapper.MyCollectionMapper;
@@ -10,6 +11,7 @@ import tk.mybatis.mapper.entity.Example;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
+@LogController
 @RestController
 //@Acl
 public class MyCollectionController {
